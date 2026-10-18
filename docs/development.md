@@ -128,9 +128,10 @@ recovery or outbound email is available in this slice.
 
 The implementation session could not access the host Docker socket. The HTTP
 and browser checks use the real disposable PostgreSQL process described above.
-Compose configuration can be validated, but container startup and volume
-persistence must be exercised on a host with Docker access before calling that
-acceptance criterion fully verified.
+Compose configuration was validated during implementation. The owner subsequently
+confirmed local Compose startup, registration, sign-in/out, and the restart check
+for PostgreSQL and the app. These manual confirmations resolve the issue 01
+container verification gap; they are separate from the automated test results.
 
 Version compatibility reference: [Angular's supported versions](https://angular.dev/reference/versions).
 Session integration: [NestJS session documentation](https://docs.nestjs.com/techniques/session)

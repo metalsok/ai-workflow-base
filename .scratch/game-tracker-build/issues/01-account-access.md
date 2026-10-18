@@ -1,7 +1,8 @@
 # 01: Create an account and sign in
 
 Status: ready-for-human
-Blocked by: Docker-capable host verification of Compose startup and database volume persistence
+Blocked by: None
+Outcome: All acceptance criteria verified; local manual checks confirmed by the owner
 Parent: [First private release](../spec.md)
 
 ## What to build
@@ -18,7 +19,7 @@ with runnable project tooling and the selected visual foundation.
 - [x] Invalid input, duplicate registration, failed login, authenticated identity, and logout are covered through HTTP behavior checks.
 - [x] The responsive app shell has the selected purple design, Discover and My Library navigation, and functional account forms.
 - [x] A basic browser check demonstrates registration, sign-in, identity, and logout.
-- [ ] A local PostgreSQL container and repeatable schema migrations support development and tests.
+- [x] A local PostgreSQL container and repeatable schema migrations support development and tests.
 
 ## Comments
 
@@ -67,3 +68,17 @@ Compose configuration and migrations are supplied, and real PostgreSQL tests
 pass, but actual container startup and volume persistence have not been exercised.
 The final criterion remains unchecked and the ticket is ready for human verification.
 See [development instructions](../../../docs/development.md) for startup/checks.
+
+
+### Owner verification
+
+The owner started PostgreSQL with Docker Compose and the local app after fixing
+Docker group membership. They confirmed registration, sign-in, and sign-out.
+The browser must use the configured `http://127.0.0.1:4200` origin; a request from
+`http://localhost:4200` was correctly rejected by the origin check.
+
+After receiving the instructions to restart PostgreSQL with
+`docker compose restart db` and restart the app with `npm run dev`, the owner
+reported that the result looked good. This user-confirmed restart check resolves
+the outstanding Docker startup/persistence verification limitation above.
+All acceptance criteria are now checked.
