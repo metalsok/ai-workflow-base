@@ -16,9 +16,10 @@ the cinematic dashboard (prototype D) with purple accents.
 
 ## Run the application locally
 
-Account access is implemented: registration, sign-in, persisted sessions, and
-sign-out, with the responsive purple Angular shell. Discovery feeds and game
-library operations follow in later tickets.
+Account access and catalog search are implemented: registration, sign-in/out,
+persisted sessions, paginated IGDB title search, and game details in the responsive
+purple Angular shell. Discovery feeds and personal library operations follow in
+later tickets.
 
 ```bash
 npm ci
@@ -31,7 +32,8 @@ npm run dev
 Use Node 26 and Docker Compose. Open `http://127.0.0.1:4200`.
 The setup script generates local secrets in the ignored `.env`, preserving
 existing values, including IGDB configuration. Email ownership is not verified
-in this private test.
+in this private test. Existing `IGDB_CLIENT_ID` and `IGDB_CLIENT_SECRET` values
+enable catalog search; enter them in `.env` if they are not already configured.
 
 See [development and testing](docs/development.md) for check commands, session
 policy, and running tests without Docker.

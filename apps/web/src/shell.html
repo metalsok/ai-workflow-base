@@ -22,6 +22,21 @@
   </aside>
   <div class="workspace">
     <header class="account-header">
+      <form class="global-search" role="search" (ngSubmit)="search()">
+        <label class="visually-hidden" for="game-search">Search games</label>
+        <input
+          id="game-search"
+          name="query"
+          type="search"
+          placeholder="Search games…"
+          autocomplete="off"
+          required
+          minlength="2"
+          maxlength="100"
+          [(ngModel)]="query"
+        />
+        <button class="secondary" type="submit">Search</button>
+      </form>
       <p class="identity" aria-label="Signed in as">
         {{ auth.account()?.email }}
       </p>
@@ -34,8 +49,12 @@
       <p class="error" role="alert">{{ error() }}</p>
       }
       <p class="eyebrow">Your personal game tracker</p>
-      <h1>{{ library ? 'My Library' : 'Discover' }}</h1>
-      @if (library) {
+      @if (!gamePage) {
+      <h1>
+        {{ library ? 'My Library' : searchPage ? 'Search games' : 'Discover' }}
+      </h1>
+      } @if (gamePage) { <app-game-page /> } @else if (searchPage) {
+      <app-search-page /> } @else if (library) {
       <section class="empty-state" aria-labelledby="library-title">
         <span class="empty-mark" aria-hidden="true">▤</span>
         <h2 id="library-title">A home for your games.</h2>
@@ -51,7 +70,8 @@
           <p class="eyebrow">One more world to explore</p>
           <h2 id="hero-title">The next adventure<br />is yours.</h2>
           <p>
-            Your account is ready. Game discovery is coming in a future update.
+            Search for a game above to explore its story, platforms, and
+            creators. Discovery feeds are coming in a future update.
           </p>
           <a class="primary" routerLink="/library"
             >Open My Library <span aria-hidden="true">↗</span></a

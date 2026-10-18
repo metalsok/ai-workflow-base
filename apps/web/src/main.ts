@@ -26,6 +26,18 @@ bootstrapApplication(App, {
           component: AccountPage,
           data: { registering: true },
         },
+        {
+          path: 'search',
+          component: Shell,
+          canActivate: [signedIn],
+          data: { search: true },
+        },
+        {
+          path: 'games/:id',
+          component: Shell,
+          canActivate: [signedIn],
+          data: { game: true },
+        },
         { path: 'discover', component: Shell, canActivate: [signedIn] },
         {
           path: 'library',

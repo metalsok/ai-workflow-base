@@ -1,0 +1,58 @@
+@if (request.loading()) {
+<p class="catalog-state" role="status">Loading game…</p>
+} @else if (notFound()) {
+<section class="empty-state">
+  <h1>Game not found</h1>
+  <p>This game is unavailable or outside the PC and console catalog.</p>
+  <a class="primary" routerLink="/search">Search games</a>
+</section>
+} @else if (request.error()) {
+<section class="catalog-state">
+  <h1>Unable to load game</h1>
+  <p class="error" role="alert">{{ request.error() }}</p>
+  <button class="primary" (click)="request.retry()">Try again</button>
+</section>
+} @else if (request.result(); as details) { @if (details.stale) {
+<p class="cached-note" role="status">
+  Showing cached game information from {{ details.fetchedAt |
+  date:'medium':'UTC' }}. The catalog is temporarily unavailable.
+</p>
+}
+<article class="game-details">
+  <app-game-cover [url]="details.game.coverUrl" [title]="details.game.title" />
+  <div class="game-description">
+    <p class="eyebrow">
+      {{ details.game.kind === 'main' ? 'Game details' : details.game.kind }}
+    </p>
+    <h1>{{ details.game.title }}</h1>
+    <p class="game-summary">
+      {{ details.game.summary || 'Summary unavailable.' }}
+    </p>
+    <dl class="game-metadata">
+      <div>
+        <dt>First release date</dt>
+        <dd>
+          {{ details.game.firstReleaseDate ? (details.game.firstReleaseDate |
+          date:'mediumDate') : 'Unknown' }}
+        </dd>
+      </div>
+      <div>
+        <dt>Platforms</dt>
+        <dd>{{ details.game.platforms.join(', ') || 'Unavailable' }}</dd>
+      </div>
+      <div>
+        <dt>Genres</dt>
+        <dd>{{ details.game.genres.join(', ') || 'Unavailable' }}</dd>
+      </div>
+      <div>
+        <dt>Developers</dt>
+        <dd>{{ details.game.developers.join(', ') || 'Unavailable' }}</dd>
+      </div>
+      <div>
+        <dt>Publishers</dt>
+        <dd>{{ details.game.publishers.join(', ') || 'Unavailable' }}</dd>
+      </div>
+    </dl>
+  </div>
+</article>
+}

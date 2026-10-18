@@ -1,0 +1,561 @@
+{
+  "checkedAt": "2026-10-18T19:23:08.699Z",
+  "filter": "game_type = (0,8,9) & version_parent = null & (platforms.platform_type = (1,5,6) | platforms = (3,6,14))",
+  "gameTypes": [
+    {
+      "id": 3,
+      "type": "Bundle"
+    },
+    {
+      "id": 1,
+      "type": "DLC"
+    },
+    {
+      "id": 6,
+      "type": "Episode"
+    },
+    {
+      "id": 4,
+      "type": "Standalone Expansion"
+    },
+    {
+      "id": 5,
+      "type": "Mod"
+    },
+    {
+      "id": 8,
+      "type": "Remake"
+    },
+    {
+      "id": 11,
+      "type": "Port"
+    },
+    {
+      "id": 7,
+      "type": "Season"
+    },
+    {
+      "id": 12,
+      "type": "Fork"
+    },
+    {
+      "id": 14,
+      "type": "Update"
+    },
+    {
+      "id": 10,
+      "type": "Expanded Game"
+    },
+    {
+      "id": 13,
+      "type": "Pack / Addon"
+    },
+    {
+      "id": 9,
+      "type": "Remaster"
+    },
+    {
+      "id": 2,
+      "type": "Expansion"
+    },
+    {
+      "id": 0,
+      "type": "Main Game"
+    }
+  ],
+  "platformTypes": [
+    {
+      "id": 1,
+      "name": "Console"
+    },
+    {
+      "id": 2,
+      "name": "Arcade"
+    },
+    {
+      "id": 3,
+      "name": "Platform"
+    },
+    {
+      "id": 4,
+      "name": "Operating_system"
+    },
+    {
+      "id": 5,
+      "name": "Portable_console"
+    },
+    {
+      "id": 6,
+      "name": "Computer"
+    }
+  ],
+  "platforms": [
+    {
+      "id": 167,
+      "name": "PlayStation 5",
+      "platform_type": 1
+    },
+    {
+      "id": 3,
+      "name": "Linux",
+      "platform_type": 4
+    },
+    {
+      "id": 39,
+      "name": "iOS",
+      "platform_type": 4
+    },
+    {
+      "id": 6,
+      "name": "PC (Microsoft Windows)",
+      "platform_type": 4
+    },
+    {
+      "id": 34,
+      "name": "Android",
+      "platform_type": 4
+    },
+    {
+      "id": 14,
+      "name": "Mac",
+      "platform_type": 4
+    },
+    {
+      "id": 130,
+      "name": "Nintendo Switch",
+      "platform_type": 1
+    }
+  ],
+  "main": [
+    {
+      "id": 7346,
+      "title": "The Legend of Zelda: Breath of the Wild",
+      "gameType": 0,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 41,
+          "name": "Wii U",
+          "platform_type": 1
+        },
+        {
+          "id": 130,
+          "name": "Nintendo Switch",
+          "platform_type": 1
+        }
+      ],
+      "eligible": true
+    },
+    {
+      "id": 119133,
+      "title": "Elden Ring",
+      "gameType": 0,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 169,
+          "name": "Xbox Series X|S",
+          "platform_type": 1
+        },
+        {
+          "id": 48,
+          "name": "PlayStation 4",
+          "platform_type": 1
+        },
+        {
+          "id": 508,
+          "name": "Nintendo Switch 2",
+          "platform_type": 1
+        },
+        {
+          "id": 6,
+          "name": "PC (Microsoft Windows)",
+          "platform_type": 4
+        },
+        {
+          "id": 167,
+          "name": "PlayStation 5",
+          "platform_type": 1
+        },
+        {
+          "id": 49,
+          "name": "Xbox One",
+          "platform_type": 1
+        }
+      ],
+      "eligible": true
+    },
+    {
+      "id": 119171,
+      "title": "Baldur's Gate III",
+      "gameType": 0,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 170,
+          "name": "Google Stadia",
+          "platform_type": 3
+        },
+        {
+          "id": 169,
+          "name": "Xbox Series X|S",
+          "platform_type": 1
+        },
+        {
+          "id": 3,
+          "name": "Linux",
+          "platform_type": 4
+        },
+        {
+          "id": 6,
+          "name": "PC (Microsoft Windows)",
+          "platform_type": 4
+        },
+        {
+          "id": 167,
+          "name": "PlayStation 5",
+          "platform_type": 1
+        },
+        {
+          "id": 14,
+          "name": "Mac",
+          "platform_type": 4
+        }
+      ],
+      "eligible": true
+    }
+  ],
+  "alias": [
+    {
+      "id": 119171,
+      "title": "Baldur's Gate III",
+      "gameType": 0,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 170,
+          "name": "Google Stadia",
+          "platform_type": 3
+        },
+        {
+          "id": 169,
+          "name": "Xbox Series X|S",
+          "platform_type": 1
+        },
+        {
+          "id": 3,
+          "name": "Linux",
+          "platform_type": 4
+        },
+        {
+          "id": 6,
+          "name": "PC (Microsoft Windows)",
+          "platform_type": 4
+        },
+        {
+          "id": 167,
+          "name": "PlayStation 5",
+          "platform_type": 1
+        },
+        {
+          "id": 14,
+          "name": "Mac",
+          "platform_type": 4
+        }
+      ],
+      "eligible": true
+    },
+    {
+      "id": 357173,
+      "title": "Baldur's Gate III: The Black Hound",
+      "gameType": 0,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 6,
+          "name": "PC (Microsoft Windows)",
+          "platform_type": 4
+        }
+      ],
+      "eligible": true
+    }
+  ],
+  "remakes": [
+    {
+      "id": 65,
+      "title": "The Secret of Monkey Island: Special Edition",
+      "gameType": 8,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 9,
+          "name": "PlayStation 3",
+          "platform_type": 1
+        },
+        {
+          "id": 6,
+          "name": "PC (Microsoft Windows)",
+          "platform_type": 4
+        },
+        {
+          "id": 39,
+          "name": "iOS",
+          "platform_type": 4
+        },
+        {
+          "id": 14,
+          "name": "Mac",
+          "platform_type": 4
+        },
+        {
+          "id": 12,
+          "name": "Xbox 360",
+          "platform_type": 1
+        }
+      ],
+      "eligible": true
+    },
+    {
+      "id": 66,
+      "title": "Monkey Island 2 Special Edition: LeChuck's Revenge",
+      "gameType": 8,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 9,
+          "name": "PlayStation 3",
+          "platform_type": 1
+        },
+        {
+          "id": 6,
+          "name": "PC (Microsoft Windows)",
+          "platform_type": 4
+        },
+        {
+          "id": 39,
+          "name": "iOS",
+          "platform_type": 4
+        },
+        {
+          "id": 12,
+          "name": "Xbox 360",
+          "platform_type": 1
+        }
+      ],
+      "eligible": true
+    },
+    {
+      "id": 87,
+      "title": "Dune 2000",
+      "gameType": 8,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 6,
+          "name": "PC (Microsoft Windows)",
+          "platform_type": 4
+        },
+        {
+          "id": 7,
+          "name": "PlayStation",
+          "platform_type": 1
+        }
+      ],
+      "eligible": true
+    }
+  ],
+  "remasters": [
+    {
+      "id": 397,
+      "title": "Final Fantasy: 20th Anniversary Edition",
+      "gameType": 9,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 37,
+          "name": "Nintendo 3DS",
+          "platform_type": 5
+        },
+        {
+          "id": 74,
+          "name": "Windows Phone",
+          "platform_type": 4
+        },
+        {
+          "id": 34,
+          "name": "Android",
+          "platform_type": 4
+        },
+        {
+          "id": 39,
+          "name": "iOS",
+          "platform_type": 4
+        },
+        {
+          "id": 38,
+          "name": "PlayStation Portable",
+          "platform_type": 5
+        }
+      ],
+      "eligible": true
+    },
+    {
+      "id": 1466,
+      "title": "Perfect Dark",
+      "gameType": 9,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 12,
+          "name": "Xbox 360",
+          "platform_type": 1
+        }
+      ],
+      "eligible": true
+    },
+    {
+      "id": 1651,
+      "title": "GoldenEye 007: Reloaded",
+      "gameType": 9,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 9,
+          "name": "PlayStation 3",
+          "platform_type": 1
+        },
+        {
+          "id": 12,
+          "name": "Xbox 360",
+          "platform_type": 1
+        }
+      ],
+      "eligible": true
+    }
+  ],
+  "excluded": [
+    {
+      "id": 41826,
+      "title": "The Legend of Zelda: Breath of the Wild - The Champions' Ballad",
+      "gameType": 1,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 508,
+          "name": "Nintendo Switch 2",
+          "platform_type": 1
+        },
+        {
+          "id": 41,
+          "name": "Wii U",
+          "platform_type": 1
+        },
+        {
+          "id": 130,
+          "name": "Nintendo Switch",
+          "platform_type": 1
+        }
+      ],
+      "eligible": false
+    },
+    {
+      "id": 180258,
+      "title": "Elden Ring: Collector's Edition",
+      "gameType": 0,
+      "versionParent": 119133,
+      "platforms": [
+        {
+          "id": 169,
+          "name": "Xbox Series X|S",
+          "platform_type": 1
+        },
+        {
+          "id": 48,
+          "name": "PlayStation 4",
+          "platform_type": 1
+        },
+        {
+          "id": 6,
+          "name": "PC (Microsoft Windows)",
+          "platform_type": 4
+        },
+        {
+          "id": 167,
+          "name": "PlayStation 5",
+          "platform_type": 1
+        },
+        {
+          "id": 49,
+          "name": "Xbox One",
+          "platform_type": 1
+        }
+      ],
+      "eligible": false
+    },
+    {
+      "id": 210652,
+      "title": "The Legend of Zelda: Breath of the Wild Multiplayer",
+      "gameType": 5,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 41,
+          "name": "Wii U",
+          "platform_type": 1
+        }
+      ],
+      "eligible": false
+    },
+    {
+      "id": 237895,
+      "title": "The Legend of Zelda: Breath of the Wild and The Legend of Zelda: Breath of the Wild Expansion Pass Bundle",
+      "gameType": 3,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 130,
+          "name": "Nintendo Switch",
+          "platform_type": 1
+        }
+      ],
+      "eligible": false
+    }
+  ],
+  "mobileOnly": [
+    {
+      "id": 5589,
+      "title": "Clash of Clans",
+      "gameType": 0,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 34,
+          "name": "Android",
+          "platform_type": 4
+        },
+        {
+          "id": 39,
+          "name": "iOS",
+          "platform_type": 4
+        }
+      ],
+      "eligible": false
+    },
+    {
+      "id": 351032,
+      "title": "Apocalypse Clash City Free: A Cyberpunk Clan War Death Race game",
+      "gameType": 0,
+      "versionParent": null,
+      "platforms": [
+        {
+          "id": 39,
+          "name": "iOS",
+          "platform_type": 4
+        }
+      ],
+      "eligible": false
+    }
+  ],
+  "outcome": "passed",
+  "limits": "Representative classification and production-filter checks, not full catalog or feed validation."
+}

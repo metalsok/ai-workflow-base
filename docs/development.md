@@ -1,4 +1,4 @@
-# Development and account access
+# Development and testing
 
 ## Start locally
 
@@ -16,8 +16,9 @@ npm run dev
 
 Open **http://127.0.0.1:4200**. Use this exact origin: `localhost` is a different
 origin. Angular proxies `/api` to NestJS on loopback port 3000. Registration
-immediately signs you in. Discover and My Library currently supply the shell;
-catalog and library operations belong to later tickets.
+immediately signs you in. Use **Search games** in the header to search IGDB and
+open details. Discover feeds and personal library operations belong to later tickets.
+Restart `npm run dev` after backend changes; startup applies outstanding migrations.
 
 The setup script generates database and session secrets in the ignored `.env`
 with owner-only permissions. Existing nonempty settings are preserved; existing
@@ -68,13 +69,17 @@ its temporary directory is removed after the suite. Its trust authentication is
 restricted to this temporary loopback-only test server.
 
 Alternatively set `TEST_DATABASE_URL` to an **empty disposable PostgreSQL 17
-database**. The tests apply migrations and create accounts there; the caller
-owns cleanup. Do not point it at a personal, shared, or production database.
+database** with permission to create schemas. Each test process creates and drops
+a unique temporary schema so suites and repeated runs remain isolated. The
+caller owns the external database. Do not use a personal, shared, or production database.
 
 The API tests assert responses and cookies, including account/session continuity
 across NestJS restarts. The Playwright journey uses accessible controls and runs
 at desktop and phone widths. Failures retain traces under ignored `test-results`.
-IGDB is not contacted by these account tests.
+Automated tests replace only the external IGDB/Twitch HTTP boundary and image
+responses with deterministic fixtures. They never use live credentials or call
+IGDB. Browser coverage runs in Vienna and Los Angeles timezones to catch
+date-only rendering errors.
 
 ## Authentication contract
 
@@ -136,3 +141,70 @@ container verification gap; they are separate from the automated test results.
 Version compatibility reference: [Angular's supported versions](https://angular.dev/reference/versions).
 Session integration: [NestJS session documentation](https://docs.nestjs.com/techniques/session)
 and [Express session cookie and storage options](https://expressjs.com/en/resources/middleware/session/).
+
+## Catalog search and details
+
+The API reads `IGDB_CLIENT_ID` and `IGDB_CLIENT_SECRET` from the server environment.
+Keep them in the ignored `.env`; no credentials or provider access tokens are
+sent to Angular. If credentials are missing or the provider is unavailable,
+uncached catalog requests return a retry state. Cover images come from
+`https://images.igdb.com`, explicitly allowed by the server's image policy.
+
+All catalog endpoints require an authenticated application session:
+
+| Method | Path                             | Behavior                                                                              |
+| ------ | -------------------------------- | ------------------------------------------------------------------------------------- |
+| GET    | `/api/catalog/search?q=…&page=1` | Up to 12 game cards, page number, optional next page, fetch timestamp, stale flag     |
+| GET    | `/api/catalog/games/:id`         | Expanded normalized game, fetch timestamp, stale flag; 404 for missing/excluded games |
+
+Queries contain 2–100 characters; pages are integers from 1 to 50. Search terms
+are escaped as APICalypse strings. Game IDs must be positive safe integers.
+The provider receives the same scope filter for search and direct details;
+returned records are also checked defensively. Only main games, remakes, and
+remasters are eligible, with `version_parent = null`. Supported platforms include
+computer, console, and portable-console types plus Windows, macOS, and Linux
+explicitly; Android/iOS-only games and unknown classifications are excluded.
+Standalone expansions, separately indexed ports, episodes, and other game types
+remain outside this initial scope. Title spelling is not identity: the alias
+“Baldur's Gate 3” may return the canonical “Baldur's Gate III” with ID 119171.
+
+Details expose cover, summary, first release date, platforms, genres, developers,
+and publishers. Nulls and empty lists become visible unavailable states in the
+UI. Covers have an intentional placeholder, including when image loading fails.
+First release dates are calendar dates, not platform-specific release dates;
+formatting them preserves the calendar day across browser timezones.
+
+Search pages are cached in PostgreSQL for five minutes, with at most 500 cached
+search pages. Expanded normalized metadata is stored separately in
+`catalog_games` and refreshed after 24 hours; fetching cards never overwrites
+expanded detail metadata. Cache hits and metadata survive API restarts. During
+provider failure, a previously cached response is returned with `stale: true` and
+its original timestamp, displayed explicitly by the UI. A game subsequently
+confirmed excluded is marked ineligible, preventing stale detail fallback from
+restoring access while retaining stored metadata for future library rendering.
+
+Each account has 60 catalog requests per minute, counted in PostgreSQL, including
+cache hits. Excess requests return 429 with `Retry-After`. Each API process paces
+upstream IGDB request starts at least 300 ms apart, serializes network requests,
+and accepts at most eight pending requests. Excess work gets a safe 503/retry
+response. Network requests have an eight-second timeout; provider JSON is bounded
+to 2 MiB and token JSON to 64 KiB. Upstream 429 cooldowns are respected. Tokens are
+kept in memory, refreshed before expiry, and refreshed/retried once on a 401.
+Provider diagnostics and request credentials are never forwarded to clients.
+
+### Opt-in live validation
+
+```bash
+npm run catalog:validate -- --live
+```
+
+Without `--live`, this command stops before making requests. With it, stored
+server credentials are used to validate current game/platform type records,
+the actual production filter, representative main games, remakes, remasters,
+alias matching, and exclusion of DLC, mods, bundles, editions, and mobile-only
+games. It writes only public metadata to
+`.scratch/game-tracker-build/catalog-validation.json`. This is separate from
+`npm test` and does not validate discovery feeds or the whole IGDB catalog.
+
+The report records the successful live checks for issue 02. Current API fields
+and limits are documented in [IGDB's official API documentation](https://api-docs.igdb.com/).

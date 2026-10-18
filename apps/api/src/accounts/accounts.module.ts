@@ -1,5 +1,7 @@
 import {
   Controller,
+  type CanActivate,
+  type ExecutionContext,
   type DynamicModule,
   Get,
   Inject,
@@ -133,6 +135,17 @@ class AccountsService {
   }
 }
 
+export class AccountsGuard implements CanActivate {
+  constructor(
+    @Inject(AccountsService) private readonly accounts: AccountsService,
+  ) {}
+  async canActivate(context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest<Request>();
+    await this.accounts.identity(request.session?.accountId);
+    return true;
+  }
+}
+
 @Controller('api/accounts')
 class AccountsController {
   constructor(
@@ -199,7 +212,12 @@ export class AccountsModule {
     return {
       module: AccountsModule,
       controllers: [AccountsController],
-      providers: [{ provide: Pool, useValue: pool }, AccountsService],
+      providers: [
+        { provide: Pool, useValue: pool },
+        AccountsService,
+        AccountsGuard,
+      ],
+      exports: [AccountsGuard, AccountsService],
     };
   }
 }

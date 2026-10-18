@@ -13,13 +13,14 @@
     "build:api": "tsc -p apps/api/tsconfig.json",
     "start": "node --env-file-if-exists=.env dist/api/main.js",
     "typecheck": "tsc -p apps/api/tsconfig.json --noEmit && ngc -p apps/web/tsconfig.json --noEmit && tsc -p tests/tsconfig.json",
-    "format": "prettier --write apps tests scripts/migrate.ts scripts/setup-dev.mjs *.json *.ts *.yaml AGENTS.md README.md docs/development.md",
-    "format:check": "prettier --check apps tests scripts/migrate.ts scripts/setup-dev.mjs *.json *.ts *.yaml AGENTS.md README.md docs/development.md",
+    "format": "prettier --write apps tests scripts/migrate.ts scripts/validate-catalog.ts scripts/setup-dev.mjs *.json *.ts *.yaml AGENTS.md README.md docs/development.md",
+    "format:check": "prettier --check apps tests scripts/migrate.ts scripts/validate-catalog.ts scripts/setup-dev.mjs *.json *.ts *.yaml AGENTS.md README.md docs/development.md",
     "db:up": "docker compose up -d --wait db",
     "db:migrate": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts",
-    "test:api": "node --import tsx --test --test-isolation=none tests/accounts.http.test.ts",
+    "test:api": "node --import tsx --test --test-concurrency=1 tests/*.http.test.ts",
     "test:browser": "npm run build && playwright test",
-    "test": "npm run test:api && npm run test:browser"
+    "test": "npm run test:api && npm run test:browser",
+    "catalog:validate": "node --env-file-if-exists=.env --import tsx scripts/validate-catalog.ts"
   },
   "dependencies": {
     "@angular/common": "~22.2.3",

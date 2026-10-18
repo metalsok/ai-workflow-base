@@ -1,0 +1,65 @@
+@if (request.loading()) {
+<p class="catalog-state" role="status">Searching games…</p>
+} @else if (request.error()) {
+<section class="catalog-state">
+  <p class="error" role="alert">{{ request.error() }}</p>
+  <button class="primary" (click)="request.retry()">Try again</button>
+</section>
+} @else if (request.result(); as results) { @if (results.stale) {
+<p class="cached-note" role="status">
+  Showing cached results from {{ results.fetchedAt | date:'medium':'UTC' }}. The
+  catalog is temporarily unavailable.
+</p>
+}
+<p class="results-caption">
+  Results for “{{ query() }}” · Page {{ results.page }}
+</p>
+@if (results.items.length) {
+<div class="catalog-grid">
+  @for (game of results.items; track game.id) {
+  <article class="catalog-card">
+    <a [routerLink]="['/games', game.id]" [attr.aria-label]="game.title">
+      <app-game-cover [url]="game.coverUrl" [title]="game.title" />
+      <h2>{{ game.title }}</h2>
+      <p>{{ game.platforms.join(' · ') || 'Platforms unavailable' }}</p>
+      <p>
+        {{ game.firstReleaseDate ? (game.firstReleaseDate | date:'mediumDate') :
+        'Release date unknown' }}
+      </p>
+    </a>
+  </article>
+  }
+</div>
+} @else {
+<section class="empty-state">
+  <span class="empty-mark" aria-hidden="true">⌕</span>
+  <h2>No games found</h2>
+  <p>
+    Try a different title or spelling. Search covers PC and console games,
+    remakes, and remasters.
+  </p>
+</section>
+}
+<nav class="pagination" aria-label="Search pages">
+  @if (results.page > 1) {
+  <a
+    class="secondary"
+    routerLink="/search"
+    [queryParams]="{q: query(), page: results.page - 1}"
+    >Previous page</a
+  >
+  } @if (results.nextPage) {
+  <a
+    class="secondary"
+    routerLink="/search"
+    [queryParams]="{q: query(), page: results.nextPage}"
+    >Next page</a
+  >
+  }
+</nav>
+} @else {
+<section class="empty-state">
+  <h2>Find your next game</h2>
+  <p>Search for a title using the search field above.</p>
+</section>
+}

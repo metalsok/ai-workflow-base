@@ -1,3 +1,4 @@
+import { browserIgdbFetch } from './browser-igdb.js';
 import { createApp } from '../../apps/api/src/app.js';
 import { startPostgres } from './postgres.js';
 import express from 'express';
@@ -6,6 +7,11 @@ import { resolve } from 'node:path';
 const postgres = await startPostgres();
 const app = await createApp({
   databaseUrl: postgres.url,
+  igdb: {
+    clientId: 'browser-fixture-id',
+    clientSecret: 'browser-fixture-secret',
+    fetch: browserIgdbFetch,
+  },
   origin: 'http://127.0.0.1:4300',
   sessionSecret: 'disposable-browser-test-session-secret-at-least-32',
 });

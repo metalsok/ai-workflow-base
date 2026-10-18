@@ -9,6 +9,10 @@ if (!process.env.DATABASE_URL || !process.env.SESSION_SECRET) {
   );
 }
 const app = await createApp({
+  igdb: {
+    clientId: process.env.IGDB_CLIENT_ID,
+    clientSecret: process.env.IGDB_CLIENT_SECRET,
+  },
   databaseUrl: process.env.DATABASE_URL,
   sessionSecret: process.env.SESSION_SECRET,
   trustProxyLoopback: process.env.TRUST_PROXY_LOOPBACK === 'true',

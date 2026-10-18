@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -10,7 +11,7 @@ import { Client } from 'pg';
 
 export async function startPostgres() {
   if (process.env.TEST_DATABASE_URL) {
-    return { url: process.env.TEST_DATABASE_URL, stop: async () => {} };
+    return externalPostgres(process.env.TEST_DATABASE_URL);
   }
   // Use only the packaged binaries: the embedded-postgres lifecycle wrapper
   // installs an exit hook that can hide node:test's nonzero failure status.
@@ -71,4 +72,32 @@ export async function startPostgres() {
     await stop();
     throw error;
   }
+}
+
+async function externalPostgres(connectionString: string) {
+  const schema = `test_${randomUUID().replaceAll('-', '')}`;
+  const client = new Client({ connectionString });
+  try {
+    await client.connect();
+    await client.query(`CREATE SCHEMA "${schema}"`);
+  } finally {
+    await client.end();
+  }
+  const url = new URL(connectionString);
+  url.searchParams.set(
+    'options',
+    `${url.searchParams.get('options') ?? ''} -c search_path=${schema}`.trim(),
+  );
+  return {
+    url: url.toString(),
+    async stop() {
+      const cleanup = new Client({ connectionString });
+      try {
+        await cleanup.connect();
+        await cleanup.query(`DROP SCHEMA "${schema}" CASCADE`);
+      } finally {
+        await cleanup.end();
+      }
+    },
+  };
 }

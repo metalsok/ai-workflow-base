@@ -8,9 +8,12 @@ import { Pool } from 'pg';
 import { migrate } from './database/migrate.js';
 import helmet from 'helmet';
 import type { Request, Response, NextFunction } from 'express';
+import { CatalogModule } from './catalog/catalog.module.js';
+import type { IgdbOptions } from './catalog/igdb.js';
 import { AccountsModule } from './accounts/accounts.module.js';
 
 export interface AppOptions {
+  igdb?: IgdbOptions;
   databaseUrl: string;
   origin: string;
   sessionSecret: string;
@@ -35,8 +38,12 @@ export async function createApp(options: AppOptions) {
     tableName: 'sessions',
     disableTouch: true,
   });
+  const accounts = AccountsModule.forPool(pool);
   @Module({
-    imports: [AccountsModule.forPool(pool)],
+    imports: [
+      accounts,
+      CatalogModule.forOptions(pool, options.igdb ?? {}, accounts),
+    ],
     providers: [
       {
         provide: 'database-lifecycle',
@@ -54,7 +61,13 @@ export async function createApp(options: AppOptions) {
     logger: false,
   });
   if (options.trustProxyLoopback) app.set('trust proxy', 'loopback');
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: { imgSrc: ["'self'", 'data:', 'https://images.igdb.com'] },
+      },
+    }),
+  );
   app.use(
     '/api',
     (request: Request, response: Response, next: NextFunction) => {
