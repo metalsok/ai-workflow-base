@@ -14,6 +14,28 @@ the cinematic dashboard (prototype D) with purple accents.
 - The prototype source is preserved on local branch `prototype/game-discovery`.
   The ignored local preview remains at `.scratch/game-tracker/prototype/index.html`.
 
+## Run the application locally
+
+Account access is implemented: registration, sign-in, persisted sessions, and
+sign-out, with the responsive purple Angular shell. Discovery feeds and game
+library operations follow in later tickets.
+
+```bash
+npm ci
+node scripts/setup-dev.mjs
+npm run db:up
+npm run db:migrate
+npm run dev
+```
+
+Use Node 26 and Docker Compose. Open `http://127.0.0.1:4200`.
+The setup script generates local secrets in the ignored `.env`, preserving
+existing values, including IGDB configuration. Email ownership is not verified
+in this private test.
+
+See [development and testing](docs/development.md) for check commands, session
+policy, and running tests without Docker.
+
 ## Start a session
 
 ```bash
@@ -73,9 +95,9 @@ use the skill picker or explicitly ask for the named skill in your message.
 - `.scratch/<feature>/issues/01-<slug>.md`: one ticket per file.
 - `GLOSSARY.md` and `docs/adr/`: created when actual terms or decisions need recording.
 
-This starter has no application code yet. Once an application stack is chosen,
-add its formatting, type checking, tests, and build commands to `AGENTS.md`.
-Those checks provide the agent with feedback on whether its changes work.
+The application lives in `apps/web` and `apps/api`; database migrations live in
+`db/migrations`. Application check commands are recorded in `AGENTS.md` and
+`package.json`.
 
 ## Use another project
 

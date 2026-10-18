@@ -9,3 +9,6 @@ __pycache__/
 .DS_Store
 # Retained local preview; its source is preserved on prototype/game-discovery.
 .scratch/game-tracker/prototype/
+.angular/
+playwright-report/
+test-results/

@@ -1,0 +1,74 @@
+<main class="access-page" id="main-content">
+  <a class="brand" routerLink="/"
+    >Game tracker<span aria-hidden="true">✦</span></a
+  >
+  <section class="access-layout" aria-labelledby="account-title">
+    <div class="access-intro">
+      <p class="eyebrow">A place for every adventure</p>
+      <h2>Your next chapter<br />starts here.</h2>
+      <p>
+        Keep the games you love, and the ones you can’t wait to play, together.
+      </p>
+      <div class="orbit" aria-hidden="true"><span>✦</span></div>
+    </div>
+    <div class="account-card">
+      <p class="eyebrow">Your personal game tracker</p>
+      <h1 id="account-title">
+        {{ registering ? 'Create your account' : 'Welcome back' }}
+      </h1>
+      <p>
+        {{ registering ? 'Make room for your next adventure.' : 'Sign in to pick
+        up where you left off.' }}
+      </p>
+      <form (ngSubmit)="submit()" #form="ngForm" [attr.aria-busy]="pending()">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          maxlength="254"
+          [(ngModel)]="email"
+        />
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          [attr.autocomplete]="registering ? 'new-password' : 'current-password'"
+          aria-describedby="password-hint"
+          required
+          minlength="12"
+          maxlength="128"
+          [(ngModel)]="password"
+        />
+        <p class="hint" id="password-hint">Use 12–128 characters.</p>
+        @if (error()) {
+        <p class="error" role="alert">{{ error() }}</p>
+        }
+        <button
+          class="primary"
+          type="submit"
+          [disabled]="pending() || form.invalid"
+        >
+          {{ pending() ? 'Please wait…' : registering ? 'Create account' : 'Sign
+          in' }}
+        </button>
+      </form>
+      @if (registering) {
+      <p class="switch-account">
+        Already have an account? <a routerLink="/login">Sign in</a>
+      </p>
+      <p class="hint">
+        Private test: email ownership isn’t verified. Contact the owner if you
+        need account recovery.
+      </p>
+      } @else {
+      <p class="switch-account">
+        New here? <a routerLink="/register">Create an account</a>
+      </p>
+      }
+    </div>
+  </section>
+</main>

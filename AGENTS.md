@@ -12,8 +12,7 @@ must be independent of ChatGPT. Use the approved purple cinematic-dashboard desi
 The implementation specification is `.scratch/game-tracker-build/spec.md`.
 The plain HTML/CSS/JS prototype is a design reference, not production code.
 
-When scaffolding application code, establish formatting, type checking, tests,
-and build commands, then record the actual commands here. The agreed testing
+The agreed testing
 seams are the NestJS HTTP API with PostgreSQL and a browser journey. Keep live
 IGDB checks opt-in and credentials out of logs, source control, and client bundles.
 
@@ -32,3 +31,17 @@ Use the default five triage labels. See `docs/agents/triage-labels.md`.
 
 Use a single-context layout: root `GLOSSARY.md` and `docs/adr/`.
 See `docs/agents/domain.md`.
+
+## Application checks
+
+Run commands from the repository root with Node 26 and `npm ci` installed.
+Use `npm run typecheck`, `npm run format:check`, and `npm run build` for static
+checks. Use `npm run test:api` during API work and `npm run test:browser` for the
+browser journey; run `npm test` before completing application changes.
+
+Both suites create disposable real PostgreSQL processes by default. Run them
+with permission to bind loopback ports. For an external disposable database,
+set `TEST_DATABASE_URL` to an empty test database, never a development database.
+Install the browser once with `npx playwright install chromium`.
+For local setup, migrations, account/session policy, and Docker limitations,
+read `docs/development.md` when starting or troubleshooting the application.
