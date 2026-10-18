@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+coverage/
+__pycache__/
+*.py[cod]
+.DS_Store
+# Retained local preview; its source is preserved on prototype/game-discovery.
+.scratch/game-tracker/prototype/

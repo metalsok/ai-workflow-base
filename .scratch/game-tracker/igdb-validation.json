@@ -1,0 +1,391 @@
+{
+  "checked_at": "2026-10-18T18:03:28.053452+00:00",
+  "authentication": "successful",
+  "searches": [
+    {
+      "query": "Elden Ring",
+      "results": [
+        {
+          "id": 325591,
+          "name": "Elden Ring Nightreign",
+          "platforms": [
+            "Xbox Series X|S",
+            "PlayStation 4",
+            "PC (Microsoft Windows)",
+            "PlayStation 5",
+            "Xbox One"
+          ],
+          "genres": [
+            "Role-playing (RPG)",
+            "Hack and slash/Beat 'em up"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "FromSoftware"
+          ],
+          "publishers": [
+            "Bandai Namco Entertainment"
+          ],
+          "version_parent": null,
+          "parent_game": null
+        },
+        {
+          "id": 119133,
+          "name": "Elden Ring",
+          "platforms": [
+            "Xbox Series X|S",
+            "PlayStation 4",
+            "Nintendo Switch 2",
+            "PC (Microsoft Windows)",
+            "PlayStation 5",
+            "Xbox One"
+          ],
+          "genres": [
+            "Role-playing (RPG)",
+            "Adventure"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "FromSoftware"
+          ],
+          "publishers": [
+            "Bandai Namco Entertainment",
+            "FromSoftware"
+          ],
+          "version_parent": null,
+          "parent_game": null
+        },
+        {
+          "id": 338079,
+          "name": "Elden Ring: Tarnished Edition",
+          "platforms": [
+            "Nintendo Switch 2"
+          ],
+          "genres": [
+            "Role-playing (RPG)",
+            "Adventure"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "FromSoftware"
+          ],
+          "publishers": [
+            "Bandai Namco Entertainment"
+          ],
+          "version_parent": {
+            "id": 119133,
+            "name": "Elden Ring"
+          },
+          "parent_game": null
+        },
+        {
+          "id": 180258,
+          "name": "Elden Ring: Collector's Edition",
+          "platforms": [
+            "Xbox Series X|S",
+            "PlayStation 4",
+            "PC (Microsoft Windows)",
+            "PlayStation 5",
+            "Xbox One"
+          ],
+          "genres": [
+            "Role-playing (RPG)",
+            "Adventure"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "FromSoftware"
+          ],
+          "publishers": [
+            "Bandai Namco Entertainment"
+          ],
+          "version_parent": {
+            "id": 119133,
+            "name": "Elden Ring"
+          },
+          "parent_game": null
+        }
+      ],
+      "exact_match_found": true,
+      "expected_game_id": 119133,
+      "expected_game_found": true,
+      "required_metadata_present": true
+    },
+    {
+      "query": "Baldur's Gate 3",
+      "results": [
+        {
+          "id": 119171,
+          "name": "Baldur's Gate III",
+          "platforms": [
+            "Google Stadia",
+            "Xbox Series X|S",
+            "Linux",
+            "PC (Microsoft Windows)",
+            "PlayStation 5",
+            "Mac"
+          ],
+          "genres": [
+            "Role-playing (RPG)",
+            "Strategy",
+            "Turn-based strategy (TBS)",
+            "Adventure"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "Larian Studios"
+          ],
+          "publishers": [
+            "Larian Studios"
+          ],
+          "version_parent": null,
+          "parent_game": null
+        },
+        {
+          "id": 357173,
+          "name": "Baldur's Gate III: The Black Hound",
+          "platforms": [
+            "PC (Microsoft Windows)"
+          ],
+          "genres": [
+            "Role-playing (RPG)"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": false,
+          "developers": [
+            "Black Isle Studios"
+          ],
+          "publishers": [
+            "Interplay Entertainment"
+          ],
+          "version_parent": null,
+          "parent_game": null
+        },
+        {
+          "id": 279660,
+          "name": "Baldur's Gate 3: Deluxe Edition",
+          "platforms": [
+            "Xbox Series X|S",
+            "PC (Microsoft Windows)",
+            "PlayStation 5"
+          ],
+          "genres": [
+            "Role-playing (RPG)",
+            "Strategy",
+            "Turn-based strategy (TBS)",
+            "Tactical"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "Larian Studios"
+          ],
+          "publishers": [
+            "Larian Studios"
+          ],
+          "version_parent": {
+            "id": 119171,
+            "name": "Baldur's Gate III"
+          },
+          "parent_game": null
+        },
+        {
+          "id": 239449,
+          "name": "Baldur's Gate 3: Collector's Edition",
+          "platforms": [],
+          "genres": [],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": false,
+          "developers": [],
+          "publishers": [],
+          "version_parent": {
+            "id": 119171,
+            "name": "Baldur's Gate III"
+          },
+          "parent_game": null
+        },
+        {
+          "id": 279884,
+          "name": "Baldur's Gate 3: Digital Deluxe Edition",
+          "platforms": [
+            "Xbox Series X|S",
+            "PC (Microsoft Windows)",
+            "PlayStation 5",
+            "Mac"
+          ],
+          "genres": [
+            "Role-playing (RPG)",
+            "Strategy",
+            "Turn-based strategy (TBS)",
+            "Tactical",
+            "Adventure"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "Larian Studios"
+          ],
+          "publishers": [
+            "Larian Studios"
+          ],
+          "version_parent": {
+            "id": 119171,
+            "name": "Baldur's Gate III"
+          },
+          "parent_game": null
+        }
+      ],
+      "exact_match_found": false,
+      "expected_game_id": 119171,
+      "expected_game_found": true,
+      "required_metadata_present": true
+    },
+    {
+      "query": "The Legend of Zelda: Breath of the Wild",
+      "results": [
+        {
+          "id": 237895,
+          "name": "The Legend of Zelda: Breath of the Wild and The Legend of Zelda: Breath of the Wild Expansion Pass Bundle",
+          "platforms": [
+            "Nintendo Switch"
+          ],
+          "genres": [
+            "Role-playing (RPG)",
+            "Adventure"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "Nintendo",
+            "Nintendo EPD Production Group No. 3"
+          ],
+          "publishers": [
+            "Nintendo"
+          ],
+          "version_parent": null,
+          "parent_game": null
+        },
+        {
+          "id": 210652,
+          "name": "The Legend of Zelda: Breath of the Wild Multiplayer",
+          "platforms": [
+            "Wii U"
+          ],
+          "genres": [
+            "Role-playing (RPG)",
+            "Adventure"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "Kirbymimi"
+          ],
+          "publishers": [
+            "Kirbymimi"
+          ],
+          "version_parent": null,
+          "parent_game": {
+            "id": 7346,
+            "name": "The Legend of Zelda: Breath of the Wild"
+          }
+        },
+        {
+          "id": 41826,
+          "name": "The Legend of Zelda: Breath of the Wild - The Champions' Ballad",
+          "platforms": [
+            "Nintendo Switch 2",
+            "Wii U",
+            "Nintendo Switch"
+          ],
+          "genres": [
+            "Puzzle",
+            "Adventure"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "Nintendo EPD Production Group No. 3"
+          ],
+          "publishers": [
+            "Nintendo"
+          ],
+          "version_parent": null,
+          "parent_game": {
+            "id": 7346,
+            "name": "The Legend of Zelda: Breath of the Wild"
+          }
+        },
+        {
+          "id": 7346,
+          "name": "The Legend of Zelda: Breath of the Wild",
+          "platforms": [
+            "Wii U",
+            "Nintendo Switch"
+          ],
+          "genres": [
+            "Puzzle",
+            "Adventure"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "Nintendo EPD Production Group No. 3"
+          ],
+          "publishers": [
+            "Nintendo"
+          ],
+          "version_parent": null,
+          "parent_game": null
+        },
+        {
+          "id": 240878,
+          "name": "The Legend of Zelda: Breath of the Wild Randomizer",
+          "platforms": [
+            "Wii U",
+            "Nintendo Switch"
+          ],
+          "genres": [
+            "Adventure"
+          ],
+          "has_cover": true,
+          "has_description": true,
+          "has_release_date": true,
+          "developers": [
+            "Waikuteru"
+          ],
+          "publishers": [
+            "Waikuteru"
+          ],
+          "version_parent": null,
+          "parent_game": {
+            "id": 7346,
+            "name": "The Legend of Zelda: Breath of the Wild"
+          }
+        }
+      ],
+      "exact_match_found": true,
+      "expected_game_id": 7346,
+      "expected_game_found": true,
+      "required_metadata_present": true
+    }
+  ],
+  "limits": "Metadata sample only; no browser, image retrieval, or load test."
+}
