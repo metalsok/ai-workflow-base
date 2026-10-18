@@ -1,0 +1,105 @@
+[
+  {
+    "id": 7346,
+    "name": "The Legend of Zelda: Breath of the Wild",
+    "summary": "The Legend of Zelda: Breath of the Wild is the first 3D open-world game in the Zelda series. Link can travel anywhere and be equipped with weapons and armor found throughout the world to grant him various bonuses. Unlike many games in the series, Breath of the Wild does not impose a specific order in which quests or dungeons must be completed. While the game still has environmental obstacles such as weather effects, inhospitable lands, or powerful enemies, many of them can be overcome using the right method. A lot of critics ranked Breath of the Wild as one of the best video games of all time.",
+    "platforms": [
+      "WiiU",
+      "Switch"
+    ],
+    "genres": [
+      "Puzzle",
+      "Adventure"
+    ],
+    "developer": "Nintendo EPD Production Group No. 3",
+    "cover": "assets/7346.jpg"
+  },
+  {
+    "id": 119133,
+    "name": "Elden Ring",
+    "summary": "Elden Ring is an action RPG developed by FromSoftware and published by Bandai Namco Entertainment, released in February 2022. Directed by Hidetaka Miyazaki, with world-building contributions from novelist George R. R. Martin, the game features an expansive open world called the Lands Between. Players assume the role of a customisable character known as the Tarnished, who must explore this world, battle formidable enemies, and seek to restore the Elden Ring to become the Elden Lord.\n\nThe game builds on the challenging gameplay mechanics familiar from the Dark Souls series but introduces a more open-ended structure with vast exploration, dynamic weather, and a day-night cycle. It offers deep lore, complex characters, and an interconnected world filled with secrets, dungeons, and powerful bosses.",
+    "platforms": [
+      "Series X|S",
+      "PS4",
+      "Switch 2",
+      "PC",
+      "PS5",
+      "XONE"
+    ],
+    "genres": [
+      "Role-playing (RPG)",
+      "Adventure"
+    ],
+    "developer": "FromSoftware",
+    "cover": "assets/119133.jpg"
+  },
+  {
+    "id": 119171,
+    "name": "Baldur's Gate III",
+    "summary": "An ancient evil has returned to Baldur's Gate, intent on devouring it from the inside out. The fate of Faerun lies in your hands. Alone, you may resist. But together, you can overcome.",
+    "platforms": [
+      "Stadia",
+      "Series X|S",
+      "Linux",
+      "PC",
+      "PS5",
+      "Mac"
+    ],
+    "genres": [
+      "Role-playing (RPG)",
+      "Strategy",
+      "Turn-based strategy (TBS)",
+      "Adventure"
+    ],
+    "developer": "Larian Studios",
+    "cover": "assets/119171.jpg"
+  },
+  {
+    "id": 80529,
+    "name": "Hades",
+    "summary": "A South Korean-made first person shooter (potentially the first ever from that country).",
+    "platforms": [
+      "PC"
+    ],
+    "genres": [
+      "Shooter"
+    ],
+    "developer": "Ablex",
+    "cover": "assets/80529.jpg"
+  },
+  {
+    "id": 365702,
+    "name": "Hollow Knight",
+    "summary": "Unofficial port of the hit game Hollow Knight for PlayStation Vita.",
+    "platforms": [
+      "Vita"
+    ],
+    "genres": [
+      "Platform",
+      "Adventure"
+    ],
+    "developer": "",
+    "cover": "assets/365702.jpg"
+  },
+  {
+    "id": 26226,
+    "name": "Celeste",
+    "summary": "Help Madeline survive her inner demons on her journey to the top of Celeste Mountain, in this super-tight platformer from the creators of TowerFall. Brave hundreds of hand-crafted challenges, uncover devious secrets, and piece together the mystery of the mountain.",
+    "platforms": [
+      "Stadia",
+      "PS4",
+      "Linux",
+      "PC",
+      "Mac",
+      "XONE",
+      "Switch"
+    ],
+    "genres": [
+      "Platform",
+      "Adventure",
+      "Indie"
+    ],
+    "developer": "Extremely OK Games",
+    "cover": "assets/26226.jpg"
+  }
+]

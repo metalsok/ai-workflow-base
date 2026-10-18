@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- Throwaway UI prototype: discovery layouts on one page, ?variant=A/B/C/D. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sidequest — discovery prototype</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="data.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="prototype-note">DESIGN PROTOTYPE <span>Sample collections · changes reset on reload · Sidequest is a working name</span></div>
+  <div id="shell"></div>
+  <div class="variant-switcher" aria-label="Prototype layout switcher">
+    <button data-action="previous" aria-label="Previous layout">←</button>
+    <div><small>EXPLORE THE LAYOUTS</small><strong id="variant-label"></strong></div>
+    <button data-action="next" aria-label="Next layout">→</button>
+  </div>
+  <dialog id="game-dialog" aria-label="Game details"></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
