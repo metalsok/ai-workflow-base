@@ -1,6 +1,6 @@
 # 06: Package the complete private test in Docker
 
-Status: draft
+Status: ready-for-agent
 Blocked by: 05 — Complete the discovery-to-library journey and account recovery
 Parent: [First private release](../spec.md)
 

@@ -16,6 +16,9 @@ and organize games into personal lists.
 - Discovery includes both major-studio and indie games.
 - Selected design: prototype D's cinematic spotlight, sidebar navigation, and
   denser discovery cards, using prototype C's purple palette. My Library is separate.
+- Visual design is intentionally revisitable. Build the functional experience
+  first, keeping presentation separate from feed logic and theme values centralized;
+  refine the looks after the owner and friends use real data.
 - Community features such as public profiles, reviews, and following other
   gamers are deferred beyond the first version.
 - The first version is a responsive website for computers and mobile devices.

@@ -1,6 +1,6 @@
 # 01: Create an account and sign in
 
-Status: draft
+Status: ready-for-agent
 Blocked by: None
 Parent: [First private release](../spec.md)
 

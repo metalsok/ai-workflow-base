@@ -65,7 +65,7 @@ host can be selected later between the workstation and a Ugreen NAS.
 - Use “Popular now,” not an unvalidated weekly-chart claim. As an initial implementation default, rank eligible games using IGDB Visits popularity data, refresh at most daily, and show the data's freshness. Do not describe the result as sales, active players, or a seven-day trend.
 - As an initial implementation default, recent releases cover the last 90 days ordered by first release date, restricted to released eligible games. Feature an eligible game from the discovery results. Do not invent a major-studio classification or require a paid editorial dashboard.
 - Cache and bound IGDB requests server-side, respect documented rate limits, and avoid one provider request per visible card. If a discovery feed is unavailable, show cached results with their age or an explicit retry state, rather than presenting fixture games as live data.
-- The purple D design includes a cinematic hero, desktop sidebar, compact discovery cards, separate My Library, and responsive mobile navigation. Prototype sample rankings, working branding, switcher, and debug panels are not production features.
+- The purple D design is the current direction: cinematic hero, desktop sidebar, compact discovery cards, separate My Library, and responsive mobile navigation. The owner explicitly wants room to revise the visuals after real use. Deliver the functional discovery experience first; keep catalog/feed logic separate from Angular presentation, use focused components and centralized theme values, and defer detailed visual polish. Do not build an elaborate theming system. Prototype sample rankings, working branding, switcher, and debug panels are not production features.
 - Containerize the application and PostgreSQL using Compose, persistent database storage, health checks, runtime secrets, and repeatable schema migrations. The frontend's built assets may be served by the application or a small proxy; the precise service layout is an implementation detail.
 - Bind the development app locally by default. Configure Tailscale sharing and HTTPS for the selected host at deployment time. The database is private to the container network. Verify NAS model/architecture before claiming compatibility; moving hosts includes a data backup/restore, not only moving images.
 
@@ -99,6 +99,9 @@ The user-approved scope and primary planning sources are in the
 [Wayfinder map](../game-tracker/map.md). The approved design is preserved on the
 local `prototype/game-discovery` branch. Live IGDB access has passed a three-game
 metadata check; that check does not validate final search filters or discovery feeds.
+
+The owner accepted the proposed ticket breakdown and testing approach, with
+visual design intentionally revisitable after the first functional friends test.
 
 Popularity ranking and the recent-release window above are explicit initial
 implementation defaults, not claims that IGDB supplies a prebuilt weekly chart.

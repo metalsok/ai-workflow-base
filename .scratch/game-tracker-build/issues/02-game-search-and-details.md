@@ -1,6 +1,6 @@
 # 02: Search games and open details
 
-Status: draft
+Status: ready-for-agent
 Blocked by: 01 — Create an account and sign in
 Parent: [First private release](../spec.md)
 

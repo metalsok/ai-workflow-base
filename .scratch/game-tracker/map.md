@@ -57,7 +57,9 @@ accepted API/PostgreSQL behavior tests and a browser journey as testing seams.
 ## Handoff
 
 The planning destination is reached: continue from the build specification into
-small implementation tickets. Specific package choices, live catalog filter/feed
+the approved [implementation tickets](../game-tracker-build/issues/01-account-access.md).
+The owner approved the six-ticket breakdown with visual polish deferred and the
+design easy to revisit. Specific package choices, live catalog filter/feed
 validation, and backup/restore checks belong to implementation. Physical host
 selection and its Tailscale/NAS configuration remain intentionally deferred until deployment.
 

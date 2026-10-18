@@ -1,6 +1,6 @@
 # 05: Complete the discovery-to-library journey and account recovery
 
-Status: draft
+Status: ready-for-agent
 Blocked by: 03 — Save games and manage a private library; 04 — Discover featured, popular, and recently released games
 Parent: [First private release](../spec.md)
 

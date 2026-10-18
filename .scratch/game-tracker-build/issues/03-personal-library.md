@@ -1,6 +1,6 @@
 # 03: Save games and manage a private library
 
-Status: draft
+Status: ready-for-agent
 Blocked by: 02 — Search games and open details
 Parent: [First private release](../spec.md)
 
