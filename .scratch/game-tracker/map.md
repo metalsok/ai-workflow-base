@@ -15,6 +15,8 @@ to-tickets, and implement.
 - Use the local Markdown tracker configured in `docs/agents/issue-tracker.md`.
 - Explain each meaningful step in plain language; ask one focused question at a time.
 - Consult the grilling and domain-modeling skills for live design discussions.
+- For Angular and NestJS decisions and implementation handoffs, consult the
+  framework skills configured in [framework guidance](../../docs/agents/framework-skills.md).
 - Catalog recommendation and sources are in [catalog research](catalog-research.md).
 - User selected IGDB; initial live API validation passed.
 - Work on the next open, unblocked decision ticket; record each resolution in its

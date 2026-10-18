@@ -18,6 +18,12 @@ IGDB checks opt-in and credentials out of logs, source control, and client bundl
 
 ## Agent skills
 
+### Framework guidance
+
+For Angular or NestJS planning, implementation, debugging, or review, read
+`docs/agents/framework-skills.md` and load the relevant framework skill before
+making framework decisions. Include this requirement in any delegated task.
+
 ### Issue tracker
 
 Specs and tickets are local Markdown files under `.scratch/<feature>/`.
