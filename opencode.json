@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "angular-cli": {
+        "type": "local",
+        "command": [
+          "node",
+          "node_modules/@angular/cli/bin/ng.js",
+          "mcp",
+          "--root",
+          "."
+        ],
+        "cwd": ".",
+        "codemode": false
+      }
+    }
+  }
+}

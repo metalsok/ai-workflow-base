@@ -1,6 +1,6 @@
 # Matt Pocock workflow starter
 
-A local workspace for learning Matt Pocock's AI development workflow with Codex.
+A local workspace for learning Matt Pocock's AI development workflow with coding agents.
 
 ## Active project
 
@@ -41,6 +41,10 @@ See [development and testing](docs/development.md) for check commands, session
 policy, and running tests without Docker.
 
 ## Start a session
+
+For OpenCode, run `opencode` from this repository and select skills with `@`.
+See [shared skills and OpenCode setup](docs/agents/opencode.md) for the installed
+skills, Angular MCP, model connections, and continuing work across clients.
 
 ```bash
 codex -C /home/metalsok/Work/ai-workflow-base

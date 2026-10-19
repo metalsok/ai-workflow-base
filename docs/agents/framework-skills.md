@@ -113,6 +113,10 @@ Setup reference: [Tailwind's Angular guide](https://tailwindcss.com/docs/install
 
 ## Angular MCP
 
+OpenCode uses this repository's root `opencode.json`; run it from the repository
+root. See [OpenCode setup](opencode.md) for shared skill locations and verification.
+The following user configuration describes the retained Codex setup.
+
 The `angular-cli` MCP server is configured in this machine's user-level
 `~/.codex/config.toml`. It launches the repository's installed Angular CLI with
 the repository as its working directory and explicit filesystem root. This
@@ -141,7 +145,9 @@ Selected and installed on 2026-10-18 in the user's Codex skills directory
 (`$CODEX_HOME/skills`, normally `~/.codex/skills`). The installed entry points are
 `angular-developer/SKILL.md` and
 `nestjs-professional-software-engineering/SKILL.md` within that directory.
-These user-level installations are separate from this repository; another
+The shared setup subsequently moved these two directories to `~/.agents/skills`
+and kept symlinks at their original Codex paths. These user-level installations
+are separate from this repository; another
 machine needs its own installation.
 
 The source links above pin the reviewed revisions. To reproduce the selection

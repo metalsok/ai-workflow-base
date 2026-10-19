@@ -1,7 +1,7 @@
 # Project instructions
 
 This repository is a starter workspace for learning Matt Pocock's development
-workflow with Codex. Read `README.md` for how to begin.
+workflow with coding agents. Read `README.md` for how to begin.
 
 Explain each meaningful step in plain language before changing things. Keep
 questions focused, and use the project files to retain agreed decisions.
@@ -17,6 +17,9 @@ seams are the NestJS HTTP API with PostgreSQL and a browser journey. Keep live
 IGDB checks opt-in and credentials out of logs, source control, and client bundles.
 
 ## Agent skills
+
+For OpenCode setup, shared skills, and continuing work across clients, read
+`docs/agents/opencode.md`.
 
 ### Framework guidance
 
