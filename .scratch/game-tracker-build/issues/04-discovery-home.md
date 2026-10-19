@@ -1,6 +1,6 @@
 # 04: Discover featured, popular, and recently released games
 
-Status: ready-for-agent
+Status: done
 Blocked by: 02 — Search games and open details
 Parent: [First private release](../spec.md)
 
@@ -48,3 +48,11 @@ pushed or deployed, and the real development database was not changed. Apply
 
 Technical acceptance criteria are verified; owner review is pending. Retain
 `Status: ready-for-agent` until accepted, per tracker completion policy.
+
+
+### Owner acceptance — 2026-10-19
+
+After the outdated development API was restarted and both discovery routes were
+verified through the API and frontend proxy, the owner confirmed: “u are right.
+looks solid”. This records acceptance of ticket 04; its implementation and
+technical acceptance checks are complete.

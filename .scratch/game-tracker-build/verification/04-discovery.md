@@ -1,8 +1,7 @@
 # Ticket 04: discovery feeds and cinematic home
 
-Implemented on 2026-10-19; technical acceptance criteria are verified. Owner
-acceptance is pending, so the ticket remains `ready-for-agent` under the local
-tracker's completion policy.
+Implemented and accepted on 2026-10-19. Technical acceptance criteria and owner
+review are complete; ticket 04 is done.
 
 ## Result and boundaries
 
@@ -81,3 +80,13 @@ Run `npm run db:migrate`, then restart the API/development app. The new migratio
 is additive; follow the migration runbook for backups and deployment. No real
 development database was changed, no development server was restarted, and no
 changes were pushed or deployed during implementation.
+
+
+### Preview follow-up and owner acceptance — 2026-10-19
+
+The development API still running from before ticket 04 returned 404 for both
+new routes. The database already had all three migrations applied. Restarting
+`npm run dev` loaded the new routes; unauthenticated checks on ports 3000 and
+4200 returned the expected 401 for both popular and recent. No source-code
+change was needed. The owner then confirmed the application looked solid and
+accepted ticket 04.
