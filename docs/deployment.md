@@ -18,6 +18,18 @@ set `DEPLOY_IGDB_CLIENT_ID` and `DEPLOY_IGDB_CLIENT_SECRET` for the setup comman
 The client ID is stored in `.env.production`; the client secret goes into a
 separate file. Review those files locally and do not commit or print them.
 
+To rehearse the packaged app before setting up the real deployment, run:
+
+```bash
+npm run deploy:verify
+```
+
+This builds production and verification images, then checks startup, migrations,
+HTTP behavior, browser journeys, persistence, recovery, backup/restore, and
+readiness in uniquely named disposable Compose projects. It removes those
+projects and volumes afterward. It needs a working Docker daemon and loopback
+port access; the recorded run was on x64.
+
 ```bash
 npm run deploy:setup
 docker compose --env-file .env.production -f compose.production.yaml up -d --build --wait
