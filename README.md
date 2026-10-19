@@ -6,7 +6,8 @@ A local workspace for learning Matt Pocock's AI development workflow with Codex.
 
 The first project is a private, Goodreads-like game tracker for PC and consoles.
 The selected production stack is Angular, NestJS, PostgreSQL, and Docker Compose,
-with independent accounts and Tailscale access. The approved visual direction is
+with independent accounts and Tailscale access. Styling uses Tailwind CSS v4 utilities in Angular templates and component hosts,
+with shared theme values in a small global entry. The approved visual direction is
 the cinematic dashboard (prototype D) with purple accents.
 
 - [Build specification](.scratch/game-tracker-build/spec.md)

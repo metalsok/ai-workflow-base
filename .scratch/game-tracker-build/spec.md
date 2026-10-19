@@ -52,6 +52,7 @@ host can be selected later between the workstation and a Ugreen NAS.
 ## Implementation Decisions
 
 - One repository contains the Angular frontend, NestJS backend, and Docker Compose configuration. PostgreSQL supplies durable storage. Use current mutually compatible supported package versions and commit the dependency lockfile.
+- Use Tailwind CSS v4 utilities for presentation in Angular templates and component hosts. Retain a small global entry for Tailwind setup, shared theme tokens, and document-wide defaults; preserve the approved visual design and responsive behavior.
 - Keep Angular zoneless, with explicit `ChangeDetectionStrategy.OnPush` on every application component. Use signals and Angular notification mechanisms for asynchronous UI updates.
 - Organize the backend around Accounts, Catalog, and Library modules. Accounts owns credentials and sessions; Catalog owns provider access, normalization, and shared game metadata; Library owns the authenticated user's game entries and statuses.
 - Serve the frontend and API under one origin. Use the API for every account and library operation; Angular route guards are navigation aids, not authorization boundaries.

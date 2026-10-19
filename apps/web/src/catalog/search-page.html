@@ -1,28 +1,53 @@
 @if (request.loading()) {
-<p class="catalog-state" role="status">Searching games…</p>
+<p class="px-4 py-12 text-muted" role="status">Searching games…</p>
 } @else if (request.error()) {
-<section class="catalog-state">
-  <p class="error" role="alert">{{ request.error() }}</p>
-  <button class="primary" (click)="request.retry()">Try again</button>
+<section class="px-4 py-12 text-muted">
+  <p
+    class="my-4 border-l-[3px] border-[#ff9aba] bg-[#ff9aba10] p-[0.8rem] text-[#ffbbd0] [overflow-wrap:anywhere]"
+    role="alert"
+  >
+    {{ request.error() }}
+  </p>
+  <button
+    class="cursor-pointer disabled:cursor-wait disabled:opacity-65 inline-flex min-h-[46px] items-center justify-center gap-8 rounded-lg border-0 bg-accent px-[1.1rem] py-[0.8rem] font-[750] text-button-ink no-underline mt-4"
+    (click)="request.retry()"
+  >
+    Try again
+  </button>
 </section>
 } @else if (request.result(); as results) { @if (results.stale) {
-<p class="cached-note" role="status">
+<p
+  class="mb-6 rounded-lg border border-[#bda6f84d] bg-[#bda6f811] p-4 text-[#d4c5fa]"
+  role="status"
+>
   Showing cached results from {{ results.fetchedAt | date:'medium':'UTC' }}. The
   catalog is temporarily unavailable.
 </p>
 }
-<p class="results-caption">
+<p class="mb-6 text-muted [overflow-wrap:anywhere]">
   Results for “{{ query() }}” · Page {{ results.page }}
 </p>
 @if (results.items.length) {
-<div class="catalog-grid">
+<div
+  class="grid grid-cols-4 gap-x-5 gap-y-8 tablet:grid-cols-3 compact:grid-cols-2 compact:gap-x-4 compact:gap-y-6"
+>
   @for (game of results.items; track game.id) {
-  <article class="catalog-card">
-    <a [routerLink]="['/games', game.id]" [attr.aria-label]="game.title">
+  <article class="min-w-0">
+    <a
+      class="block rounded-[0.7rem] text-foreground no-underline"
+      [routerLink]="['/games', game.id]"
+      [attr.aria-label]="game.title"
+    >
       <app-game-cover [url]="game.coverUrl" [title]="game.title" />
-      <h2>{{ game.title }}</h2>
-      <p>{{ game.platforms.join(' · ') || 'Platforms unavailable' }}</p>
-      <p>
+      <h2
+        class="mt-[0.8rem] mb-[0.4rem] text-[1rem] leading-[1.4] font-bold tracking-[-0.04em] [overflow-wrap:anywhere]"
+      >
+        {{ game.title }}
+      </h2>
+      <p class="mt-[0.3rem] text-[0.75rem] text-muted [overflow-wrap:anywhere]">
+        {{ game.platforms.join(' · ') || 'Platforms unavailable' }}
+      </p>
+      <p class="mt-[0.3rem] text-[0.75rem] text-muted [overflow-wrap:anywhere]">
         {{ game.firstReleaseDate ? (game.firstReleaseDate | date:'mediumDate') :
         'Release date unknown' }}
       </p>
@@ -31,26 +56,30 @@
   }
 </div>
 } @else {
-<section class="empty-state">
-  <span class="empty-mark" aria-hidden="true">⌕</span>
-  <h2>No games found</h2>
-  <p>
+<section
+  class="rounded-2xl border border-outline bg-surface px-6 py-20 text-center"
+>
+  <span class="text-[3rem] text-accent" aria-hidden="true">⌕</span>
+  <h2 class="leading-[1.15] font-bold tracking-[-0.04em] my-4 text-[2rem]">
+    No games found
+  </h2>
+  <p class="mx-auto mb-8 max-w-[430px] text-muted">
     Try a different title or spelling. Search covers PC and console games,
     remakes, and remasters.
   </p>
 </section>
 }
-<nav class="pagination" aria-label="Search pages">
+<nav class="my-8 flex flex-row flex-wrap gap-4" aria-label="Search pages">
   @if (results.page > 1) {
   <a
-    class="secondary"
+    class="flex items-center gap-[0.8rem] min-h-[44px] rounded-lg border border-outline bg-transparent px-4 py-[0.6rem] text-foreground flex-none no-underline"
     routerLink="/search"
     [queryParams]="{q: query(), page: results.page - 1}"
     >Previous page</a
   >
   } @if (results.nextPage) {
   <a
-    class="secondary"
+    class="flex items-center gap-[0.8rem] min-h-[44px] rounded-lg border border-outline bg-transparent px-4 py-[0.6rem] text-foreground flex-none no-underline"
     routerLink="/search"
     [queryParams]="{q: query(), page: results.nextPage}"
     >Next page</a
@@ -58,8 +87,14 @@
   }
 </nav>
 } @else {
-<section class="empty-state">
-  <h2>Find your next game</h2>
-  <p>Search for a title using the search field above.</p>
+<section
+  class="rounded-2xl border border-outline bg-surface px-6 py-20 text-center"
+>
+  <h2 class="leading-[1.15] font-bold tracking-[-0.04em] my-4 text-[2rem]">
+    Find your next game
+  </h2>
+  <p class="mx-auto mb-8 max-w-[430px] text-muted">
+    Search for a title using the search field above.
+  </p>
 </section>
 }

@@ -1,7 +1,7 @@
 # 03: Save games and manage a private library
 
 Status: ready-for-agent
-Blocked by: 02 — Search games and open details
+Blocked by: 07 — Tailwind migration (02 is complete)
 Parent: [First private release](../spec.md)
 
 ## What to build

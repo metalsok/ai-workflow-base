@@ -24,7 +24,9 @@ For Angular or NestJS planning, implementation, debugging, or review, read
 `docs/agents/framework-skills.md` and load the relevant framework skill before
 making framework decisions. Include this requirement in any delegated task.
 Keep Angular zoneless and set `changeDetection: ChangeDetectionStrategy.OnPush`
-explicitly on every application component. See the project requirements in
+explicitly on every application component. Use Tailwind utilities for presentation
+in templates and component hosts; keep global CSS limited to Tailwind setup,
+shared theme values, and document-wide defaults. See the project requirements in
 `docs/agents/framework-skills.md` for version details and review checks.
 
 ### Issue tracker

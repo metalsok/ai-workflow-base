@@ -1,56 +1,113 @@
 @if (request.loading()) {
-<p class="catalog-state" role="status">Loading game…</p>
+<p class="px-4 py-12 text-muted" role="status">Loading game…</p>
 } @else if (notFound()) {
-<section class="empty-state">
-  <h1>Game not found</h1>
-  <p>This game is unavailable or outside the PC and console catalog.</p>
-  <a class="primary" routerLink="/search">Search games</a>
+<section
+  class="rounded-2xl border border-outline bg-surface px-6 py-20 text-center"
+>
+  <h1
+    class="mt-2 mb-8 text-[clamp(2rem,4vw,2.8rem)] leading-[1.15] font-bold tracking-[-0.05em] [overflow-wrap:anywhere]"
+  >
+    Game not found
+  </h1>
+  <p class="mx-auto mb-8 max-w-[430px] text-muted">
+    This game is unavailable or outside the PC and console catalog.
+  </p>
+  <a
+    class="inline-flex min-h-[46px] items-center justify-center gap-8 rounded-lg border-0 bg-accent px-[1.1rem] py-[0.8rem] font-[750] text-button-ink no-underline"
+    routerLink="/search"
+    >Search games</a
+  >
 </section>
 } @else if (request.error()) {
-<section class="catalog-state">
-  <h1>Unable to load game</h1>
-  <p class="error" role="alert">{{ request.error() }}</p>
-  <button class="primary" (click)="request.retry()">Try again</button>
+<section class="px-4 py-12 text-muted">
+  <h1
+    class="mt-2 mb-8 text-[clamp(2rem,4vw,2.8rem)] leading-[1.15] font-bold tracking-[-0.05em] [overflow-wrap:anywhere]"
+  >
+    Unable to load game
+  </h1>
+  <p
+    class="my-4 border-l-[3px] border-[#ff9aba] bg-[#ff9aba10] p-[0.8rem] text-[#ffbbd0] [overflow-wrap:anywhere]"
+    role="alert"
+  >
+    {{ request.error() }}
+  </p>
+  <button
+    class="cursor-pointer disabled:cursor-wait disabled:opacity-65 inline-flex min-h-[46px] items-center justify-center gap-8 rounded-lg border-0 bg-accent px-[1.1rem] py-[0.8rem] font-[750] text-button-ink no-underline mt-4"
+    (click)="request.retry()"
+  >
+    Try again
+  </button>
 </section>
 } @else if (request.result(); as details) { @if (details.stale) {
-<p class="cached-note" role="status">
+<p
+  class="mb-6 rounded-lg border border-[#bda6f84d] bg-[#bda6f811] p-4 text-[#d4c5fa]"
+  role="status"
+>
   Showing cached game information from {{ details.fetchedAt |
   date:'medium':'UTC' }}. The catalog is temporarily unavailable.
 </p>
 }
-<article class="game-details">
-  <app-game-cover [url]="details.game.coverUrl" [title]="details.game.title" />
-  <div class="game-description">
-    <p class="eyebrow">
+<article
+  class="mt-6 grid grid-cols-[minmax(150px,260px)_minmax(0,1fr)] items-start gap-10 compact:grid-cols-1 compact:gap-7"
+>
+  <app-game-cover
+    class="compact:w-[min(200px,65%)]"
+    [url]="details.game.coverUrl"
+    [title]="details.game.title"
+  />
+  <div class="min-w-0">
+    <p class="text-[0.68rem] font-bold uppercase tracking-[0.19em] text-accent">
       {{ details.game.kind === 'main' ? 'Game details' : details.game.kind }}
     </p>
-    <h1>{{ details.game.title }}</h1>
-    <p class="game-summary">
+    <h1
+      class="mt-2 mb-8 text-[clamp(2rem,4vw,2.8rem)] leading-[1.15] font-bold tracking-[-0.05em] [overflow-wrap:anywhere]"
+    >
+      {{ details.game.title }}
+    </h1>
+    <p class="whitespace-pre-line text-copy [overflow-wrap:anywhere]">
       {{ details.game.summary || 'Summary unavailable.' }}
     </p>
-    <dl class="game-metadata">
-      <div>
-        <dt>First release date</dt>
-        <dd>
+    <dl class="mt-8 mb-4 grid gap-4">
+      <div
+        class="grid grid-cols-[140px_minmax(0,1fr)] gap-4 compact:grid-cols-1 compact:gap-[0.2rem]"
+      >
+        <dt class="text-[0.85rem] text-muted">First release date</dt>
+        <dd class="m-0 [overflow-wrap:anywhere]">
           {{ details.game.firstReleaseDate ? (details.game.firstReleaseDate |
           date:'mediumDate') : 'Unknown' }}
         </dd>
       </div>
-      <div>
-        <dt>Platforms</dt>
-        <dd>{{ details.game.platforms.join(', ') || 'Unavailable' }}</dd>
+      <div
+        class="grid grid-cols-[140px_minmax(0,1fr)] gap-4 compact:grid-cols-1 compact:gap-[0.2rem]"
+      >
+        <dt class="text-[0.85rem] text-muted">Platforms</dt>
+        <dd class="m-0 [overflow-wrap:anywhere]">
+          {{ details.game.platforms.join(', ') || 'Unavailable' }}
+        </dd>
       </div>
-      <div>
-        <dt>Genres</dt>
-        <dd>{{ details.game.genres.join(', ') || 'Unavailable' }}</dd>
+      <div
+        class="grid grid-cols-[140px_minmax(0,1fr)] gap-4 compact:grid-cols-1 compact:gap-[0.2rem]"
+      >
+        <dt class="text-[0.85rem] text-muted">Genres</dt>
+        <dd class="m-0 [overflow-wrap:anywhere]">
+          {{ details.game.genres.join(', ') || 'Unavailable' }}
+        </dd>
       </div>
-      <div>
-        <dt>Developers</dt>
-        <dd>{{ details.game.developers.join(', ') || 'Unavailable' }}</dd>
+      <div
+        class="grid grid-cols-[140px_minmax(0,1fr)] gap-4 compact:grid-cols-1 compact:gap-[0.2rem]"
+      >
+        <dt class="text-[0.85rem] text-muted">Developers</dt>
+        <dd class="m-0 [overflow-wrap:anywhere]">
+          {{ details.game.developers.join(', ') || 'Unavailable' }}
+        </dd>
       </div>
-      <div>
-        <dt>Publishers</dt>
-        <dd>{{ details.game.publishers.join(', ') || 'Unavailable' }}</dd>
+      <div
+        class="grid grid-cols-[140px_minmax(0,1fr)] gap-4 compact:grid-cols-1 compact:gap-[0.2rem]"
+      >
+        <dt class="text-[0.85rem] text-muted">Publishers</dt>
+        <dd class="m-0 [overflow-wrap:anywhere]">
+          {{ details.game.publishers.join(', ') || 'Unavailable' }}
+        </dd>
       </div>
     </dl>
   </div>

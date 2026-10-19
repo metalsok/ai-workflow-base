@@ -58,6 +58,20 @@ Deep links return Angular's index; unknown `/api` routes retain API 404 response
 Angular critical CSS inlining is disabled so the server's script policy can
 remain `script-src 'self'` without an inline stylesheet-loader script.
 
+## Styling
+
+Tailwind CSS v4 is compiled by Angular's build through the root `.postcssrc.json`.
+The entry is `apps/web/src/styles.css`; it contains Tailwind imports, shared theme
+values, the original 800px/1100px responsive variants, and document-wide defaults.
+Presentation uses utility classes in templates and the cover component's host.
+There is no CDN or browser-time Tailwind dependency. Keep complete utility names
+in source so the scanner can find them. Future frontend tickets use this approach.
+
+After changing presentation, compare desktop and phone layouts, including labels,
+keyboard focus, empty/error states, and image fallbacks. Run the browser journey
+and the other checks below. The approved purple design is preserved; a styling
+migration does not imply a redesign.
+
 ## Checks
 
 ```bash

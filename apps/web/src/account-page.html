@@ -1,28 +1,68 @@
-<main class="access-page" id="main-content">
-  <a class="brand" routerLink="/"
-    >Game tracker<span aria-hidden="true">✦</span></a
+<main
+  class="min-h-svh bg-[radial-gradient(ellipse_at_10%_50%,#4d337640,transparent_60%)] px-[5vw] py-8"
+  id="main-content"
+>
+  <a
+    class="inline-flex items-center gap-[0.7rem] whitespace-nowrap text-[1.25rem] font-[750] tracking-[-0.04em] text-foreground no-underline"
+    routerLink="/"
+    >Game tracker<span class="text-[1.8rem] text-accent" aria-hidden="true"
+      >✦</span
+    ></a
   >
-  <section class="access-layout" aria-labelledby="account-title">
-    <div class="access-intro">
-      <p class="eyebrow">A place for every adventure</p>
-      <h2>Your next chapter<br />starts here.</h2>
-      <p>
+  <section
+    class="mx-auto mt-[7vh] mb-8 grid max-w-[1100px] grid-cols-[1.1fr_1fr] items-center gap-24 compact:mt-8 compact:max-w-[460px] compact:grid-cols-1 compact:gap-8"
+    aria-labelledby="account-title"
+  >
+    <div class="relative py-8 compact:hidden">
+      <p
+        class="text-[0.68rem] font-bold uppercase tracking-[0.19em] text-accent"
+      >
+        A place for every adventure
+      </p>
+      <h2
+        class="leading-[1.15] font-bold tracking-[-0.04em] my-[1.3rem] text-[clamp(2.5rem,5vw,4.4rem)]"
+      >
+        Your next chapter<br />starts here.
+      </h2>
+      <p class="max-w-[320px] text-muted">
         Keep the games you love, and the ones you can’t wait to play, together.
       </p>
-      <div class="orbit" aria-hidden="true"><span>✦</span></div>
+      <div
+        class="mt-12 ml-12 grid size-[180px] rotate-[-20deg] place-items-center rounded-[50%] border border-[#bda6f844] shadow-[0_0_70px_#8962ca25,inset_0_0_50px_#8962ca15]"
+        aria-hidden="true"
+      >
+        <span class="text-[6rem] text-accent [text-shadow:0_0_35px_#bda6f866]"
+          >✦</span
+        >
+      </div>
     </div>
-    <div class="account-card">
-      <p class="eyebrow">Your personal game tracker</p>
-      <h1 id="account-title">
+    <div
+      class="rounded-2xl border border-outline bg-[#1a1b2be6] p-[clamp(1.5rem,4vw,3rem)] shadow-[0_30px_80px_#0003]"
+    >
+      <p
+        class="text-[0.68rem] font-bold uppercase tracking-[0.19em] text-accent"
+      >
+        Your personal game tracker
+      </p>
+      <h1
+        class="my-3 text-[2rem] leading-[1.15] font-bold tracking-[-0.05em]"
+        id="account-title"
+      >
         {{ registering ? 'Create your account' : 'Welcome back' }}
       </h1>
-      <p>
+      <p class="text-muted">
         {{ registering ? 'Make room for your next adventure.' : 'Sign in to pick
         up where you left off.' }}
       </p>
-      <form (ngSubmit)="submit()" #form="ngForm" [attr.aria-busy]="pending()">
-        <label for="email">Email</label>
+      <form
+        class="mt-[1.6rem] flex flex-col"
+        (ngSubmit)="submit()"
+        #form="ngForm"
+        [attr.aria-busy]="pending()"
+      >
+        <label class="mt-4 mb-[0.4rem] font-semibold" for="email">Email</label>
         <input
+          class="w-full min-w-0 rounded-[0.45rem] border border-input-border bg-field p-[0.8rem] text-foreground"
           id="email"
           name="email"
           type="email"
@@ -31,8 +71,11 @@
           maxlength="254"
           [(ngModel)]="email"
         />
-        <label for="password">Password</label>
+        <label class="mt-4 mb-[0.4rem] font-semibold" for="password"
+          >Password</label
+        >
         <input
+          class="w-full min-w-0 rounded-[0.45rem] border border-input-border bg-field p-[0.8rem] text-foreground"
           id="password"
           name="password"
           type="password"
@@ -43,12 +86,19 @@
           maxlength="128"
           [(ngModel)]="password"
         />
-        <p class="hint" id="password-hint">Use 12–128 characters.</p>
+        <p class="text-[0.8rem] text-muted mt-2 mb-[1.4rem]" id="password-hint">
+          Use 12–128 characters.
+        </p>
         @if (error()) {
-        <p class="error" role="alert">{{ error() }}</p>
+        <p
+          class="my-4 border-l-[3px] border-[#ff9aba] bg-[#ff9aba10] p-[0.8rem] text-[#ffbbd0] [overflow-wrap:anywhere]"
+          role="alert"
+        >
+          {{ error() }}
+        </p>
         }
         <button
-          class="primary"
+          class="cursor-pointer disabled:cursor-wait disabled:opacity-65 inline-flex min-h-[46px] items-center justify-center gap-8 rounded-lg border-0 bg-accent px-[1.1rem] py-[0.8rem] font-[750] text-button-ink no-underline"
           type="submit"
           [disabled]="pending() || form.invalid"
         >
@@ -57,16 +107,20 @@
         </button>
       </form>
       @if (registering) {
-      <p class="switch-account">
-        Already have an account? <a routerLink="/login">Sign in</a>
+      <p class="my-6 text-[0.9rem] text-muted">
+        Already have an account?
+        <a class="text-accent underline" routerLink="/login">Sign in</a>
       </p>
-      <p class="hint">
+      <p class="text-[0.8rem] text-muted">
         Private test: email ownership isn’t verified. Contact the owner if you
         need account recovery.
       </p>
       } @else {
-      <p class="switch-account">
-        New here? <a routerLink="/register">Create an account</a>
+      <p class="my-6 text-[0.9rem] text-muted">
+        New here?
+        <a class="text-accent underline" routerLink="/register"
+          >Create an account</a
+        >
       </p>
       }
     </div>

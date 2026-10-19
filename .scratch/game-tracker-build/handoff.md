@@ -1,28 +1,40 @@
-# Session handoff — 2026-10-18
+# Session handoff — 2026-10-19
 
 ## Current progress
 
-- Account access is implemented in `070b3b6`; owner verification of registration,
-  sign-in/out, and restart persistence is recorded in `721fa8e`.
-- Game search and details are implemented in `3b3a1d8`. The issue records passing
-  automated checks, Standards/Spec reviews, and representative live IGDB checks.
-  Ticket 02 is now `done` after owner acceptance of the implementation and
-  code-review revisions. Ticket 01 retains its recorded verification status.
-- Angular and NestJS skills are installed for this user. Their selection,
-  revisions, and workflow rules are in `docs/agents/framework-skills.md`.
-- The Angular CLI MCP server is configured in the user's Codex configuration.
-  Its saved launch configuration was tested: Angular 22.2.3 initialized,
-  discovered `web`, and returned workspace best practices. Restart the Codex
-  client/session to discover the newly configured tools.
+- Ticket 02 (search/details) is `done`, accepted by the owner and committed in
+  `0e53656`. Its ticket retains the implementation/review history and corrections.
+- Ticket 07 (Tailwind migration) is implemented and `ready-for-human`. Its code,
+  dependency lockfile, guidance, and verification are committed with this handoff.
+  Owner acceptance is pending. Read `issues/07-tailwind-migration.md`.
+- Ticket 03 (personal library) is unstarted and blocked on 07 by owner request.
+  Remaining delivery order: 07 review → 03 → 04 → 05 → 06.
+- Ticket 01 retains its recorded owner verification of account access and restart
+  persistence. Read its comments before changing its status.
 
 ## Resume
 
-Read `AGENTS.md`, the parent `spec.md`, and the issue outcomes first. The next
-implementation ticket is the separate Tailwind migration, to be created before
-`issues/03-personal-library.md` at the owner's request. Use the relevant framework skills, explain meaningful steps,
-and preserve TDD at the agreed HTTP/PostgreSQL and browser seams.
+Read `AGENTS.md`, `spec.md`, the relevant ticket comments, and
+`docs/agents/framework-skills.md` before implementation. Tailwind v4 utilities
+are now the styling convention. Keep Angular zoneless with explicit OnPush on
+all components. Services return cold HttpClient Observables, signals hold state,
+and rxResource manages catalog reads/cancellation. Do not reintroduce frontend
+async/await or HTTP Promise conversions. Backend async code is unaffected.
 
-To run the existing development setup:
+Use the Angular/NestJS skills for corresponding framework work; keep tests at the
+agreed HTTP/PostgreSQL and browser seams. Live IGDB validation remains opt-in.
+The Angular CLI MCP tools are available in this session and were used.
+
+## Latest verification
+
+Type checking, formatting (including PostCSS config), both builds, 27 HTTP tests,
+and four desktop/mobile browser journeys passed after the Tailwind migration.
+Twelve fixture-backed before/after views have matching captured geometry and
+typography measurements. Responsive boundary checks and keyboard focus/skip-link
+checks passed. See ticket 07 for evidence and scope. Temporary visual artifacts
+are under `/tmp/game-tracker-tailwind`; they are not durable repository files.
+
+## Run locally
 
 ```bash
 npm run db:up
@@ -31,51 +43,10 @@ npm run dev
 ```
 
 Open `http://127.0.0.1:4200`; the configured origin policy rejects
-`http://localhost:4200`. Local secrets remain in the ignored `.env`.
-Database data is held in the Docker volume. See `docs/development.md` for setup
-and persistence details.
+`http://localhost:4200`. Restart the Angular dev server after installing Tailwind
+and adding PostCSS configuration. Local secrets remain in ignored `.env` and
+development PostgreSQL data in the Docker volume. See `docs/development.md`.
 
-The IDE and Obsidian files visible in `git status` are unrelated user files.
-Preserve them. User-level skills and MCP configuration are local to this machine
-and are not included in the repository commits.
-
-
-## Follow-up — 2026-10-19
-
-Ticket 02's owner-requested code improvements are implemented in the working
-tree: CatalogService extraction, parsed provider records, linkedSignal state,
-and a resource-backed request helper. All six Angular components explicitly
-use OnPush; zoneless operation is retained and checked by the browser journey.
-The owner requires these Angular conventions for future components; read the
-Project Angular requirements in `docs/agents/framework-skills.md`.
-
-Type checking, formatting, 27 HTTP/PostgreSQL tests, four desktop/mobile browser
-journeys, and both application builds passed. Read ticket 02's follow-up for
-scope and the correction to its initial null-metadata review finding. The code
-changes are uncommitted and still await owner acceptance. Ticket 03 has not begun.
-
-Authentication and catalog frontend transport now use Angular `HttpClient`; the
-resource-backed catalog lifecycle is preserved and cancels superseded HTTP
-requests. Direct frontend fetch calls have been removed. Framework guidance
-records the transport convention. Type checking, formatting, 27 API tests, four
-browser journeys including cancellation, and both builds passed after this
-follow-up. These changes are also uncommitted.
-
-Latest owner correction: frontend services must return cold Observables; use
-signals for state and RxJS for orchestration, without async/await or HTTP Promise
-conversions. This supersedes the preceding awaitable-auth description. Auth uses
-tap to update account state on responses; the guard returns its Observable,
-components subscribe with takeUntilDestroyed/finalize, and catalog uses rxResource
-for signal state and automatic HTTP cancellation. Updated framework guidance
-records the rule. Type checking, formatting, both builds, 27 API tests, and four
-desktop/mobile browser journeys passed after this correction. All changes remain
-uncommitted and await owner acceptance.
-
-
-## Ticket 02 accepted — 2026-10-19
-
-The owner accepted ticket 02 and requested a Tailwind migration as the next
-ticket, ahead of personal library work (03). The Observable/signal refactors and
-framework conventions are complete and verified. See ticket 02 for acceptance
-and the passing checks. Historical references above to pending acceptance are
-superseded by this entry.
+The IDE and Obsidian files visible in git status are unrelated user files;
+preserve them. User-level skills and MCP configuration are local to this machine
+and are not included in repository commits.

@@ -87,6 +87,30 @@ References: [Angular zoneless](https://angular.dev/guide/zoneless),
 and [resources](https://angular.dev/guide/signals/resource), and
 [Observable resources](https://angular.dev/guide/signals/rxjs-interop#using-rxresource-for-async-data).
 
+## Project styling requirements
+
+Use Tailwind CSS v4 utilities for application presentation, in Angular templates
+and component host classes. Keep complete class names visible in source so the
+Tailwind scanner can generate them; do not construct class names at runtime.
+Keep conditional classes in Angular class bindings or static state variants.
+
+`apps/web/src/styles.css` is the Tailwind entry, with shared color/font theme
+values, the existing 800px/1100px responsive variants, and document-wide base and
+keyboard-focus defaults. Page layouts, spacing, typography, controls, cover
+presentation, and UI states belong in template/host utilities. Do not rebuild a
+central collection of semantic CSS selectors or use `@apply` to recreate the
+former stylesheet. Extract a focused Angular component when a real repeated UI
+pattern warrants it, rather than adding styling abstractions speculatively.
+
+The build uses `.postcssrc.json` with `@tailwindcss/postcss`; dependencies are
+locked in `package-lock.json`. Follow v4's `@import` and CSS theme configuration;
+do not add v3 directives or a Tailwind JavaScript configuration file. Preserve
+the purple cinematic design, accessible labels, visible keyboard focus, cover
+fallbacks, and responsive behavior. Inspect desktop and mobile after broad styling
+changes, alongside the established browser journey.
+
+Setup reference: [Tailwind's Angular guide](https://tailwindcss.com/docs/installation/framework-guides/angular).
+
 ## Angular MCP
 
 The `angular-cli` MCP server is configured in this machine's user-level
