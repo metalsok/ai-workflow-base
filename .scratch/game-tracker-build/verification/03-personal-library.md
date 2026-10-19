@@ -1,7 +1,7 @@
 # Ticket 03: private Library implementation
 
-Implemented on 2026-10-19. Owner acceptance is pending; the ticket remains
-`ready-for-agent` until review, following the local tracker completion policy.
+Implemented and accepted on 2026-10-19. The owner approved the implementation
+and subsequent Angular organization/`@Service()` conventions; ticket 03 is done.
 
 ## Delivered behavior
 

@@ -1,6 +1,6 @@
 # 03: Save games and manage a private library
 
-Status: ready-for-agent
+Status: done
 Blocked by: 08 — Database access decision and any resulting migration (02 and 07 accepted)
 Parent: [First private release](../spec.md)
 
@@ -44,3 +44,12 @@ changed. Run `npm run db:migrate`, then restart the API before using the new UI.
 
 All technical acceptance criteria are verified. Owner review/acceptance remains
 pending; retain `Status: ready-for-agent` until accepted, per tracker policy.
+
+
+### Owner acceptance — 2026-10-19
+
+The owner approved the implementation, requested consistent Angular component
+organization and `@Service()` decorators, then accepted those follow-up changes:
+“looks good! lets proceed all green from my side”. Ticket 03 is complete.
+The follow-up passed typecheck, formatting, build, 45 HTTP/PostgreSQL checks and
+six desktop/mobile browser journeys. No changes were pushed or deployed.
