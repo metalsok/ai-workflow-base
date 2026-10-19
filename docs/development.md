@@ -29,7 +29,7 @@ Open **http://127.0.0.1:4200**. Use this exact origin: `localhost` is a differen
 origin. Angular proxies `/api` to NestJS on loopback port 3000. Registration
 immediately signs you in. Use **Search games** in the header to search IGDB and
 open details. Discover feeds and personal library operations belong to later tickets.
-Restart `npm run dev` after backend changes; startup applies outstanding migrations.
+Restart `npm run dev` after backend changes; run `npm run db:migrate` separately before starting the API. Startup refuses pending migrations.
 
 The setup script generates database and session secrets in the ignored `.env`
 with owner-only permissions. Existing nonempty settings are preserved; existing
@@ -43,10 +43,28 @@ The full application container deployment is covered by issue 06.
 
 ## Migrations and built application
 
-`npm run db:migrate` applies numbered SQL migrations in `db/migrations` in one
-transaction, with a database lock and checksums. Repeating the command is safe;
-changing an applied migration is rejected. Add a new migration for schema changes.
-The API also runs outstanding migrations on startup, including in tests.
+TypeORM 1.1.2 and @nestjs/typeorm 12.0.2 own database access and generated
+migrations. `pg` is only the ORM driver. Run `npm run db:migrate` once before
+starting API instances. Startup checks the ledger and fails on pending, missing,
+or unknown migration history; it never creates tables. Automatic synchronization
+and extension installation are disabled.
+
+For an existing database created before ticket 09, follow the
+[handover and recovery runbook](database-migrations.md) before using `db:migrate`.
+The historical SQL files are immutable under `db/legacy-migrations/`; their
+checksum ledger and original application dates are retained. Clean installations
+have an empty legacy ledger and a separate TypeORM migration ledger.
+
+```bash
+npm run db:status
+npm run db:generate -- apps/api/src/database/migrations/DescribeTheChange
+# Review the generated up/down operations before applying them.
+npm run db:migrate
+```
+
+Generation compares entities with a disposable migrated development database;
+never use synchronization to apply model changes. Read the runbook for examples,
+concurrency requirements, packaging, backup, and recovery.
 
 ```bash
 npm run build
@@ -233,3 +251,18 @@ games. It writes only public metadata to
 
 The report records the successful live checks for issue 02. Current API fields
 and limits are documented in [IGDB's official API documentation](https://api-docs.igdb.com/).
+
+## Backend clocks and ORM tests
+
+Authentication windows now use an injected backend clock, as catalog windows
+already did. Keep all API hosts synchronized with NTP; limits are persisted in
+PostgreSQL and transaction retries preserve increments across instances. Windows
+reset at `expiresAt <= now`, and rejected attempts remain counted. IP consumption
+commits before email consumption. Retry-After uses ceiling seconds, at least one.
+
+The API harness explicitly migrates its disposable PostgreSQL database before
+booting. Migration tests also require PostgreSQL client tools (`pg_dump` and
+`pg_restore`, version 17 or newer). Recovery backups are temporary and removed
+after the tests. Historical fixtures alone use infrastructure SQL; application
+requests exercise repositories and the ORM session store. No live IGDB checks
+run in the automated suites.

@@ -23,7 +23,7 @@ export const baldursGate = {
 };
 
 // The only replacement is the external Twitch/IGDB HTTP boundary.
-// Tests still run the real NestJS controllers, sessions, SQL, and migrations.
+// Tests still run the real NestJS controllers, sessions, PostgreSQL, and migrations.
 export class IgdbFixture {
   requests: { endpoint: string; body: string; at: number }[] = [];
   games: unknown[] = [baldursGate];

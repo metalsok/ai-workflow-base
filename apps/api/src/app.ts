@@ -3,9 +3,12 @@ import { Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import session from 'express-session';
-import connectPgSimple from 'connect-pg-simple';
-import { Pool } from 'pg';
-import { migrate } from './database/migrate.js';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { createDataSource, databaseOptions } from './database/data-source.js';
+import { assertMigrationsApplied } from './database/migrate.js';
+import { DatabaseSetting } from './database/postgres-metadata.entity.js';
+import { StoredSession } from './accounts/session.entity.js';
+import { OrmSessionStore } from './accounts/session.store.js';
 import helmet from 'helmet';
 import type { Request, Response, NextFunction } from 'express';
 import { CatalogModule } from './catalog/catalog.module.js';
@@ -15,6 +18,7 @@ import { AccountsModule } from './accounts/accounts.module.js';
 export interface AppOptions {
   igdb?: IgdbOptions;
   databaseUrl: string;
+  clock?: () => number;
   origin: string;
   sessionSecret: string;
   sessionMaxAgeMs?: number;
@@ -30,27 +34,36 @@ export async function createApp(options: AppOptions) {
     throw new Error('APP_ORIGIN must be an HTTP origin without a path');
   if (options.sessionSecret.length < 32)
     throw new Error('SESSION_SECRET must contain at least 32 characters');
-  const pool = new Pool({ connectionString: options.databaseUrl });
-  await migrate(pool);
-  const PgStore = connectPgSimple(session);
-  const store = new PgStore({
-    pool,
-    tableName: 'sessions',
-    disableTouch: true,
-  });
-  const accounts = AccountsModule.forPool(pool);
+  const database = await createDataSource(options.databaseUrl).initialize();
+  try {
+    await assertMigrationsApplied(database);
+  } catch (error) {
+    await database.destroy();
+    throw error;
+  }
+  const timezone = await database
+    .getRepository(DatabaseSetting)
+    .findOneByOrFail({ name: 'TimeZone' });
+  const store = new OrmSessionStore(
+    database.getRepository(StoredSession),
+    timezone.setting,
+  );
+  const accounts = AccountsModule.forClock(options.clock ?? Date.now);
   @Module({
     imports: [
+      TypeOrmModule.forRootAsync({
+        useFactory: () => databaseOptions(options.databaseUrl),
+        dataSourceFactory: async () => database,
+      }),
       accounts,
-      CatalogModule.forOptions(pool, options.igdb ?? {}, accounts),
+      CatalogModule.forOptions(options.igdb ?? {}, accounts),
     ],
     providers: [
       {
         provide: 'database-lifecycle',
         useValue: {
-          async onApplicationShutdown() {
+          async onModuleDestroy() {
             await store.close();
-            await pool.end();
           },
         },
       },

@@ -16,7 +16,11 @@ import {
   Res,
   HttpException,
 } from '@nestjs/common';
-import { Pool } from 'pg';
+import { DataSource, LessThanOrEqual, type Repository } from 'typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
+import { Account } from './account.entity.js';
+import { AuthenticationAttempt } from './authentication-attempt.entity.js';
+import { postgresError, retryTransaction } from '../database/retry.js';
 import { hash, verify } from 'argon2';
 import { randomBytes, createHash } from 'node:crypto';
 import { Passport } from 'passport';
@@ -34,7 +38,11 @@ class AccountsService {
   private readonly passport = new Passport();
   private readonly dummyHash = hash(randomBytes(32).toString('hex'));
 
-  constructor(@Inject(Pool) private readonly pool: Pool) {
+  constructor(
+    @InjectRepository(Account) private readonly accounts: Repository<Account>,
+    @Inject(DataSource) private readonly database: DataSource,
+    @Inject('authentication-clock') private readonly now: () => number,
+  ) {
     this.passport.use(
       new Strategy({ usernameField: 'email' }, (email, password, done) => {
         this.checkPassword(email, password).then(
@@ -46,14 +54,11 @@ class AccountsService {
   }
 
   private async checkPassword(email: string, password: string) {
-    const result = await this.pool.query(
-      'SELECT id, email, password_hash FROM accounts WHERE email = $1',
-      [email.trim().toLowerCase()],
-    );
-    const account = result.rows[0] as
-      { id: string; email: string; password_hash: string } | undefined;
+    const account = await this.accounts.findOneBy({
+      email: email.trim().toLowerCase(),
+    });
     const valid = await verify(
-      account?.password_hash ?? (await this.dummyHash),
+      account?.passwordHash ?? (await this.dummyHash),
       password,
     );
     return valid && account
@@ -91,24 +96,36 @@ class AccountsService {
         10,
       ]);
     }
-    await this.pool.query(
-      'DELETE FROM authentication_attempts WHERE expires_at <= now()',
-    );
+    const now = this.now();
+    await this.database
+      .getRepository(AuthenticationAttempt)
+      .delete({ expiresAt: LessThanOrEqual(new Date(now)) });
     for (const [identity, maximum] of limits) {
       const key = createHash('sha256').update(identity).digest('hex');
-      const result = await this.pool.query(
-        `
-        INSERT INTO authentication_attempts (key, attempts, expires_at)
-        VALUES ($1, 1, now() + interval '15 minutes')
-        ON CONFLICT (key) DO UPDATE SET attempts = authentication_attempts.attempts + 1
-        RETURNING attempts, GREATEST(1, CEIL(EXTRACT(EPOCH FROM (expires_at - now())))) AS retry_after
-      `,
-        [key],
+      const counter = await retryTransaction(
+        () =>
+          this.database.transaction('SERIALIZABLE', async (manager) => {
+            const attempts = manager.getRepository(AuthenticationAttempt);
+            let counter = await attempts.findOneBy({ key });
+            if (!counter || counter.expiresAt.valueOf() <= now) {
+              counter = attempts.create({
+                key,
+                attempts: 0,
+                expiresAt: new Date(now + 15 * 60 * 1000),
+              });
+            }
+            counter.attempts++;
+            return attempts.save(counter);
+          }),
+        'authentication_attempts_pkey',
       );
-      if (result.rows[0].attempts > maximum) {
+      // Throw only after commit. IP accounting is committed before email accounting.
+      if (counter.attempts > maximum) {
         request.res!.setHeader(
           'Retry-After',
-          String(result.rows[0].retry_after),
+          String(
+            Math.max(1, Math.ceil((counter.expiresAt.valueOf() - now) / 1000)),
+          ),
         );
         throw new HttpException('Too many attempts. Try again later.', 429);
       }
@@ -116,22 +133,31 @@ class AccountsService {
   }
 
   async register(email: string, password: string) {
-    const result = await this.pool.query(
-      'INSERT INTO accounts (email, password_hash) VALUES ($1, $2) ON CONFLICT (email) DO NOTHING RETURNING id, email',
-      [email.trim().toLowerCase(), await hash(password)],
-    );
-    if (!result.rowCount)
-      throw new ConflictException('An account with this email already exists.');
-    return result.rows[0] as { id: string; email: string };
+    try {
+      const account = await this.accounts.save(
+        this.accounts.create({
+          email: email.trim().toLowerCase(),
+          passwordHash: await hash(password),
+        }),
+      );
+      return { id: account.id, email: account.email };
+    } catch (error) {
+      const { code, constraint } = postgresError(error);
+      if (code === '23505' && constraint === 'accounts_email_key')
+        throw new ConflictException(
+          'An account with this email already exists.',
+        );
+      throw error;
+    }
   }
   async identity(id: string | undefined) {
     if (!id) throw new UnauthorizedException();
-    const result = await this.pool.query(
-      'SELECT id, email FROM accounts WHERE id = $1',
-      [id],
-    );
-    if (!result.rowCount) throw new UnauthorizedException();
-    return result.rows[0] as { id: string; email: string };
+    const account = await this.accounts.findOne({
+      where: { id },
+      select: { id: true, email: true },
+    });
+    if (!account) throw new UnauthorizedException();
+    return { id: account.id, email: account.email };
   }
 }
 
@@ -208,12 +234,13 @@ class AccountsController {
 
 @Module({})
 export class AccountsModule {
-  static forPool(pool: Pool): DynamicModule {
+  static forClock(now: () => number): DynamicModule {
     return {
       module: AccountsModule,
+      imports: [TypeOrmModule.forFeature([Account, AuthenticationAttempt])],
       controllers: [AccountsController],
       providers: [
-        { provide: Pool, useValue: pool },
+        { provide: 'authentication-clock', useValue: now },
         AccountsService,
         AccountsGuard,
       ],

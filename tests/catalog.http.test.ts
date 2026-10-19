@@ -2,7 +2,7 @@ import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { INestApplication } from '@nestjs/common';
 import { createApp } from '../apps/api/src/app.js';
-import { startPostgres } from './support/postgres.js';
+import { startPostgres, prepareDatabase } from './support/postgres.js';
 import { IgdbFixture, baldursGate } from './support/igdb.js';
 
 let postgres: Awaited<ReturnType<typeof startPostgres>>;
@@ -25,6 +25,7 @@ const options = () => ({
 });
 before(async () => {
   postgres = await startPostgres();
+  await prepareDatabase(postgres.url);
   app = await createApp(options());
   await app.listen(0, '127.0.0.1');
   base = await app.getUrl();

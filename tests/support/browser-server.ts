@@ -1,10 +1,11 @@
 import { browserIgdbFetch } from './browser-igdb.js';
 import { createApp } from '../../apps/api/src/app.js';
-import { startPostgres } from './postgres.js';
+import { startPostgres, prepareDatabase } from './postgres.js';
 import express from 'express';
 import { resolve } from 'node:path';
 
 const postgres = await startPostgres();
+await prepareDatabase(postgres.url);
 const app = await createApp({
   databaseUrl: postgres.url,
   igdb: {

@@ -12,6 +12,7 @@ the cinematic dashboard (prototype D) with purple accents.
 
 - [Build specification](.scratch/game-tracker-build/spec.md)
 - [Planning map and decisions](.scratch/game-tracker/map.md)
+- [Accepted TypeORM decision](docs/adr/0001-typeorm-database-access.md): migration is specified in [ticket 09](.scratch/game-tracker-build/issues/09-typeorm-migration.md), before the personal library. Application database access now uses TypeORM; see the [handover runbook](docs/database-migrations.md) before upgrading an existing database.
 - The prototype source is preserved on local branch `prototype/game-discovery`.
   The ignored local preview remains at `.scratch/game-tracker/prototype/index.html`.
 
@@ -99,7 +100,8 @@ use the skill picker or explicitly ask for the named skill in your message.
 - `GLOSSARY.md` and `docs/adr/`: created when actual terms or decisions need recording.
 
 The application lives in `apps/web` and `apps/api`; database migrations live in
-`db/migrations`. Application check commands are recorded in `AGENTS.md` and
+`apps/api/src/database/migrations`, with immutable historical SQL in
+`db/legacy-migrations`. Application check commands are recorded in `AGENTS.md` and
 `package.json`.
 
 ## Use another project

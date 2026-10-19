@@ -13,14 +13,19 @@
     "build:api": "tsc -p apps/api/tsconfig.json",
     "start": "node --env-file-if-exists=.env dist/api/main.js",
     "typecheck": "tsc -p apps/api/tsconfig.json --noEmit && ngc -p apps/web/tsconfig.json --noEmit && tsc -p tests/tsconfig.json",
-    "format": "prettier --write apps tests scripts/migrate.ts scripts/validate-catalog.ts scripts/setup-dev.mjs *.json .postcssrc.json *.ts *.yaml AGENTS.md README.md docs/development.md",
-    "format:check": "prettier --check apps tests scripts/migrate.ts scripts/validate-catalog.ts scripts/setup-dev.mjs *.json .postcssrc.json *.ts *.yaml AGENTS.md README.md docs/development.md",
+    "format": "prettier --write apps tests scripts/*.ts scripts/setup-dev.mjs *.json .postcssrc.json *.ts *.yaml AGENTS.md README.md docs/development.md docs/database-migrations.md",
+    "format:check": "prettier --check apps tests scripts/*.ts scripts/setup-dev.mjs *.json .postcssrc.json *.ts *.yaml AGENTS.md README.md docs/development.md docs/database-migrations.md",
     "db:up": "docker compose up -d --wait db",
     "db:migrate": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts",
     "test:api": "node --import tsx --test --test-concurrency=1 tests/*.http.test.ts",
     "test:browser": "npm run build && playwright test",
     "test": "npm run test:api && npm run test:browser",
-    "catalog:validate": "node --env-file-if-exists=.env --import tsx scripts/validate-catalog.ts"
+    "catalog:validate": "node --env-file-if-exists=.env --import tsx scripts/validate-catalog.ts",
+    "db:handover": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts handover",
+    "db:status": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts status",
+    "db:generate": "node --env-file-if-exists=.env --import tsx node_modules/typeorm/cli.js migration:generate -d scripts/typeorm-data-source.ts",
+    "db:migrate:built": "node --env-file-if-exists=.env dist/api/database/cli.js",
+    "db:rehearse": "node --import tsx scripts/rehearse-handover.ts"
   },
   "dependencies": {
     "@angular/common": "~22.2.3",
@@ -32,8 +37,8 @@
     "@nestjs/common": "^12.1.3",
     "@nestjs/core": "^12.1.3",
     "@nestjs/platform-express": "^12.1.3",
+    "@nestjs/typeorm": "12.0.2",
     "argon2": "^0.44.0",
-    "connect-pg-simple": "^10.0.0",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "helmet": "^8.1.0",
@@ -41,7 +46,8 @@
     "passport-local": "^1.0.0",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "typeorm": "1.1.2"
   },
   "devDependencies": {
     "@angular/build": "~22.2.3",
@@ -49,7 +55,6 @@
     "@angular/compiler-cli": "~22.2.3",
     "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4.3.3",
-    "@types/connect-pg-simple": "^7.0.3",
     "@types/express": "^5.0.3",
     "@types/express-session": "^1.18.2",
     "@types/node": "^26.0.0",

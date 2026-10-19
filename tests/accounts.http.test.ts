@@ -2,7 +2,7 @@ import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { INestApplication } from '@nestjs/common';
 import { createApp } from '../apps/api/src/app.js';
-import { startPostgres } from './support/postgres.js';
+import { startPostgres, prepareDatabase } from './support/postgres.js';
 
 let postgres: Awaited<ReturnType<typeof startPostgres>>;
 let app: INestApplication;
@@ -11,6 +11,7 @@ const origin = 'http://127.0.0.1:4200';
 
 before(async () => {
   postgres = await startPostgres();
+  await prepareDatabase(postgres.url);
   app = await createApp({
     databaseUrl: postgres.url,
     origin,

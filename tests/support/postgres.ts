@@ -101,3 +101,15 @@ async function externalPostgres(connectionString: string) {
     },
   };
 }
+
+export async function prepareDatabase(url: string) {
+  const { createDataSource } =
+    await import('../../apps/api/src/database/data-source.js');
+  const { migrate } = await import('../../apps/api/src/database/migrate.js');
+  const db = await createDataSource(url).initialize();
+  try {
+    await migrate(db);
+  } finally {
+    await db.destroy();
+  }
+}

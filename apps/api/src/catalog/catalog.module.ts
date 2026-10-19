@@ -16,7 +16,10 @@ import {
 } from '@nestjs/common';
 import { CatalogService } from './catalog.service.js';
 import { AccountsGuard } from '../accounts/accounts.module.js';
-import { Pool } from 'pg';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CachedGame } from './catalog-game.entity.js';
+import { CachedSearch } from './catalog-search.entity.js';
+import { CatalogRequestLimit } from './catalog-request-limit.entity.js';
 import { IgdbClient, type IgdbOptions } from './igdb.js';
 
 @Controller('api/catalog')
@@ -77,18 +80,23 @@ class CatalogController {
 @Module({})
 export class CatalogModule {
   static forOptions(
-    pool: Pool,
     options: IgdbOptions,
     accounts: DynamicModule,
   ): DynamicModule {
     return {
       module: CatalogModule,
-      imports: [accounts],
+      imports: [
+        accounts,
+        TypeOrmModule.forFeature([
+          CachedGame,
+          CachedSearch,
+          CatalogRequestLimit,
+        ]),
+      ],
       controllers: [CatalogController],
       providers: [
         CatalogService,
         { provide: IgdbClient, useValue: new IgdbClient(options) },
-        { provide: Pool, useValue: pool },
         { provide: 'catalog-clock', useValue: options.clock ?? Date.now },
       ],
     };
