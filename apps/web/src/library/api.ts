@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Service, inject, computed } from '@angular/core';
+import { Service, inject, computed, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Auth } from '../auth';
 import { Router } from '@angular/router';
@@ -36,10 +36,15 @@ export class LibraryApi {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly auth = inject(Auth);
+  private readonly owner = computed(() => this.auth.account()?.id);
+  private readonly revision = signal(0);
   private readonly saved = rxResource({
-    params: () => this.auth.account()?.id,
+    params: () => {
+      const owner = this.owner();
+      return owner ? { owner, revision: this.revision() } : undefined;
+    },
     stream: ({ params }) =>
-      this.list('').pipe(map((result) => ({ ...result, owner: params }))),
+      this.list('').pipe(map((result) => ({ ...result, owner: params.owner }))),
   });
   readonly ready = computed(
     () =>
@@ -64,6 +69,11 @@ export class LibraryApi {
     owner: string | undefined,
     change: (items: LibraryEntry[]) => LibraryEntry[],
   ) {
+    if (owner && owner === this.auth.account()?.id && !this.saved.hasValue()) {
+      // Replace an unfinished read so its pre-mutation snapshot cannot win later.
+      this.revision.update((value) => value + 1);
+      return;
+    }
     if (
       owner &&
       owner === this.auth.account()?.id &&
