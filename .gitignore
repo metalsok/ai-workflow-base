@@ -12,3 +12,9 @@ __pycache__/
 .angular/
 playwright-report/
 test-results/
+
+# Local editor and note-workspace settings.
+.idea/
+.obsidian/
+# Empty local Obsidian scratch view.
+.scratch/Untitled.base

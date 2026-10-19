@@ -1,10 +1,14 @@
 # 03: Save games and manage a private library
 
 Status: done
-Blocked by: 08 — Database access decision and any resulting migration (02 and 07 accepted)
+Blocked by: [09 — TypeORM migration](09-typeorm-migration.md) (08 decision accepted; 02 and 07 complete)
 Parent: [First private release](../spec.md)
 
 ## What to build
+
+Complete the TypeORM migration in ticket 09 first. Use TypeORM entities and
+relationships for Library persistence, following the
+[database access decision](../../../docs/adr/0001-typeorm-database-access.md).
 
 A tester adds a game to Want to play, changes its Play status, browses My Library
 and its filters, and removes a game. The library remains private and persists

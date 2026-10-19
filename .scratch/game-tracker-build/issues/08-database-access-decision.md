@@ -1,8 +1,8 @@
 # 08: Choose backend database access and define any ORM migration
 
 Type: decision
-Status: needs-info
-Progress: Awaiting owner design discussion
+Status: done
+Progress: Owner accepted TypeORM; migration scoped in 09
 Blocked by: None
 Priority: Before 03
 Parent: [First private release](../spec.md)
@@ -12,7 +12,7 @@ Parent: [First private release](../spec.md)
 Should the application retain direct PostgreSQL access through pg, adopt an ORM,
 or use a typed query builder? Agree the owner's preferences and the project's
 needs, select an approach, and scope any migration before library implementation.
-No ORM or migration is selected by the creation of this ticket.
+The owner selected TypeORM during the design discussion recorded below.
 
 ## Context
 
@@ -46,18 +46,18 @@ and public API behavior must be preserved by any implementation plan.
 
 ## Acceptance criteria
 
-- [ ] Owner preferences and the chosen database access approach are agreed and recorded.
-- [ ] Compatibility and tradeoffs are supported by official sources and current project evidence.
-- [ ] Scope covers account access, sessions, catalog caching, limits, SQL migrations, and future library relationships.
-- [ ] Any migration plan preserves existing data, account/session contracts, migration history, and the agreed test seams.
-- [ ] A concrete migration implementation ticket is published if needed, with ticket 03's dependency updated; otherwise the retained approach and conventions are documented.
+- [x] Owner preferences and the chosen database access approach are agreed and recorded.
+- [x] Compatibility and tradeoffs are supported by official sources and current project evidence.
+- [x] Scope covers account access, sessions, catalog caching, limits, SQL migrations, and future library relationships.
+- [x] Any migration plan preserves existing data, account/session contracts, migration history, and the agreed test seams.
+- [x] A concrete migration implementation ticket is published if needed, with ticket 03's dependency updated; otherwise the retained approach and conventions are documented.
 
 ## Scope boundaries
 
 This ticket ends with an agreed decision and actionable follow-up. It does not
 install an ORM, change schemas, rewrite data access, or start the personal library.
-Do not mark it ready-for-agent until the decisions needed for autonomous work
-are settled. Human decision work remains pending in this ticket.
+The owner confirmed the shared understanding; decision work is complete.
+Implementation remains in ticket 09.
 
 ## Comments
 
@@ -67,3 +67,21 @@ The owner requested a task and asked where grill-with-docs belongs. The installe
 skill is named grilling; the repository README uses the earlier grill-with-docs
 name. Use that design discussion to settle the choice, then implement the scoped
 follow-up separately. Tickets 02 and 07 are already accepted and complete.
+
+### Owner decision accepted — 2026-10-19
+
+The grilling discussion established readability as the primary concern because
+the owner has limited backend knowledge. They approved models/relationships and
+type checking, generated/reviewed migrations, and then explicitly superseded the
+initial allowance for SQL exceptions: all application database access must use
+the ORM, including sessions, counters, and cleanup. The owner selected TypeORM
+and confirmed preservation of data/history, backend-clock limit timing, a brief
+shutdown with backup/tested recovery, and the final shared-understanding summary.
+
+The accepted [architecture decision](../../../docs/adr/0001-typeorm-database-access.md)
+records conventions, alternatives, compatibility evidence, and tradeoffs with
+official sources. [Implementation ticket 09](09-typeorm-migration.md) defines
+the migration, session replacement, concurrency and recovery acceptance criteria;
+[ticket 03](03-personal-library.md) now depends on 09. Generated migration SQL is
+allowed; handwritten application SQL is not. No dependencies were installed,
+schemas changed, or application data-access code rewritten in this decision task.
