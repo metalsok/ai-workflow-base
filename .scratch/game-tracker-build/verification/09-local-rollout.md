@@ -53,5 +53,19 @@ passed afterward for the retained-release pointer.
 After cleaning stale compiled output, typecheck, formatting and production build
 passed. All 38 current HTTP/PostgreSQL tests passed. The built CLI reports the
 real database up to date, and entity migration generation --check reports no
-changes. The desktop/mobile browser suite and independent cleanup reviews are
-being completed before the final restart and completion record.
+changes. All four desktop/mobile browser journeys also passed. Standards review reported
+zero findings. Spec review reported no material findings and requested the final
+completion record, which is recorded here.
+
+## Final running state
+
+The development app was restarted from cleanup commit cbdfc49. The frontend at
+http://127.0.0.1:4200 returned 200, and the original pre-upgrade signed session
+still authenticated through that frontend with the same account identity. The
+live database reports Baseline1792368000000 applied, zero pending migrations,
+and no entity/schema difference. The backup's 0600 permissions were confirmed.
+
+Local rollout and cleanup are complete. No Git push was performed, as requested.
+The development processes are running; their supervisor PID and log are kept in
+the same ignored backup directory. Existing unrelated issue/spec and editor
+changes remain uncommitted and were not included in these commits.

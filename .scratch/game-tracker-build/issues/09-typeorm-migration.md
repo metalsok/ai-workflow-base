@@ -183,3 +183,12 @@ The one-time handover command and schema inspection/snapshot are retired after
 that successful cutover. Entities and versioned migrations remain; immutable SQL
 history and checksums are retained. Additional legacy copies must use the full
 handover release c2cac3b first. See the [local rollout record](../verification/09-local-rollout.md).
+
+### Cleanup verification — 2026-10-19
+
+Cleanup release cbdfc49 passed typecheck, formatting, production build, 38 current
+HTTP/PostgreSQL tests and four desktop/mobile browser journeys. Both independent
+review axes reported no remaining material findings. The final restarted app at
+http://127.0.0.1:4200 still authenticates the original pre-upgrade session. The real
+database has zero pending migrations and no entity/schema difference. The verified
+pre-handover backup remains in ignored owner-only storage. No changes were pushed.
