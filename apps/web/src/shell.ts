@@ -15,6 +15,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { finalize, switchMap } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { LibraryPage } from './library/library-page';
 import { SearchPage } from './catalog/search-page';
 import { GamePage } from './catalog/game-page';
 import { Auth } from './auth';
@@ -22,7 +23,14 @@ import { Auth } from './auth';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-shell',
-  imports: [RouterLink, RouterLinkActive, FormsModule, SearchPage, GamePage],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    FormsModule,
+    SearchPage,
+    GamePage,
+    LibraryPage,
+  ],
   templateUrl: './shell.html',
 })
 export class Shell {

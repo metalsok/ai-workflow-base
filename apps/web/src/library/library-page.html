@@ -1,0 +1,101 @@
+<nav class="mb-8 flex flex-wrap gap-2" aria-label="Library filters">
+  @for (filter of filters; track filter.value) {
+  <a
+    class="inline-flex min-h-[44px] items-center rounded-lg border border-outline px-4 py-2 text-foreground no-underline aria-[current=page]:border-accent aria-[current=page]:bg-[#aaa0e91a] aria-[current=page]:text-accent"
+    routerLink="/library"
+    [queryParams]="filter.value ? {status: filter.value} : {}"
+    [attr.aria-current]="status() === filter.value ? 'page' : null"
+    >{{ filter.label }}</a
+  >
+  }
+</nav>
+@if (error()) {
+<p class="mb-4 text-[#ffbbd0]" role="alert">{{ error() }}</p>
+} @if (request.loading()) {
+<p class="py-12 text-muted" role="status">Loading your library…</p>
+} @else if (request.error()) {
+<p class="mb-4 text-[#ffbbd0]" role="alert">{{ request.error() }}</p>
+<button
+  class="min-h-[44px] rounded-lg bg-accent px-4 py-3 font-semibold text-button-ink"
+  (click)="request.retry()"
+>
+  Try again
+</button>
+} @else if (request.result(); as library) { @if (library.items.length) {
+<p class="mb-6 text-muted">
+  {{ library.items.length }} saved {{ library.items.length === 1 ? 'game' :
+  'games' }} in this view · Only you can see your library.
+</p>
+<div
+  class="grid grid-cols-4 gap-x-5 gap-y-8 tablet:grid-cols-3 compact:grid-cols-2 compact:gap-x-4 compact:gap-y-6"
+>
+  @for (entry of library.items; track entry.game.id) {
+  <article class="min-w-0">
+    <a
+      class="block rounded-lg text-foreground no-underline"
+      [routerLink]="['/games', entry.game.id]"
+      [attr.aria-label]="entry.game.title"
+    >
+      <app-game-cover [url]="entry.game.coverUrl" [title]="entry.game.title" />
+      <h2 class="mt-3 font-bold [overflow-wrap:anywhere]">
+        {{ entry.game.title }}
+      </h2>
+    </a>
+    <p class="mt-2 text-xs text-muted [overflow-wrap:anywhere]">
+      {{ entry.game.platforms.join(' · ') || 'Platforms unavailable' }}
+    </p>
+    <p class="mt-2 text-xs text-muted">
+      {{ entry.game.firstReleaseDate ? (entry.game.firstReleaseDate |
+      date:'mediumDate') : 'Release date unknown' }}
+    </p>
+    <label
+      class="mt-4 block text-sm text-muted"
+      [for]="'status-' + entry.game.id"
+      >Play status<span class="sr-only">
+        for {{ entry.game.title }}</span
+      ></label
+    >
+    <select
+      class="mt-2 min-h-[44px] w-full min-w-0 rounded-lg border border-input-border bg-field px-2 text-foreground"
+      #statusSelect
+      [id]="'status-' + entry.game.id"
+      [disabled]="pending()"
+      (change)="change(entry.game.id, statusSelect.value)"
+    >
+      @for (option of statuses; track option.value) {
+      <option [value]="option.value" [selected]="option.value === entry.status">
+        {{ option.label }}
+      </option>
+      }
+    </select>
+    <button
+      class="mt-3 min-h-[44px] cursor-pointer rounded-lg border border-outline px-3 py-2 text-sm text-muted disabled:cursor-wait disabled:opacity-65"
+      [attr.aria-label]="'Remove ' + entry.game.title"
+      [disabled]="pending()"
+      (click)="remove(entry.game.id)"
+    >
+      Remove
+    </button>
+  </article>
+  }
+</div>
+} @else {
+<section
+  class="rounded-2xl border border-outline bg-surface px-6 py-20 text-center"
+>
+  <span class="text-[3rem] text-accent" aria-hidden="true">▤</span>
+  <h2 class="my-4 text-[2rem] font-bold tracking-[-0.04em]">
+    {{ status() ? 'No games in this view' : 'Your library is waiting' }}
+  </h2>
+  <p class="mx-auto mb-8 max-w-[430px] text-muted">
+    {{ status() ? 'Games with this Play status will appear here. Choose another
+    filter or save a game to get started.' : 'Save a game to Want to play, then
+    keep track of what you’re playing. Your library is private.' }}
+  </p>
+  <a
+    class="inline-flex min-h-[46px] items-center rounded-lg bg-accent px-5 py-3 font-semibold text-button-ink no-underline"
+    routerLink="/search"
+    >Search games</a
+  >
+</section>
+} }

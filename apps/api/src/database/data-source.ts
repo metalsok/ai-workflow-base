@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
+import { LibraryEntry } from '../library/library-entry.entity.js';
 import { Account } from '../accounts/account.entity.js';
 import { StoredSession } from '../accounts/session.entity.js';
 import { AuthenticationAttempt } from '../accounts/authentication-attempt.entity.js';
@@ -17,6 +18,7 @@ export function databaseOptions(url: string) {
     url,
     extra: { types: postgresTypes },
     entities: [
+      LibraryEntry,
       Account,
       StoredSession,
       AuthenticationAttempt,

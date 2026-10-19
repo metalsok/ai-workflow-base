@@ -12,10 +12,35 @@ across devices, sign-ins, and application restarts.
 
 ## Acceptance criteria
 
-- [ ] Adding from search or details creates one entry per user and Game; repeated additions do not duplicate it.
-- [ ] The four Play statuses and the combined Played view match the glossary.
-- [ ] My Library supports status filtering, status changes, removal, and intentional empty states on desktop and mobile.
-- [ ] The backend enforces ownership for every library read and mutation, independently of Angular navigation.
-- [ ] PostgreSQL-backed HTTP checks cover two users, identifier tampering, duplicates, transitions, filtering, removal, and persisted results.
-- [ ] Saved-game rendering remains usable from stored metadata during an IGDB outage.
-- [ ] The browser journey covers save, status change, Played, removal, and signing in again.
+- [x] Adding from search or details creates one entry per user and Game; repeated additions do not duplicate it.
+- [x] The four Play statuses and the combined Played view match the glossary.
+- [x] My Library supports status filtering, status changes, removal, and intentional empty states on desktop and mobile.
+- [x] The backend enforces ownership for every library read and mutation, independently of Angular navigation.
+- [x] PostgreSQL-backed HTTP checks cover two users, identifier tampering, duplicates, transitions, filtering, removal, and persisted results.
+- [x] Saved-game rendering remains usable from stored metadata during an IGDB outage.
+- [x] The browser journey covers save, status change, Played, removal, and signing in again.
+
+
+## Comments
+
+### Implementation and verification — 2026-10-19
+
+Implemented saving from search/details, account-scoped Library reads and
+mutations, all four Play statuses, Played, status changes, removal, and responsive
+loading/error/empty states. Persistence uses TypeORM entities/relationships and
+a generated additive migration. Repeated additions preserve the existing status.
+Saved cards use stored Catalog metadata, including during provider outages.
+
+Verification passed: `npm run typecheck`, `npm run format:check`, `npm run build`,
+and `npm test` (45 HTTP/PostgreSQL tests and six desktop/mobile browser journeys).
+Clean/populated migration checks, no schema drift, and rollback/reapplication
+with preserved accounts/sessions were verified on disposable PostgreSQL.
+Both independent code-review axes reported no remaining findings after fixing
+the migration rollback ordering. Angular and NestJS framework skills were loaded.
+
+See [the implementation record](../verification/03-personal-library.md).
+No changes were pushed or deployed, and the real development database was not
+changed. Run `npm run db:migrate`, then restart the API before using the new UI.
+
+All technical acceptance criteria are verified. Owner review/acceptance remains
+pending; retain `Status: ready-for-agent` until accepted, per tracker policy.

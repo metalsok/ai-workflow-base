@@ -65,7 +65,7 @@ test('clean migration is repeatable, has no invented legacy dates, and matches t
     await migrate(db);
     await migrate(db);
     assert.equal(await db.getRepository(LegacyMigration).count(), 0);
-    assert.equal((await migrationStatus(db)).executed.length, 1);
+    assert.equal((await migrationStatus(db)).executed.length, 2);
     assert.equal(
       (await db.driver.createSchemaBuilder().log()).upQueries.length,
       0,
@@ -97,7 +97,7 @@ test('an already handed-over database retains its history, sessions and caches t
     await installLegacy(postgres.url);
     await db.initialize();
     // Fixture represents the completed handover release, retained at c2cac3b.
-    await db.runMigrations({ fake: true, transaction: 'all' });
+    await recordBaseline(postgres.url);
     const account = await db.getRepository(Account).save({
       email: 'legacy@example.com',
       passwordHash: await hash('legacy-long-passphrase'),
@@ -317,12 +317,7 @@ test('later migrations remain pending until applied; startup rejects incomplete 
   }).initialize();
   try {
     await installLegacy(postgres.url);
-    const baseline = await createDataSource(postgres.url).initialize();
-    try {
-      await baseline.runMigrations({ fake: true, transaction: 'all' });
-    } finally {
-      await baseline.destroy();
-    }
+    await recordBaseline(postgres.url);
     assert.deepEqual(
       (await migrationStatus(db)).pending.map((m) => m.name),
       ['Future1792368000001'],
@@ -358,6 +353,95 @@ test('a legacy database without a completed handover requires the retained hando
     await assert.rejects(migrate(db), /c2cac3b/);
   } finally {
     if (db.isInitialized) await db.destroy();
+    await postgres.stop();
+  }
+});
+
+// Historical fixture marks only the baseline; later migrations must actually run.
+async function recordBaseline(url: string) {
+  const baseline = await new DataSource({
+    ...databaseOptions(url),
+    migrations: [Baseline1792368000000],
+  }).initialize();
+  try {
+    await baseline.runMigrations({ fake: true, transaction: 'all' });
+  } finally {
+    await baseline.destroy();
+  }
+}
+
+test('Library migration can be reverted and reapplied while existing accounts and sessions remain usable', async () => {
+  const postgres = await startPostgres();
+  const db = await createDataSource(postgres.url).initialize();
+  let app: Awaited<ReturnType<typeof createApp>> | undefined;
+  try {
+    await migrate(db);
+    app = await createApp({
+      ...options(postgres.url),
+      igdb: {
+        clientId: 'fixture',
+        clientSecret: 'fixture',
+        fetch: new IgdbFixture().fetch,
+      },
+    });
+    await app.listen(0, '127.0.0.1');
+    const registered = await fetch(
+      `${await app.getUrl()}/api/accounts/register`,
+      {
+        method: 'POST',
+        headers: { Origin: origin, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: 'library-migration@example.com',
+          password: 'library-migration-passphrase',
+        }),
+      },
+    );
+    assert.equal(registered.status, 201);
+    const cookie = registered.headers.get('set-cookie')!;
+    const account = await registered.json();
+    assert.equal(
+      (
+        await fetch(`${await app.getUrl()}/api/library/games/119171`, {
+          method: 'POST',
+          headers: { Cookie: cookie, Origin: origin },
+        })
+      ).status,
+      201,
+    );
+    await app.close();
+    app = undefined;
+    await db.undoLastMigration({ transaction: 'all' });
+    assert.deepEqual(
+      (await migrationStatus(db)).pending.map((m) => m.name),
+      ['PersonalLibrary1792409963460'],
+    );
+    await migrate(db);
+    app = await createApp(options(postgres.url));
+    await app.listen(0, '127.0.0.1');
+    const base = await app.getUrl();
+    const me = await fetch(`${base}/api/accounts/me`, {
+      headers: { Cookie: cookie },
+    });
+    assert.equal(me.status, 200);
+    assert.deepEqual(await me.json(), account);
+    assert.deepEqual(
+      await (
+        await fetch(`${base}/api/library`, { headers: { Cookie: cookie } })
+      ).json(),
+      { items: [] },
+    );
+    assert.equal(
+      (
+        await fetch(`${base}/api/library/games/119171`, {
+          method: 'POST',
+          headers: { Cookie: cookie, Origin: origin },
+        })
+      ).status,
+      201,
+    );
+  } finally {
+    await app?.close();
+    await db.destroy();
     await postgres.stop();
   }
 });

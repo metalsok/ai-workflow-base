@@ -107,27 +107,7 @@
       </h1>
       } @if (gamePage) { <app-game-page /> } @else if (searchPage) {
       <app-search-page /> } @else if (library) {
-      <section
-        class="rounded-2xl border border-outline bg-surface px-6 py-20 text-center"
-        aria-labelledby="library-title"
-      >
-        <span class="text-[3rem] text-accent" aria-hidden="true">▤</span>
-        <h2
-          class="leading-[1.15] font-bold tracking-[-0.04em] my-4 text-[2rem]"
-          id="library-title"
-        >
-          A home for your games.
-        </h2>
-        <p class="mx-auto mb-8 max-w-[430px] text-muted">
-          Your account is ready. Saving and organizing games will arrive in a
-          future update.
-        </p>
-        <a
-          class="inline-flex min-h-[46px] items-center justify-center gap-8 rounded-lg border-0 bg-accent px-[1.1rem] py-[0.8rem] font-[750] text-button-ink no-underline"
-          routerLink="/discover"
-          >Go to Discover</a
-        >
-      </section>
+      <app-library-page />
       } @else {
       <section
         class="relative flex min-h-[380px] items-center overflow-hidden rounded-2xl border border-outline bg-[radial-gradient(ellipse_at_85%_30%,#a080d946,transparent_45%),linear-gradient(120deg,#19182d,#302344_70%,#151b30)] before:absolute before:-top-[130px] before:-right-[100px] before:size-[420px] before:rounded-full before:border before:border-[#bda6f822] before:shadow-[0_0_0_55px_#bda6f808,0_0_0_110px_#bda6f805] before:content-['']"

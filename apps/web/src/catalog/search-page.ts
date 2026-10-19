@@ -9,12 +9,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CatalogApi } from './api';
 import { catalogRequest } from './request';
+import { SaveGame } from '../library/save-game';
 import { GameCover } from './cover';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-search-page',
-  imports: [RouterLink, DatePipe, GameCover],
+  imports: [RouterLink, DatePipe, GameCover, SaveGame],
   templateUrl: './search-page.html',
 })
 export class SearchPage {

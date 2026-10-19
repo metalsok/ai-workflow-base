@@ -28,7 +28,8 @@ npm run dev
 Open **http://127.0.0.1:4200**. Use this exact origin: `localhost` is a different
 origin. Angular proxies `/api` to NestJS on loopback port 3000. Registration
 immediately signs you in. Use **Search games** in the header to search IGDB and
-open details. Discover feeds and personal library operations belong to later tickets.
+open details. Save games from search or details, then use My Library to change
+Play status, filter (including Played), or remove games. Discover feeds belong to a later ticket.
 Restart `npm run dev` after backend changes; run `npm run db:migrate` separately before starting the API. Startup refuses pending migrations.
 
 The setup script generates database and session secrets in the ignored `.env`
@@ -267,3 +268,37 @@ booting. Migration tests also require PostgreSQL client tools (`pg_dump` and
 after the tests. Historical fixtures alone use infrastructure SQL; application
 requests exercise repositories and the ORM session store. No live IGDB checks
 run in the automated suites.
+
+## Private Library contract
+
+Run `npm run db:migrate` before starting the updated API. The PersonalLibrary
+migration adds `library_entries` with a composite account/Game primary key,
+account and cached Game relationships, and the four allowed Play statuses.
+Existing accounts, sessions, and catalog data are preserved. Apply migrations
+once through the designated migration process; automatic synchronization stays off.
+
+All `/api/library` endpoints require a live application session. Mutations use
+the same exact-Origin protection as account operations. The API derives ownership
+from the session, ignoring any account identifier supplied by the caller.
+
+| Method | Path                          | Behavior                                                                                      |
+| ------ | ----------------------------- | --------------------------------------------------------------------------------------------- |
+| GET    | `/api/library`                | Returns `{ items: [{ game, status }] }` using stored metadata                                 |
+| GET    | `/api/library?status=playing` | Filters by one Play status; `played` combines all three started statuses                      |
+| POST   | `/api/library/games/:id`      | Saves an eligible catalog Game as `want-to-play`; duplicate saves preserve the current status |
+| PATCH  | `/api/library/games/:id`      | Changes an owned entry with JSON `{ "status": "completed" }`                                  |
+| DELETE | `/api/library/games/:id`      | Removes an owned entry (204)                                                                  |
+
+Status values are `want-to-play`, `playing`, `completed`, and `stopped-playing`.
+Invalid identifiers/filters/statuses return 400. Updating or removing an entry
+absent from the caller's library returns 404, including when another account
+owns the same Game. Responses contain normalized Game metadata and status only.
+The Game ID identifies the catalog title; each account independently owns its
+entry for that title. Concurrent additions are deduplicated by PostgreSQL.
+
+Adding a new entry resolves an eligible Game through Catalog and consumes the
+existing per-account catalog request budget. Rendering the library, changing
+status, removing, and re-saving an existing entry need no provider request.
+Saved metadata remains in the shared Catalog table when an entry is removed;
+no other account's entry or metadata is deleted. Library state persists through
+sessions and application restarts in the same PostgreSQL database.

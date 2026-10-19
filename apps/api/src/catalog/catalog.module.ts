@@ -93,6 +93,7 @@ export class CatalogModule {
           CatalogRequestLimit,
         ]),
       ],
+      exports: [CatalogService],
       controllers: [CatalogController],
       providers: [
         CatalogService,

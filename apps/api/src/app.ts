@@ -11,6 +11,7 @@ import { StoredSession } from './accounts/session.entity.js';
 import { OrmSessionStore } from './accounts/session.store.js';
 import helmet from 'helmet';
 import type { Request, Response, NextFunction } from 'express';
+import { LibraryModule } from './library/library.module.js';
 import { CatalogModule } from './catalog/catalog.module.js';
 import type { IgdbOptions } from './catalog/igdb.js';
 import { AccountsModule } from './accounts/accounts.module.js';
@@ -49,6 +50,7 @@ export async function createApp(options: AppOptions) {
     timezone.setting,
   );
   const accounts = AccountsModule.forClock(options.clock ?? Date.now);
+  const catalog = CatalogModule.forOptions(options.igdb ?? {}, accounts);
   @Module({
     imports: [
       TypeOrmModule.forRootAsync({
@@ -56,7 +58,8 @@ export async function createApp(options: AppOptions) {
         dataSourceFactory: async () => database,
       }),
       accounts,
-      CatalogModule.forOptions(options.igdb ?? {}, accounts),
+      catalog,
+      LibraryModule.forModules(accounts, catalog),
     ],
     providers: [
       {

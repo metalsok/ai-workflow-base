@@ -67,6 +67,7 @@
     <p class="whitespace-pre-line text-copy [overflow-wrap:anywhere]">
       {{ details.game.summary || 'Summary unavailable.' }}
     </p>
+    <app-save-game [gameId]="details.game.id" />
     <dl class="mt-8 mb-4 grid gap-4">
       <div
         class="grid grid-cols-[140px_minmax(0,1fr)] gap-4 compact:grid-cols-1 compact:gap-[0.2rem]"
