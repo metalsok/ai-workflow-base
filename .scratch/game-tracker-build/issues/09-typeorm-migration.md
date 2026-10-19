@@ -1,8 +1,8 @@
 # 09: Move all application database access to TypeORM
 
 Type: implementation
-Status: ready-for-agent
-Progress: Implemented, migrated locally, and cleaned up; final owner acceptance pending
+Status: done
+Progress: Complete; owner accepted the verified local rollout and cleanup
 Blocked by: None (08 accepted and complete)
 Priority: Before 03
 Parent: [First private release](../spec.md)
@@ -130,7 +130,7 @@ Document the checkpoint at which normal writes can resume.
 - [x] Development, test, migration, container, backup/restore, and deployment
       instructions match the new workflow. Readable entity/model examples explain
       everyday reads/writes and migration generation for the owner.
-- [ ] Run npm run typecheck, npm run format:check, npm run build, and npm test with
+- [x] Run npm run typecheck, npm run format:check, npm run build, and npm test with
       disposable PostgreSQL and permitted loopback binding. Record results and
       obtain owner review before marking implementation done.
 
@@ -192,3 +192,10 @@ review axes reported no remaining material findings. The final restarted app at
 http://127.0.0.1:4200 still authenticates the original pre-upgrade session. The real
 database has zero pending migrations and no entity/schema difference. The verified
 pre-handover backup remains in ignored owner-only storage. No changes were pushed.
+
+### Owner acceptance — 2026-10-19
+
+After the verified local rollout, cleanup, restart, and completion report, the
+owner responded: “wonderful so we are ready for our next ticket?” This records
+acceptance of ticket 09. All acceptance criteria are complete, and ticket 03's
+TypeORM dependency is satisfied.
