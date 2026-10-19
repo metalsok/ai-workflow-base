@@ -6,12 +6,19 @@
   `0e53656`. Its ticket retains the implementation/review history and corrections.
 - Ticket 07 (Tailwind migration) is `done`, accepted by the owner. Its
   implementation is committed in `fb095ad`; see its ticket for verification.
-- Ticket 03 (personal library) is unstarted, unblocked, and next in the queue.
-  Remaining delivery order: 03 → 04 → 05 → 06.
+- Ticket 08 (database access decision) is next, `needs-info`, awaiting an owner
+  design discussion. No ORM has been chosen or installed.
+- Ticket 03 (personal library) is unstarted and blocked on 08 and any resulting
+  migration. Remaining order: 08 decision → migration if chosen → 03 → 04 → 05 → 06.
 - Ticket 01 retains its recorded owner verification of account access and restart
   persistence. Read its comments before changing its status.
 
 ## Resume
+
+Start with `issues/08-database-access-decision.md`: use a focused grilling
+discussion to agree database access preferences, record the choice, and create
+a migration implementation ticket if needed. Update 03's dependencies before
+closing 08. Do not replace data access during the decision task.
 
 Read `AGENTS.md`, `spec.md`, the relevant ticket comments, and
 `docs/agents/framework-skills.md` before implementation. Tailwind v4 utilities
