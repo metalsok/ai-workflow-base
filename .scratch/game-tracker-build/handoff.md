@@ -4,11 +4,10 @@
 
 - Ticket 02 (search/details) is `done`, accepted by the owner and committed in
   `0e53656`. Its ticket retains the implementation/review history and corrections.
-- Ticket 07 (Tailwind migration) is implemented and `ready-for-human`. Its code,
-  dependency lockfile, guidance, and verification are committed with this handoff.
-  Owner acceptance is pending. Read `issues/07-tailwind-migration.md`.
-- Ticket 03 (personal library) is unstarted and blocked on 07 by owner request.
-  Remaining delivery order: 07 review → 03 → 04 → 05 → 06.
+- Ticket 07 (Tailwind migration) is `done`, accepted by the owner. Its
+  implementation is committed in `fb095ad`; see its ticket for verification.
+- Ticket 03 (personal library) is unstarted, unblocked, and next in the queue.
+  Remaining delivery order: 03 → 04 → 05 → 06.
 - Ticket 01 retains its recorded owner verification of account access and restart
   persistence. Read its comments before changing its status.
 

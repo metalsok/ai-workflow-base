@@ -1,7 +1,7 @@
 # 07: Migrate application styling to Tailwind CSS
 
-Status: ready-for-human
-Progress: Implemented; awaiting owner review
+Status: done
+Progress: Owner accepted
 Blocked by: None (02 accepted)
 Priority: Before 03, by owner request
 Parent: [First private release](../spec.md)
@@ -89,3 +89,10 @@ record Tailwind as the convention for future tickets.
 
 The migration is implemented and committed with this ticket, ready for owner
 review. Do not mark it done or begin ticket 03 until the owner accepts it.
+
+
+### Owner acceptance — 2026-10-19
+
+The owner reviewed the migration and confirmed that it looks great. Ticket 07
+is accepted and complete. Ticket 03 is now unblocked. Implementation commit:
+`fb095ad`; all recorded checks remain passing.
