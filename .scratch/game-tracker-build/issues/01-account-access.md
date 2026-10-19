@@ -1,6 +1,6 @@
 # 01: Create an account and sign in
 
-Status: ready-for-human
+Status: done
 Blocked by: None
 Outcome: All acceptance criteria verified; local manual checks confirmed by the owner
 Parent: [First private release](../spec.md)
@@ -82,3 +82,10 @@ After receiving the instructions to restart PostgreSQL with
 reported that the result looked good. This user-confirmed restart check resolves
 the outstanding Docker startup/persistence verification limitation above.
 All acceptance criteria are now checked.
+
+
+### Completion recorded — 2026-10-19
+
+The owner requested marking this ticket complete after reviewing the remaining
+ticket list. All acceptance criteria and the earlier owner verification were
+already complete; this corrects the stale tracker status.
