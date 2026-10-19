@@ -19,6 +19,7 @@ import { DiscoverPage } from '../catalog/discover-page/discover-page';
 import { LibraryPage } from '../library/library-page/library-page';
 import { SearchPage } from '../catalog/search-page/search-page';
 import { GamePage } from '../catalog/game-page/game-page';
+import { LibraryApi } from '../library/api';
 import { Auth } from '../auth';
 
 @Component({
@@ -38,6 +39,10 @@ import { Auth } from '../auth';
 export class Shell {
   private readonly destroyRef = inject(DestroyRef);
   readonly auth = inject(Auth);
+  readonly savedLibrary = inject(LibraryApi);
+  constructor() {
+    this.savedLibrary.refresh();
+  }
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly params = toSignal(this.route.queryParamMap, {

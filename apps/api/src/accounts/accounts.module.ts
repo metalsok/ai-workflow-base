@@ -30,6 +30,7 @@ import type { Request, Response } from 'express';
 declare module 'express-session' {
   interface SessionData {
     accountId: string;
+    accountVersion?: number;
     expiresAt: number;
   }
 }
@@ -62,25 +63,35 @@ class AccountsService {
       password,
     );
     return valid && account
-      ? { id: account.id, email: account.email }
+      ? {
+          id: account.id,
+          email: account.email,
+          sessionVersion: account.sessionVersion,
+        }
       : undefined;
   }
 
   signIn(request: Request) {
-    return new Promise<{ id: string; email: string }>((resolve, reject) => {
-      this.passport.authenticate(
-        'local',
-        { session: false },
-        (error: unknown, account: { id: string; email: string } | false) => {
-          if (error) return reject(error);
-          if (!account)
-            return reject(
-              new UnauthorizedException('Email or password is incorrect.'),
-            );
-          resolve(account);
-        },
-      )(request, request.res!, reject);
-    });
+    return new Promise<{ id: string; email: string; sessionVersion: number }>(
+      (resolve, reject) => {
+        this.passport.authenticate(
+          'local',
+          { session: false },
+          (
+            error: unknown,
+            account:
+              { id: string; email: string; sessionVersion: number } | false,
+          ) => {
+            if (error) return reject(error);
+            if (!account)
+              return reject(
+                new UnauthorizedException('Email or password is incorrect.'),
+              );
+            resolve(account);
+          },
+        )(request, request.res!, reject);
+      },
+    );
   }
   async limitAttempts(request: Request, input: unknown) {
     const limits: [string, number][] = [[`ip:${request.ip}`, 60]];
@@ -140,7 +151,11 @@ class AccountsService {
           passwordHash: await hash(password),
         }),
       );
-      return { id: account.id, email: account.email };
+      return {
+        id: account.id,
+        email: account.email,
+        sessionVersion: account.sessionVersion,
+      };
     } catch (error) {
       const { code, constraint } = postgresError(error);
       if (code === '23505' && constraint === 'accounts_email_key')
@@ -150,10 +165,10 @@ class AccountsService {
       throw error;
     }
   }
-  async identity(id: string | undefined) {
+  async identity(id: string | undefined, sessionVersion = 0) {
     if (!id) throw new UnauthorizedException();
     const account = await this.accounts.findOne({
-      where: { id },
+      where: { id, sessionVersion },
       select: { id: true, email: true },
     });
     if (!account) throw new UnauthorizedException();
@@ -167,7 +182,10 @@ export class AccountsGuard implements CanActivate {
   ) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest<Request>();
-    await this.accounts.identity(request.session?.accountId);
+    await this.accounts.identity(
+      request.session?.accountId,
+      request.session?.accountVersion ?? 0,
+    );
     return true;
   }
 }
@@ -182,8 +200,8 @@ class AccountsController {
     await this.accounts.limitAttempts(request, input);
     validateCredentials(input);
     const account = await this.accounts.register(input.email, input.password);
-    await this.establishSession(request, account.id);
-    return account;
+    await this.establishSession(request, account.id, account.sessionVersion);
+    return { id: account.id, email: account.email };
   }
 
   @Post('login')
@@ -192,17 +210,22 @@ class AccountsController {
     await this.accounts.limitAttempts(request, input);
     validateCredentials(input);
     const account = await this.accounts.signIn(request);
-    await this.establishSession(request, account.id);
-    return account;
+    await this.establishSession(request, account.id, account.sessionVersion);
+    return { id: account.id, email: account.email };
   }
 
-  private async establishSession(request: Request, accountId: string) {
+  private async establishSession(
+    request: Request,
+    accountId: string,
+    sessionVersion: number,
+  ) {
     await new Promise<void>((resolve, reject) =>
       request.session.regenerate((error) =>
         error ? reject(error) : resolve(),
       ),
     );
     request.session.accountId = accountId;
+    request.session.accountVersion = sessionVersion;
     request.session.expiresAt = Date.now() + request.app.locals.sessionMaxAgeMs;
     await new Promise<void>((resolve, reject) =>
       request.session.save((error) => (error ? reject(error) : resolve())),
@@ -228,7 +251,10 @@ class AccountsController {
 
   @Get('me')
   me(@Req() request: Request) {
-    return this.accounts.identity(request.session?.accountId);
+    return this.accounts.identity(
+      request.session?.accountId,
+      request.session?.accountVersion ?? 0,
+    );
   }
 }
 

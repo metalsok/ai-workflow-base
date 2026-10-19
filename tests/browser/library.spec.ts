@@ -40,7 +40,6 @@ test('a tester saves from search and details, changes status, uses Played, remov
       exact: true,
     }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Want to play', exact: true }).click();
   await expect(page.getByRole('status')).toContainText('Saved');
   await page.getByRole('link', { name: 'My Library', exact: true }).click();
   await expect(page.getByRole('article')).toHaveCount(1);

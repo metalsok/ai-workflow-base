@@ -24,7 +24,8 @@
     "db:status": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts status",
     "db:generate": "node --env-file-if-exists=.env --import tsx node_modules/typeorm/cli.js migration:generate -d scripts/typeorm-data-source.ts",
     "db:migrate:built": "node --env-file-if-exists=.env dist/api/database/cli.js",
-    "discovery:validate": "node --env-file-if-exists=.env --import tsx scripts/validate-discovery.ts"
+    "discovery:validate": "node --env-file-if-exists=.env --import tsx scripts/validate-discovery.ts",
+    "account:reset": "node --env-file-if-exists=.env --import tsx apps/api/src/accounts/reset.cli.ts"
   },
   "dependencies": {
     "@angular/common": "~22.2.3",

@@ -39,6 +39,7 @@
       [routerLink]="['/games', game.id]"
       >Explore game <span aria-hidden="true">↗</span></a
     >
+    <div><app-save-game [gameId]="game.id" /></div>
   </div>
 </section>
 } @else {

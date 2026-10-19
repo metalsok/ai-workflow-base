@@ -1,7 +1,18 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Service, inject } from '@angular/core';
+import { Service, inject, computed } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { Auth } from '../auth';
 import { Router } from '@angular/router';
-import { catchError, from, switchMap, throwError, type Observable } from 'rxjs';
+import {
+  catchError,
+  defer,
+  from,
+  map,
+  switchMap,
+  tap,
+  throwError,
+  type Observable,
+} from 'rxjs';
 import type { Game } from '../catalog/api';
 import { apiErrorMessage } from '../http-error';
 
@@ -24,6 +35,46 @@ export interface LibraryResult {
 export class LibraryApi {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly auth = inject(Auth);
+  private readonly saved = rxResource({
+    params: () => this.auth.account()?.id,
+    stream: ({ params }) =>
+      this.list('').pipe(map((result) => ({ ...result, owner: params }))),
+  });
+  readonly ready = computed(
+    () =>
+      this.saved.hasValue() &&
+      this.saved.value().owner === this.auth.account()?.id,
+  );
+  readonly statuses = computed(
+    () =>
+      new Map(
+        this.ready() && this.saved.hasValue()
+          ? this.saved
+              .value()
+              .items.map((entry) => [entry.game.id, entry.status])
+          : [],
+      ),
+  );
+  readonly error = computed(() => this.saved.error()?.message ?? '');
+  refresh() {
+    this.saved.reload();
+  }
+  private update(
+    owner: string | undefined,
+    change: (items: LibraryEntry[]) => LibraryEntry[],
+  ) {
+    if (
+      owner &&
+      owner === this.auth.account()?.id &&
+      this.saved.hasValue() &&
+      this.saved.value().owner === owner
+    ) {
+      this.saved.value.update((result) =>
+        result ? { ...result, items: change(result.items) } : result,
+      );
+    }
+  }
   list(status: string): Observable<LibraryResult> {
     return this.handle(
       this.http.get<LibraryResult>(
@@ -32,17 +83,47 @@ export class LibraryApi {
     );
   }
   add(id: number) {
-    return this.handle(
-      this.http.post<LibraryEntry>(`/api/library/games/${id}`, {}),
-    );
+    return defer(() => {
+      const owner = this.auth.account()?.id;
+      return this.handle(
+        this.http.post<LibraryEntry>(`/api/library/games/${id}`, {}),
+      ).pipe(
+        tap((entry) =>
+          this.update(owner, (items) => [
+            ...items.filter((item) => item.game.id !== id),
+            entry,
+          ]),
+        ),
+      );
+    });
   }
   change(id: number, status: string) {
-    return this.handle(
-      this.http.patch<LibraryEntry>(`/api/library/games/${id}`, { status }),
-    );
+    return defer(() => {
+      const owner = this.auth.account()?.id;
+      return this.handle(
+        this.http.patch<LibraryEntry>(`/api/library/games/${id}`, { status }),
+      ).pipe(
+        tap((entry) =>
+          this.update(owner, (items) =>
+            items.map((item) => (item.game.id === id ? entry : item)),
+          ),
+        ),
+      );
+    });
   }
   remove(id: number) {
-    return this.handle(this.http.delete<void>(`/api/library/games/${id}`));
+    return defer(() => {
+      const owner = this.auth.account()?.id;
+      return this.handle(
+        this.http.delete<void>(`/api/library/games/${id}`),
+      ).pipe(
+        tap(() =>
+          this.update(owner, (items) =>
+            items.filter((item) => item.game.id !== id),
+          ),
+        ),
+      );
+    });
   }
   private handle<T>(request: Observable<T>): Observable<T> {
     return request.pipe(
@@ -52,6 +133,7 @@ export class LibraryApi {
           'Cannot update or load your library. Please try again.',
         );
         if (error instanceof HttpErrorResponse && error.status === 401) {
+          this.auth.account.set(null);
           return from(this.router.navigateByUrl('/login')).pipe(
             switchMap(() =>
               throwError(

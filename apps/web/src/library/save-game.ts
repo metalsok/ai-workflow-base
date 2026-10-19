@@ -6,6 +6,7 @@ import {
   input,
   linkedSignal,
   signal,
+  computed,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
@@ -18,9 +19,17 @@ import { LibraryApi, playStatuses } from './api';
     <button
       class="mt-4 min-h-[44px] cursor-pointer rounded-lg bg-accent px-4 py-3 font-semibold text-button-ink disabled:cursor-wait disabled:opacity-65"
       (click)="save()"
-      [disabled]="pending()"
+      [disabled]="pending() || !api.ready() || status() !== undefined"
     >
-      {{ pending() ? 'Saving…' : 'Want to play' }}
+      {{
+        pending()
+          ? 'Saving…'
+          : status()
+            ? 'In library'
+            : api.ready()
+              ? 'Want to play'
+              : 'Checking library…'
+      }}
     </button>
     @if (message()) {
       <p class="mt-2 text-sm text-accent" role="status">{{ message() }}</p>
@@ -32,19 +41,19 @@ import { LibraryApi, playStatuses } from './api';
 })
 export class SaveGame {
   readonly gameId = input.required<number>();
-  private readonly api = inject(LibraryApi);
+  readonly api = inject(LibraryApi);
   private readonly destroyRef = inject(DestroyRef);
   readonly pending = signal(false);
-  readonly message = linkedSignal(() => {
-    this.gameId();
-    return '';
+  readonly status = computed(() => this.api.statuses().get(this.gameId()));
+  readonly message = computed(() => {
+    const status = this.status();
+    return status
+      ? `Saved · ${playStatuses.find((option) => option.value === status)!.label}`
+      : '';
   });
-  readonly error = linkedSignal(() => {
-    this.gameId();
-    return '';
-  });
+  readonly error = linkedSignal({ source: this.gameId, computation: () => '' });
   save() {
-    if (this.pending()) return;
+    if (this.pending() || !this.api.ready() || this.status()) return;
     this.pending.set(true);
     this.error.set('');
     this.api
@@ -54,10 +63,6 @@ export class SaveGame {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: (entry) =>
-          this.message.set(
-            `Saved · ${playStatuses.find((status) => status.value === entry.status)!.label}`,
-          ),
         error: (error: Error) => this.error.set(error.message),
       });
   }

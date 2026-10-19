@@ -346,3 +346,36 @@ Indie metadata, then records public sample metadata in
 studio size or call live providers during the deterministic test suites.
 
 Primary source: [IGDB PopScore documentation](https://api-docs.igdb.com/#popscore).
+
+## Administrator password recovery
+
+Apply migrations first, then run the local-only administrator command:
+
+```bash
+npm run account:reset -- tester@example.com
+```
+
+The terminal prompts for the new password twice with input hidden. Passwords
+must contain 12–128 characters. The password is read from standard input, never
+from command arguments. For automation, pipe one password line from a trusted
+secret source; avoid putting a literal password in shell history. The compiled
+command is `node dist/api/accounts/reset.cli.js tester@example.com`.
+
+The command hashes the password with Argon2 and atomically increments that
+account's session version. Every authenticated API request verifies the stored
+version, so all earlier sessions (including a login verified before the reset)
+are rejected. Other accounts and their sessions remain valid. Revoked session
+rows are cleaned up through ordinary expiry; resetting a password does not erase
+account or Library data. Existing sessions without a version retain version zero
+after the additive migration. Authentication attempt limits still apply.
+
+This operation requires administrator access to the database configuration and
+is deliberately absent from the public HTTP API. Database diagnostics and
+passwords are suppressed from command output. Existing local credentials are
+not reset by development or test commands.
+
+Saved statuses now use one account-scoped Angular resource. Successful mutations
+update that state after their server response, and page navigation refreshes it.
+Discover spotlight/cards, search, and details therefore agree with My Library.
+Changing accounts clears the visible state; failed status reads expose a retry
+instead of presenting a guessed unsaved state.

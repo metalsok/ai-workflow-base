@@ -6,6 +6,7 @@ import {
   output,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { SaveGame } from '../../library/save-game';
 import { RouterLink } from '@angular/router';
 import { GameCover } from '../cover';
 import type { DiscoveryResult, FeedKind } from '../api';
@@ -13,7 +14,7 @@ import type { DiscoveryResult, FeedKind } from '../api';
 @Component({
   selector: 'app-game-shelf',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, DatePipe, GameCover],
+  imports: [RouterLink, DatePipe, GameCover, SaveGame],
   templateUrl: './game-shelf.html',
 })
 export class GameShelf {

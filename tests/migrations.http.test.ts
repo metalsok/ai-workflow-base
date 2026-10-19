@@ -65,7 +65,7 @@ test('clean migration is repeatable, has no invented legacy dates, and matches t
     await migrate(db);
     await migrate(db);
     assert.equal(await db.getRepository(LegacyMigration).count(), 0);
-    assert.equal((await migrationStatus(db)).executed.length, 3);
+    assert.equal((await migrationStatus(db)).executed.length, 4);
     assert.equal(
       (await db.driver.createSchemaBuilder().log()).upQueries.length,
       0,
@@ -98,10 +98,19 @@ test('an already handed-over database retains its history, sessions and caches t
     await db.initialize();
     // Fixture represents the completed handover release, retained at c2cac3b.
     await recordBaseline(postgres.url);
-    const account = await db.getRepository(Account).save({
-      email: 'legacy@example.com',
-      passwordHash: await hash('legacy-long-passphrase'),
-    });
+    // Infrastructure fixture predates session_version; select only historical columns.
+    const inserted = await db
+      .createQueryBuilder()
+      .insert()
+      .into(Account, ['email', 'passwordHash'])
+      .values({
+        email: 'legacy@example.com',
+        passwordHash: await hash('legacy-long-passphrase'),
+      })
+      .returning(['id'])
+      .updateEntity(false)
+      .execute();
+    const account = (inserted.raw as { id: string }[])[0]!;
     const expiresAt = Date.now() + 86_400_000;
     const sid = 'pre-upgrade-session';
     const cookie = `game_tracker.sid=${encodeURIComponent(`s:${sid}.${createHmac('sha256', secret).update(sid).digest('base64').replace(/=+$/, '')}`)}`;
@@ -159,7 +168,20 @@ test('an already handed-over database retains its history, sessions and caches t
       LegacyMigration,
     ];
     const snapshot = async () =>
-      Promise.all(models.map((model) => db.getRepository(model).find()));
+      Promise.all(
+        models.map((model) =>
+          model === Account
+            ? db.getRepository(Account).find({
+                select: {
+                  id: true,
+                  email: true,
+                  passwordHash: true,
+                  createdAt: true,
+                },
+              })
+            : db.getRepository(model).find(),
+        ),
+      );
     const before = await snapshot();
     const backup = join(directory, 'before.dump');
     // Real pg_dump/pg_restore rehearsal, always against disposable databases.
@@ -243,7 +265,17 @@ test('an already handed-over database retains its history, sessions and caches t
     ]);
     const restored = await createDataSource(restore.url).initialize();
     try {
-      assert.deepEqual(await restored.getRepository(Account).find(), before[0]);
+      assert.deepEqual(
+        await restored.getRepository(Account).find({
+          select: {
+            id: true,
+            email: true,
+            passwordHash: true,
+            createdAt: true,
+          },
+        }),
+        before[0],
+      );
       assert.deepEqual(
         await restored.getRepository(StoredSession).find(),
         before[1],
@@ -412,9 +444,14 @@ test('Library and feed migrations can be reverted and reapplied while existing a
     app = undefined;
     await db.undoLastMigration({ transaction: 'all' });
     await db.undoLastMigration({ transaction: 'all' });
+    await db.undoLastMigration({ transaction: 'all' });
     assert.deepEqual(
       (await migrationStatus(db)).pending.map((m) => m.name),
-      ['PersonalLibrary1792409963460', 'DiscoveryFeeds1792411383846'],
+      [
+        'PersonalLibrary1792409963460',
+        'DiscoveryFeeds1792411383846',
+        'AccountSessionVersion1792412830507',
+      ],
     );
     await migrate(db);
     app = await createApp(options(postgres.url));

@@ -5,6 +5,7 @@ import {
   inject,
   linkedSignal,
 } from '@angular/core';
+import { SaveGame } from '../../library/save-game';
 import { RouterLink } from '@angular/router';
 import { CatalogApi } from '../api';
 import { catalogRequest } from '../request';
@@ -13,7 +14,7 @@ import { GameShelf } from '../game-shelf/game-shelf';
 @Component({
   selector: 'app-discover-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, GameShelf],
+  imports: [RouterLink, GameShelf, SaveGame],
   templateUrl: './discover-page.html',
 })
 export class DiscoverPage {

@@ -86,7 +86,15 @@
       id="main-content"
       class="mx-auto max-w-[1500px] px-12 py-10 compact:px-5 compact:py-7"
     >
-      @if (error()) {
+      @if (savedLibrary.error()) {
+      <p class="my-4 text-[#ffbbd0]" role="alert">{{ savedLibrary.error() }}</p>
+      <button
+        class="min-h-[44px] rounded-lg border border-outline px-4 py-2 text-foreground"
+        (click)="savedLibrary.refresh()"
+      >
+        Retry library status
+      </button>
+      } @if (error()) {
       <p
         class="my-4 border-l-[3px] border-[#ff9aba] bg-[#ff9aba10] p-[0.8rem] text-[#ffbbd0] [overflow-wrap:anywhere]"
         role="alert"
