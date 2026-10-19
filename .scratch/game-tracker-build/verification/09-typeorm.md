@@ -7,7 +7,7 @@ Date: 2026-10-19. Starting commit: 6910e3c on main.
 Node 26.12.0, TypeScript 6.0.3, ESM/NodeNext, NestJS 12.1.3, Express,
 PostgreSQL 17 and pg 8.23.1. Kept the existing dynamic Nest modules, explicit
 injection, HTTP contracts, validation, Passport, hashing and module-local models.
-Loaded implement, tdd and nestjs-professional-software-engineering; the framework
+Loaded implement, tdd, code-review and nestjs-professional-software-engineering; the framework
 skill supplies guidance while implement owns delivery and tdd owns test seams.
 No Angular implementation changed, so the Angular skill was not needed.
 
@@ -33,7 +33,7 @@ seam. No library implementation or live provider validation was added.
 - `npm run typecheck`: passed.
 - `npm run format:check`: passed.
 - `npm run build`: passed (Node 26/TypeScript 6 ESM API and Angular bundle).
-- `npm test`: passed, 42 HTTP/PostgreSQL tests and 4 desktop/mobile browser tests.
+- `npm test`: passed, 43 HTTP/PostgreSQL tests and 4 desktop/mobile browser tests.
 - Source CLI status/apply and built CLI status/apply: passed against disposable
   PostgreSQL. TypeORM migration:generate --check reports no schema difference.
 - Populated handover, repeated handover, exact schema/history preservation,
@@ -48,8 +48,9 @@ seam. No library implementation or live provider validation was added.
   passed. Its original signed cookie and cached catalog survive handover and two
   new API starts. pg_dump backup was inspected and restored to a second disposable
   database; the previous app authenticates the original cookie and logs in again.
-- Historical checksums match the original files. Application source has no pg
-  imports, direct queries, raw query-builder expressions or SQL session adapter.
+- Historical checksums match the original files. Application operations have no direct pg
+  queries, raw query-builder expressions or SQL session adapter. The pg import
+  is confined to configuring TypeORM driver timestamp parsing.
 
 PostgreSQL's TypeORM schema inspection emits a pg deprecation notice about
 concurrent queries on one client; checks still pass. No real development database,
@@ -57,10 +58,25 @@ credentials, container deployment or live IGDB endpoint was used. Application
 containers are scheduled for ticket 06; their required separate migration step
 and shared deployment-host lock directory are documented now.
 
-## Review and rollout state
+## Standards
 
-Implementation is ready for the required Standards and Spec reviews, then owner
-review. Owner acceptance has not been recorded, and ticket 09 is not marked done.
+No findings. The followup timestamp adapter remains ORM driver configuration and
+bound parameter transformation, consistent with ADR-0001.
+
+## Spec
+
+One DST preservation issue found and fixed. Both independent reviewers re-reviewed the fix and reported no
+remaining findings. The HTTP regression failed against the original mapping
+(401 instead of 200), then passed with lossless timestamp parameter binding;
+it covers access, scheduled cleanup, and expiry with process Europe/Vienna and
+PostgreSQL explicitly UTC. Full checks were rerun after the fix.
+
+Review summary: Standards 0 findings; Spec 1 resolved finding, 0 remaining.
+
+## Rollout state
+
+Implementation is ready for owner review. Owner acceptance has not been recorded,
+and ticket 09 is not marked done.
 The actual database handover remains a deliberate deployment action under the
 runbook: stop writers, verify a backup on a restored copy, hand over and migrate
 once, validate the old cookie/cache with ingress blocked, then resume writes only

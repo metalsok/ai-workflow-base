@@ -23,6 +23,14 @@ if (process.env.TEST_DATABASE_URL)
 const directory = await mkdtemp(join(tmpdir(), 'game-tracker-handover-'));
 const source = await startPostgres();
 const restored = await startPostgres();
+// initdb inherits TZ. Pin connection timezones so a non-UTC Node rehearsal
+// actually exercises different application and database timezone settings.
+for (const database of [source, restored]) {
+  const url = new URL(database.url);
+  // libpq URLs require percent-encoded spaces (URLSearchParams emits '+').
+  url.search = `options=${encodeURIComponent('-c timezone=UTC')}`;
+  database.url = url.toString();
+}
 const origin = 'http://127.0.0.1:4200';
 const sessionSecret = 'disposable-rehearsal-secret-at-least-32-characters';
 async function previousApp(url: string) {

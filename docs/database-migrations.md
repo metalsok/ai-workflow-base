@@ -7,7 +7,11 @@ disabled. Migrations are the only schema writer. PostgreSQL 17 supplies
 Keep the database's TimeZone unchanged across cutover: the historical session
 expiry is a `timestamp(6)` without timezone. The adapter reads PostgreSQL's
 TimeZone through an ORM metadata model and preserves its wall-time convention,
-including when Node runs in a different timezone. Normal IANA timezone names
+including when Node runs in a different timezone or enters a DST gap. An ORM
+transformer exposes the timezone-free session expiry as calendar text. Its
+driver parser and bound parameter preserve that text without a local Date round
+trip; the pg package performs no application queries. Use the same transformer
+for any future timestamp-without-timezone model. Normal IANA timezone names
 (such as UTC and Europe/Vienna) are supported by Node's Intl database.
 
 ## Everyday model operations

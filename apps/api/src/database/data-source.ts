@@ -8,12 +8,14 @@ import { CachedSearch } from '../catalog/catalog-search.entity.js';
 import { CatalogRequestLimit } from '../catalog/catalog-request-limit.entity.js';
 import { AppliedMigration, LegacyMigration } from './history.entity.js';
 import { DatabaseColumn, DatabaseSetting } from './postgres-metadata.entity.js';
+import { postgresTypes } from './timestamp.js';
 import { fileURLToPath } from 'node:url';
 
 export function databaseOptions(url: string) {
   return {
     type: 'postgres' as const,
     url,
+    extra: { types: postgresTypes },
     entities: [
       Account,
       StoredSession,

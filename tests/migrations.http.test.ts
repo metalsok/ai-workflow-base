@@ -112,7 +112,10 @@ test('populated handover preserves every table, signed sessions, hashes and cach
     const cookie = `game_tracker.sid=${encodeURIComponent(`s:${sid}.${createHmac('sha256', secret).update(sid).digest('base64').replace(/=+$/, '')}`)}`;
     await db.getRepository(StoredSession).save({
       sid,
-      expire: new Date(Math.ceil(expiresAt / 1000) * 1000),
+      expire: new Date(Math.ceil(expiresAt / 1000) * 1000)
+        .toISOString()
+        .replace('T', ' ')
+        .replace('Z', ''),
       sess: {
         accountId: account.id,
         expiresAt,

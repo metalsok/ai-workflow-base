@@ -21,10 +21,9 @@ export class OrmSessionStore extends session.Store {
     }, 60_000);
     this.timer.unref();
   }
-  // The historical timestamp has no zone: connect-pg-simple stored the
-  // database TimeZone's wall time, while pg decodes timestamp in the process TZ.
-  // Represent that same wall time in the process zone for ORM reads/writes.
-  private databaseDate(milliseconds: number): Date {
+  // Match the old store's database-zone wall time without constructing a
+  // process-local Date, which cannot represent times inside a DST gap.
+  private databaseDate(milliseconds: number): string {
     const parts = new Intl.DateTimeFormat('en-CA', {
       timeZone: this.timezone,
       year: 'numeric',
@@ -36,15 +35,8 @@ export class OrmSessionStore extends session.Store {
       hourCycle: 'h23',
     }).formatToParts(milliseconds);
     const value = (name: Intl.DateTimeFormatPartTypes) =>
-      Number(parts.find((p) => p.type === name)!.value);
-    return new Date(
-      value('year'),
-      value('month') - 1,
-      value('day'),
-      value('hour'),
-      value('minute'),
-      value('second'),
-    );
+      parts.find((p) => p.type === name)!.value;
+    return `${value('year')}-${value('month')}-${value('day')} ${value('hour')}:${value('minute')}:${value('second')}`;
   }
   private track<T>(operation: Promise<T>): Promise<T> {
     this.pending.add(operation);

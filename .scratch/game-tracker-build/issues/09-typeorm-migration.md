@@ -151,7 +151,7 @@ counters, cache operations, generated baseline, validated handover, migration
 commands, and recovery runbook. No real development database was altered.
 
 Verification: Node 26.12.0/TypeScript 6.0.3; typecheck, format:check, build,
-42 HTTP/PostgreSQL tests and four desktop/mobile browser journeys passed.
+43 HTTP/PostgreSQL tests and four desktop/mobile browser journeys passed.
 Source and built migration CLIs passed on disposable PostgreSQL; schema
 generation found no diff. Recovery with previous commit 6910e3c passed, including
 its original signed session, new-app restarts, real pg_dump/pg_restore, and login
@@ -161,3 +161,11 @@ application timezone. Live IGDB checks remain opt-in.
 See [the implementation record](../verification/09-typeorm.md) and
 [the migration runbook](../../../docs/database-migrations.md). The last acceptance
 item remains unchecked because owner review is pending; no acceptance is inferred.
+
+### Code review — 2026-10-19
+
+Independent Standards review reported no findings. Spec review identified a DST
+gap bug in the session timestamp mapping. Added a failing HTTP regression and
+fixed it with a lossless ORM timestamp transformer/driver parser. Both reviewers
+confirmed the fix and reported no remaining findings. The updated full suite
+contains 43 HTTP/PostgreSQL tests and the same four browser journeys.

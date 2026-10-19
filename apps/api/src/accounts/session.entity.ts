@@ -1,4 +1,5 @@
 import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import { timestampTransformer } from '../database/timestamp.js';
 import type { SessionData } from 'express-session';
 
 @Entity('sessions')
@@ -7,6 +8,6 @@ export class StoredSession {
   sid!: string;
   @Column('json') sess!: SessionData;
   @Index('sessions_expire_idx')
-  @Column('timestamp', { precision: 6 })
-  expire!: Date;
+  @Column('timestamp', { precision: 6, transformer: timestampTransformer })
+  expire!: string;
 }
