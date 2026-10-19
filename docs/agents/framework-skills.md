@@ -87,6 +87,27 @@ References: [Angular zoneless](https://angular.dev/guide/zoneless),
 and [resources](https://angular.dev/guide/signals/resource), and
 [Observable resources](https://angular.dev/guide/signals/rxjs-interop#using-rxresource-for-async-data).
 
+## Angular file organization and services
+
+Keep each component in one of these two forms:
+
+- A dedicated kebab-case folder containing matching class and template files,
+  such as `catalog/game-page/game-page.ts` and `game-page.html`. Place any
+  component-specific styles in that same folder.
+- One `.ts` file containing both the class and its inline template, for small
+  components such as `catalog/cover.ts` and `library/save-game.ts`.
+
+Keep components inside their existing feature area. Use the folder form for
+pages and larger templates; when extracting an inline template, move both files
+into a dedicated folder. The CLI component defaults select this folder form.
+Retain suffixless filenames and update imports when moving files.
+
+Use `@Service()` from `@angular/core` for Angular singleton services, including
+Auth, CatalogApi, and LibraryApi. It supplies automatic DI registration in the
+installed Angular version. For explicitly scoped instances, use
+`@Service({ autoProvided: false })` with an explicit provider. This convention
+applies to Angular; backend NestJS providers follow their framework's decorators.
+
 ## Project styling requirements
 
 Use Tailwind CSS v4 utilities for application presentation, in Angular templates

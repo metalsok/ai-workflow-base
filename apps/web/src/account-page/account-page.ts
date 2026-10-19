@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Auth } from './auth';
+import { Auth } from '../auth';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

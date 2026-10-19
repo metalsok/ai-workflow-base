@@ -6,8 +6,8 @@ import {
   RouterOutlet,
   withInMemoryScrolling,
 } from '@angular/router';
-import { AccountPage } from './account-page';
-import { Shell } from './shell';
+import { AccountPage } from './account-page/account-page';
+import { Shell } from './shell/shell';
 import { signedIn } from './auth';
 
 @Component({

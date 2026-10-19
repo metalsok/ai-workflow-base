@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, from, switchMap, throwError, type Observable } from 'rxjs';
 import type { Game } from '../catalog/api';
@@ -20,7 +20,7 @@ export interface LibraryResult {
   items: LibraryEntry[];
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class LibraryApi {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);

@@ -10,9 +10,9 @@ import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { finalize, type Observable } from 'rxjs';
-import { LibraryApi, playStatuses } from './api';
-import { catalogRequest } from '../catalog/request';
-import { GameCover } from '../catalog/cover';
+import { LibraryApi, playStatuses } from '../api';
+import { catalogRequest } from '../../catalog/request';
+import { GameCover } from '../../catalog/cover';
 
 @Component({
   selector: 'app-library-page',

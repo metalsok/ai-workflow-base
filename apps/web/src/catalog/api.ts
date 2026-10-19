@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, from, switchMap, throwError, type Observable } from 'rxjs';
 import { apiErrorMessage } from '../http-error';
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 export interface GameCard {
@@ -40,7 +40,7 @@ export class CatalogError extends Error {
   }
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class CatalogApi {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);

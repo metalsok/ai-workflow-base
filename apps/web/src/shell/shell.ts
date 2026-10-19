@@ -15,10 +15,10 @@ import {
 import { FormsModule } from '@angular/forms';
 import { finalize, switchMap } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { LibraryPage } from './library/library-page';
-import { SearchPage } from './catalog/search-page';
-import { GamePage } from './catalog/game-page';
-import { Auth } from './auth';
+import { LibraryPage } from '../library/library-page/library-page';
+import { SearchPage } from '../catalog/search-page/search-page';
+import { GamePage } from '../catalog/game-page/game-page';
+import { Auth } from '../auth';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
