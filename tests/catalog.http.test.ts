@@ -357,6 +357,34 @@ test('malformed and oversized provider payloads fail safely, while missing optio
   }
 });
 
+test('malformed optional provider metadata does not prevent opening game details', async () => {
+  provider.games = [
+    {
+      ...baldursGate,
+      id: 4700,
+      cover: null,
+      summary: { unexpected: true },
+      platforms: [null, 42, { id: 6, name: null }, ...baldursGate.platforms],
+      genres: [null, 42, { name: {} }, { name: 'Adventure' }],
+      involved_companies: [
+        null,
+        42,
+        { developer: true, company: null },
+        ...baldursGate.involved_companies,
+      ],
+    },
+  ];
+  const response = await get('/api/catalog/games/4700');
+  assert.equal(response.status, 200);
+  const { game } = await response.json();
+  assert.equal(game.coverUrl, null);
+  assert.equal(game.summary, null);
+  assert.deepEqual(game.platforms, ['PC (Microsoft Windows)']);
+  assert.deepEqual(game.genres, ['Adventure']);
+  assert.deepEqual(game.developers, ['Larian Studios']);
+  assert.deepEqual(game.publishers, ['Larian Studios']);
+});
+
 test('a signed-in account has a bounded catalog request window, including cached requests', async () => {
   now += 60_001;
   provider.games = [baldursGate];

@@ -7,9 +7,7 @@ export const searchFields =
   'name,game_type,version_parent,cover.image_id,first_release_date,platforms.name,platforms.platform_type';
 export const detailFields = `${searchFields},summary,genres.name,involved_companies.developer,involved_companies.publisher,involved_companies.company.name`;
 
-export function eligible(value: unknown): value is ProviderGame {
-  if (!value || typeof value !== 'object') return false;
-  const game = value as ProviderGame;
+export function eligible(game: ProviderGame): boolean {
   return (
     Number.isSafeInteger(game.id) &&
     game.id > 0 &&

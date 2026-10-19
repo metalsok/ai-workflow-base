@@ -35,6 +35,58 @@ session contracts and approved design. Select syntax using the actual installed
 versions and configuration; introducing a skill alone does not authorize a
 framework upgrade, application migration, or additional architecture.
 
+## Project Angular requirements
+
+The owner requires a zoneless application and explicit
+`changeDetection: ChangeDetectionStrategy.OnPush` on every application component,
+including the root, account pages, shell, and shared components. Apply this to
+new components and check it during reviews. This explicit declaration is a
+project preference and takes precedence over generic Angular guidance that
+recommends omitting the default.
+
+Angular 22.2.3 already boots zoneless and defaults components to OnPush. Keep
+Zone.js out of application dependencies and build/test polyfills; do not add
+`provideZoneChangeDetection`. Rely on the installed zoneless bootstrap default
+rather than adding a provider copied from an older Angular version. Angular CLI
+component defaults are recorded in `angular.json`. Its Angular 22 generator
+omits the explicit declaration when OnPush is selected, so add the import and
+`changeDetection` field after generating a component.
+
+Use signals and framework notification mechanisms for asynchronous UI updates.
+Use `linkedSignal` for editable state that resets when its source changes and
+`rxResource` for the catalog's Observable-based read lifecycle. Keep reactive
+parameters separate from the stream factory. Resource-owned subscriptions handle
+HTTP cancellation. Guard resource value reads after failure; preserve loading,
+clear-on-retry, cancellation, and missing-data presentation.
+
+Use Angular `HttpClient` for frontend API transport and return cold Observables
+from services. Update service-owned signals with `tap` when a response arrives;
+calling a service method alone must not dispatch a request or change account
+state. Do not convert HTTP Observables to Promises with `firstValueFrom` or
+`lastValueFrom`, or use `async`/`await` for frontend HTTP orchestration.
+
+Return the account-check Observable directly from the route guard so Angular's
+router owns its subscription. Components own subscriptions for explicit actions
+such as login and logout: use `takeUntilDestroyed` with an injected `DestroyRef`,
+`finalize` for pending state, and an error handler for readable messages. Compose
+navigation after success with RxJS; do not subscribe inside services or nest
+subscriptions. Mutations must not run from automatically reloading resources.
+
+Use `rxResource` to connect catalog Observables to signal state without a Promise
+bridge or manual abort listeners. Keep same-origin session cookies and the
+backend's existing Origin-based mutation protection. Native server-side IGDB
+transport and HTTP test clients do not use Angular dependency injection and are
+outside this frontend convention.
+
+Run the API and desktop/mobile browser journeys after changes that affect these
+behaviors. The browser journey checks that Zone.js is absent and that asynchronous
+results and retries render correctly.
+
+References: [Angular zoneless](https://angular.dev/guide/zoneless),
+[component change detection](https://angular.dev/guide/components/advanced-configuration),
+and [resources](https://angular.dev/guide/signals/resource), and
+[Observable resources](https://angular.dev/guide/signals/rxjs-interop#using-rxresource-for-async-data).
+
 ## Angular MCP
 
 The `angular-cli` MCP server is configured in this machine's user-level

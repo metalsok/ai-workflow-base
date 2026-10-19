@@ -1,3 +1,6 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, from, switchMap, throwError, type Observable } from 'rxjs';
+import { apiErrorMessage } from '../http-error';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -39,44 +42,46 @@ export class CatalogError extends Error {
 
 @Injectable({ providedIn: 'root' })
 export class CatalogApi {
+  private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  search(query: string, page: number, signal: AbortSignal) {
+  search(query: string, page: number): Observable<SearchResult> {
     return this.get<SearchResult>(
       `/api/catalog/search?${new URLSearchParams({ q: query, page: String(page) })}`,
-      signal,
     );
   }
-  details(id: string, signal: AbortSignal) {
-    return this.get<GameResult>(
-      `/api/catalog/games/${encodeURIComponent(id)}`,
-      signal,
-    );
+  details(id: string): Observable<GameResult> {
+    return this.get<GameResult>(`/api/catalog/games/${encodeURIComponent(id)}`);
   }
-  private async get<T>(path: string, signal: AbortSignal): Promise<T> {
-    let response: Response;
-    try {
-      response = await fetch(path, { signal });
-    } catch (error) {
-      if (signal.aborted) throw error;
-      throw new CatalogError(
-        'Cannot connect to the game catalog. Please try again.',
-        0,
-      );
-    }
-    if (response.status === 401) {
-      await this.router.navigateByUrl('/login');
-      throw new CatalogError(
-        'Your session has expired. Please sign in again.',
-        401,
-      );
-    }
-    if (!response.ok) {
-      const body = (await response.json()) as { message?: string };
-      throw new CatalogError(
-        body.message ?? 'Cannot load games right now. Please try again.',
-        response.status,
-      );
-    }
-    return (await response.json()) as T;
+  private get<T>(path: string): Observable<T> {
+    return this.http.get<T>(path).pipe(
+      catchError((error: unknown) => {
+        const status = error instanceof HttpErrorResponse ? error.status : 0;
+        if (status === 401) {
+          return from(this.router.navigateByUrl('/login')).pipe(
+            switchMap(() =>
+              throwError(
+                () =>
+                  new CatalogError(
+                    'Your session has expired. Please sign in again.',
+                    401,
+                  ),
+              ),
+            ),
+          );
+        }
+        return throwError(
+          () =>
+            new CatalogError(
+              apiErrorMessage(
+                error,
+                status === 0
+                  ? 'Cannot connect to the game catalog. Please try again.'
+                  : 'Cannot load games right now. Please try again.',
+              ),
+              status,
+            ),
+        );
+      }),
+    );
   }
 }

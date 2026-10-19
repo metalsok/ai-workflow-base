@@ -1,12 +1,18 @@
-import { Component, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CatalogApi, CatalogError, type GameResult } from './api';
+import { CatalogApi, CatalogError } from './api';
 import { catalogRequest } from './request';
 import { GameCover } from './cover';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-game-page',
   imports: [DatePipe, RouterLink, GameCover],
   templateUrl: './game-page.html',
@@ -17,8 +23,9 @@ export class GamePage {
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
-  readonly request = catalogRequest<GameResult>((signal) =>
-    this.api.details(this.params().get('id') ?? '', signal),
+  readonly request = catalogRequest(
+    () => this.params().get('id') ?? '',
+    (id) => this.api.details(id),
   );
   readonly notFound = computed(() => {
     const failure = this.request.failure();

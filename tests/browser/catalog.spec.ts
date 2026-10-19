@@ -20,6 +20,7 @@ test('a signed-in tester can search, page, open details, and recover from empty 
     }),
   );
   await page.goto('/register');
+  expect(await page.evaluate(() => 'Zone' in globalThis)).toBe(false);
   await page
     .getByRole('heading', { name: 'Create your account', exact: true })
     .waitFor();
@@ -107,6 +108,28 @@ test('a signed-in tester can search, page, open details, and recover from empty 
   await expect(
     page.getByRole('link', { name: "Baldur's Gate III", exact: true }),
   ).toBeVisible();
+  // Replacing an in-flight search must abort its HTTP request and show only
+  // the latest query's result, through the real browser/API/provider boundary.
+  const supersededQuery = `Superseded ${randomUUID()}`;
+  const isSuperseded = (request: import('@playwright/test').Request) => {
+    const url = new URL(request.url());
+    return (
+      url.pathname === '/api/catalog/search' &&
+      url.searchParams.get('q') === supersededQuery
+    );
+  };
+  const started = page.waitForRequest(isSuperseded);
+  await search(supersededQuery);
+  await started;
+  const cancelled = page.waitForEvent('requestfailed', isSuperseded);
+  await search(`Empty replacement ${randomUUID()}`);
+  await cancelled;
+  await expect(
+    page.getByRole('heading', { name: 'No games found', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: "Baldur's Gate III", exact: true }),
+  ).toHaveCount(0);
   await page.goto('/games/999999');
   await expect(
     page.getByRole('heading', { name: 'Game not found', exact: true }),

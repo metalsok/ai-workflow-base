@@ -1,8 +1,8 @@
 # 02: Search games and open details
 
-Status: ready-for-human
+Status: done
 Blocked by: None
-Outcome: Implementation, automated acceptance checks, and representative live validation passed
+Outcome: Owner accepted functionality and the reviewed Angular/NestJS refactors
 Parent: [First private release](../spec.md)
 
 ## What to build
@@ -82,3 +82,103 @@ findings.
 No implementation gaps or scope creep found. Personal library operations and
 Discover feeds remain in issues 03 and 04. The implementation is ready for the
 owner to try after restarting `npm run dev`, which applies the new migrations.
+
+
+### Owner code review and refactoring — 2026-10-19
+
+The owner confirmed that ticket 02 works and requested a maintainability review
+before accepting the code. They authorized the recommended refactors and the
+optional replacement of the custom request lifecycle with Angular `resource`.
+They also required a zoneless Angular app and explicit OnPush on every component.
+
+- Moved catalog fetching, PostgreSQL caching, stale fallback, and account quota
+  persistence into `CatalogService`; the controller retains HTTP validation and
+  rate-limit response mapping. Existing endpoint, cache, and session contracts
+  are preserved, with no database migration.
+- Added provider-record parsing before exposing typed games to Catalog. Scope
+  checking now operates on parsed data rather than claiming to validate the
+  entire provider shape. Malformed optional metadata retains usable fallbacks.
+- Correction to the initial review: null optional genres/company entries were
+  already handled by optional chaining. The added HTTP regression passed before
+  changes; it is coverage of existing behavior, not evidence of a repaired crash.
+- Replaced state synchronization effects with `linkedSignal` for the editable
+  search term and the cover error state. Replaced manual request signals and
+  cancellation with `resource`, keeping parameters separate from the loader,
+  forwarding the abort signal, guarding failed value reads, and hiding results
+  during reload to preserve the existing clear-on-retry UI.
+- All six application components now explicitly declare OnPush. Angular 22's
+  existing zoneless bootstrap remains in use. The browser journey asserts that
+  Zone.js is absent. Persistent instructions and the build spec record both
+  requirements. Angular CLI's OnPush default is explicit in `angular.json`;
+  future generated components still need the declaration added because Angular
+  22 omits default component metadata.
+
+Loaded `angular-developer`, `nestjs-professional-software-engineering`,
+`writing-for-agents`, and the TDD guidance for the agreed HTTP/PostgreSQL seam.
+Passed type checking, formatting, `npm test` (27 HTTP/PostgreSQL tests and four
+browser journeys across desktop/mobile), and both builds through the browser
+suite. Tests required permission for disposable PostgreSQL and loopback servers.
+No live IGDB requests were made. Human acceptance remains pending; this entry
+does not mark the ticket approved or complete.
+
+
+### Angular HTTP transport follow-up — 2026-10-19
+
+At the owner's request, authentication and Catalog now use Angular `HttpClient`
+instead of direct browser `fetch`. `provideHttpClient()` is configured at
+bootstrap. Authentication keeps awaitable action methods and the route guard's
+explicit account check; catalog reads retain `resource` and connect its abort
+signal to HTTP unsubscription. Shared error-message extraction accepts only a
+nonempty string from an HTTP error body and otherwise uses a readable fallback.
+No direct `fetch` calls remain under `apps/web/src`. Backend provider transport
+and HTTP test clients remain appropriate outside Angular.
+
+The browser journey now replaces an in-flight search and verifies its HTTP
+request is cancelled and only the latest result appears. Existing checks also
+exercise incorrect-password messages, cookies, account reload, logout, search,
+metadata, 404 handling, and retry behavior. Transport conventions are recorded
+in framework guidance and development documentation. No new interceptors,
+authentication protocols, or server changes were introduced.
+
+Validation passed: `npm run typecheck`, `npm run format:check`, and `npm test`
+(27 HTTP/PostgreSQL tests, four desktop/mobile browser journeys, and both builds).
+Browser cancellation checks passed at both viewport sizes. No live IGDB calls
+were made. Changes remain uncommitted and await owner acceptance.
+
+
+### Observable service contracts — 2026-10-19
+
+The owner requested cold Observable service contracts and signal-based state,
+replacing the preceding Promise-based frontend orchestration. This supersedes
+the earlier awaitable-auth and resource/abort-bridge implementation notes.
+
+`Auth.load()` returns `Observable<Account | null>` from HttpClient: a subscriber
+starts the request; `tap` updates the account signal on the response. A 401 emits
+null and clears the account. Other failures remain errors. Login and logout also
+return cold Observables and update account state only on successful responses.
+The route guard returns the account-check pipeline directly, letting Angular's
+router subscribe and cancel it. Account and shell components subscribe to actions
+with `takeUntilDestroyed`, use `finalize` for pending state, and compose successful
+navigation with RxJS operators, without nested subscriptions.
+
+Catalog also returns HttpClient Observables. Its request helper now uses Angular
+22's `rxResource` to manage subscriptions, signal state, retries, and cancellation;
+there is no Promise conversion or manual AbortSignal bridge. Frontend source has
+no `async`/`await`, `firstValueFrom`, or `lastValueFrom`. Native Router navigation
+Promises are consumed through RxJS or have an explicit rejection handler.
+Framework guidance and development documentation record this owner preference
+for future frontend work. Backend async code and test runners are outside this
+frontend convention.
+
+Validation after the Observable refactor passed: type checking, formatting, both
+builds, all 27 HTTP/PostgreSQL tests, and all four desktop/mobile browser journeys
+including cancellation. No live IGDB checks were run. Changes remain uncommitted.
+
+
+### Owner acceptance — 2026-10-19
+
+The owner accepted the final Observable/signal implementation and asked to finish
+this ticket before starting a separate Tailwind migration. Ticket 02 is complete.
+The final checks passed: type checking, formatting, both builds, 27 HTTP tests,
+and four desktop/mobile browser journeys including cancellation. Live catalog
+validation remains the separately recorded evidence from the original work.

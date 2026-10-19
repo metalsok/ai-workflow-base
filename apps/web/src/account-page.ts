@@ -1,14 +1,24 @@
-import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize, switchMap, tap } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth } from './auth';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-account-page',
   imports: [FormsModule, RouterLink],
   templateUrl: './account-page.html',
 })
 export class AccountPage {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -22,26 +32,29 @@ export class AccountPage {
   readonly email = signal('');
   readonly password = signal('');
 
-  async submit() {
+  submit() {
     if (this.pending()) return;
     this.pending.set(true);
     this.error.set('');
-    try {
-      await this.auth.authenticate(
+    this.auth
+      .authenticate(
         this.registering ? 'register' : 'login',
         this.email(),
         this.password(),
-      );
-      this.password.set('');
-      await this.router.navigateByUrl('/discover');
-    } catch (error) {
-      this.error.set(
-        error instanceof Error
-          ? error.message
-          : 'Cannot connect. Please try again.',
-      );
-    } finally {
-      this.pending.set(false);
-    }
+      )
+      .pipe(
+        tap(() => this.password.set('')),
+        switchMap(() => this.router.navigateByUrl('/discover')),
+        finalize(() => this.pending.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        error: (error: unknown) =>
+          this.error.set(
+            error instanceof Error
+              ? error.message
+              : 'Cannot connect. Please try again.',
+          ),
+      });
   }
 }

@@ -1,4 +1,11 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  linkedSignal,
+  inject,
+  signal,
+} from '@angular/core';
 import {
   ActivatedRoute,
   Router,
@@ -6,17 +13,20 @@ import {
   RouterLinkActive,
 } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { finalize, switchMap } from 'rxjs';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { SearchPage } from './catalog/search-page';
 import { GamePage } from './catalog/game-page';
 import { Auth } from './auth';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-shell',
   imports: [RouterLink, RouterLinkActive, FormsModule, SearchPage, GamePage],
   templateUrl: './shell.html',
 })
 export class Shell {
+  private readonly destroyRef = inject(DestroyRef);
   readonly auth = inject(Auth);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -26,31 +36,34 @@ export class Shell {
   readonly library = this.route.snapshot.data['library'] === true;
   readonly searchPage = this.route.snapshot.data['search'] === true;
   readonly gamePage = this.route.snapshot.data['game'] === true;
-  readonly query = signal('');
-
-  constructor() {
-    effect(() => this.query.set(this.params().get('q') ?? ''));
-  }
-  async search() {
+  readonly query = linkedSignal(() => this.params().get('q') ?? '');
+  search() {
     if (this.query().trim().length < 2) return;
-    await this.router.navigate(['/search'], {
-      queryParams: { q: this.query().trim() },
-    });
+    this.router
+      .navigate(['/search'], {
+        queryParams: { q: this.query().trim() },
+      })
+      .catch(() =>
+        this.error.set('Cannot open search right now. Please try again.'),
+      );
   }
   readonly error = signal('');
   readonly pending = signal(false);
 
-  async logout() {
+  logout() {
     if (this.pending()) return;
     this.pending.set(true);
     this.error.set('');
-    try {
-      await this.auth.logout();
-      await this.router.navigateByUrl('/login');
-    } catch {
-      this.error.set('Cannot sign out right now. Please try again.');
-    } finally {
-      this.pending.set(false);
-    }
+    this.auth
+      .logout()
+      .pipe(
+        switchMap(() => this.router.navigateByUrl('/login')),
+        finalize(() => this.pending.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        error: () =>
+          this.error.set('Cannot sign out right now. Please try again.'),
+      });
   }
 }

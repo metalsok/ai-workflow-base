@@ -1,6 +1,12 @@
-import { Component, effect, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  linkedSignal,
+} from '@angular/core';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-game-cover',
   template: `
     @if (url() && !failed()) {
@@ -20,11 +26,8 @@ import { Component, effect, input, signal } from '@angular/core';
 export class GameCover {
   readonly url = input<string | null>(null);
   readonly title = input.required<string>();
-  readonly failed = signal(false);
-  constructor() {
-    effect(() => {
-      this.url();
-      this.failed.set(false);
-    });
-  }
+  readonly failed = linkedSignal({
+    source: this.url,
+    computation: () => false,
+  });
 }

@@ -16,12 +16,14 @@ export const browserIgdbFetch: typeof fetch = async (input, init) => {
       expires_in: 3600,
     });
   const body = String(init?.body ?? '');
-  await new Promise((resolve) => setTimeout(resolve, 350));
+  const match = /search ("(?:[^"\\]|\\.)*");/.exec(body);
+  const query = match ? String(JSON.parse(match[1])) : '';
+  await new Promise((resolve) =>
+    setTimeout(resolve, query.startsWith('Superseded') ? 1500 : 350),
+  );
   if (body.includes('where id = 119171')) return Response.json([baldursGate]);
   if (body.includes('where id = 1010')) return Response.json([unknown]);
   if (body.includes('where id = ')) return Response.json([]);
-  const match = /search ("(?:[^"\\]|\\.)*");/.exec(body);
-  const query = match ? String(JSON.parse(match[1])) : '';
   if (query.startsWith('Empty')) return Response.json([]);
   if (query.startsWith('Retry') && !failed.has(query)) {
     failed.add(query);

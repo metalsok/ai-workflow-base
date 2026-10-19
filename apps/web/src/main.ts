@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import {
   provideRouter,
@@ -10,14 +11,17 @@ import { Shell } from './shell';
 import { signedIn } from './auth';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-root',
   imports: [RouterOutlet],
   template: '<router-outlet />',
 })
 class App {}
 
+// Angular 22 boots zoneless by default; keep Zone.js and zone providers out.
 bootstrapApplication(App, {
   providers: [
+    provideHttpClient(),
     provideRouter(
       [
         { path: 'login', component: AccountPage },

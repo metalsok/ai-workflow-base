@@ -40,6 +40,11 @@
             "proxyConfig": "apps/web/proxy.conf.json"
           }
         }
+      },
+      "schematics": {
+        "@schematics/angular:component": {
+          "changeDetection": "OnPush"
+        }
       }
     }
   }

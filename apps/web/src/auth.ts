@@ -1,4 +1,7 @@
-import { Injectable, signal, inject } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, map, of, tap, throwError, type Observable } from 'rxjs';
+import { apiErrorMessage } from './http-error';
+import { Injectable, signal, inject, Service } from '@angular/core';
 import { Router, type CanActivateFn } from '@angular/router';
 
 interface Account {
@@ -6,57 +9,70 @@ interface Account {
   email: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class Auth {
+  private readonly http = inject(HttpClient);
   readonly account = signal<Account | null>(null);
 
-  async load() {
-    const response = await fetch('/api/accounts/me');
-    if (response.status === 401) {
-      this.account.set(null);
-      return;
-    }
-    if (!response.ok)
-      throw new Error('Cannot load your account. Please try again.');
-    this.account.set((await response.json()) as Account);
+  load(): Observable<Account | null> {
+    return this.http.get<Account>('/api/accounts/me').pipe(
+      catchError((error: unknown) =>
+        error instanceof HttpErrorResponse && error.status === 401
+          ? of(null)
+          : throwError(
+              () => new Error('Cannot load your account. Please try again.'),
+            ),
+      ),
+      tap((account) => this.account.set(account)),
+    );
   }
 
-  async authenticate(
+  authenticate(
     action: 'login' | 'register',
     email: string,
     password: string,
-  ) {
-    const response = await fetch(`/api/accounts/${action}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    if (!response.ok) {
-      const error = (await response.json()) as { message?: string };
-      throw new Error(
-        error.message ?? 'Cannot sign in right now. Please try again.',
+  ): Observable<Account> {
+    return this.http
+      .post<Account>(`/api/accounts/${action}`, { email, password })
+      .pipe(
+        tap((account) => this.account.set(account)),
+        catchError((error: unknown) =>
+          throwError(
+            () =>
+              new Error(
+                apiErrorMessage(
+                  error,
+                  'Cannot sign in right now. Please try again.',
+                ),
+              ),
+          ),
+        ),
       );
-    }
-    this.account.set((await response.json()) as Account);
   }
 
-  async logout() {
-    const response = await fetch('/api/accounts/logout', { method: 'POST' });
-    if (!response.ok)
-      throw new Error('Cannot sign out right now. Please try again.');
-    this.account.set(null);
+  logout(): Observable<void> {
+    return this.http.post<void>('/api/accounts/logout', null).pipe(
+      tap(() => this.account.set(null)),
+      catchError(() =>
+        throwError(
+          () => new Error('Cannot sign out right now. Please try again.'),
+        ),
+      ),
+    );
   }
 }
 
-export const signedIn: CanActivateFn = async () => {
+export const signedIn: CanActivateFn = () => {
   const auth = inject(Auth);
   const router = inject(Router);
-  try {
-    await auth.load();
-  } catch {
-    return router.createUrlTree(['/login'], {
-      queryParams: { unavailable: '1' },
-    });
-  }
-  return auth.account() ? true : router.createUrlTree(['/login']);
+  return auth.load().pipe(
+    map((account) => (account ? true : router.createUrlTree(['/login']))),
+    catchError(() =>
+      of(
+        router.createUrlTree(['/login'], {
+          queryParams: { unavailable: '1' },
+        }),
+      ),
+    ),
+  );
 };

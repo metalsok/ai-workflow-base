@@ -23,6 +23,9 @@ IGDB checks opt-in and credentials out of logs, source control, and client bundl
 For Angular or NestJS planning, implementation, debugging, or review, read
 `docs/agents/framework-skills.md` and load the relevant framework skill before
 making framework decisions. Include this requirement in any delegated task.
+Keep Angular zoneless and set `changeDetection: ChangeDetectionStrategy.OnPush`
+explicitly on every application component. See the project requirements in
+`docs/agents/framework-skills.md` for version details and review checks.
 
 ### Issue tracker
 

@@ -6,6 +6,17 @@ Prerequisites: Node 26, npm, and Docker Compose with permission to use Docker.
 Angular 22.2, NestJS 12.1, and TypeScript 6.0 are locked in `package-lock.json`.
 Run all commands from the repository root.
 
+The Angular app runs zoneless using Angular 22's bootstrap default, without
+Zone.js. Every application component explicitly declares OnPush; future
+components must retain that declaration. Project conventions are recorded in
+[framework guidance](agents/framework-skills.md#project-angular-requirements).
+Frontend API calls use Angular `HttpClient`, configured at bootstrap. Services
+return cold Observables; authentication updates its account signal
+on subscription responses. Components subscribe to explicit actions with
+destruction cleanup, the router subscribes to account guards, and catalog reads
+use `rxResource` to manage signal state and cancel superseded subscriptions.
+Session cookies and the backend's Origin checks retain the same contract.
+
 ```bash
 npm ci
 node scripts/setup-dev.mjs

@@ -1,3 +1,5 @@
+import { parseProviderGame, type ProviderGame } from './provider-game.js';
+export type { ProviderGame } from './provider-game.js';
 import { setTimeout } from 'node:timers/promises';
 import { CatalogUnavailable } from './unavailable.js';
 export interface IgdbOptions {
@@ -6,23 +8,6 @@ export interface IgdbOptions {
   fetch?: typeof fetch;
   clock?: () => number;
 }
-export interface ProviderGame {
-  id: number;
-  name: string;
-  game_type?: number;
-  version_parent?: number | null;
-  cover?: { image_id?: string };
-  first_release_date?: number;
-  platforms?: { id: number; name: string; platform_type?: number }[];
-  summary?: string;
-  genres?: { name: string }[];
-  involved_companies?: {
-    developer?: boolean;
-    publisher?: boolean;
-    company?: { name?: string };
-  }[];
-}
-
 export class IgdbClient {
   private token?: string;
   private tokenExpiresAt = 0;
@@ -38,7 +23,9 @@ export class IgdbClient {
   }
 
   async games(query: string): Promise<ProviderGame[]> {
-    return (await this.records('games', query)) as ProviderGame[];
+    return (await this.records('games', query))
+      .map(parseProviderGame)
+      .filter((game) => game !== null);
   }
 
   async records(

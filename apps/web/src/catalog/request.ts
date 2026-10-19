@@ -1,46 +1,27 @@
-import { effect, signal } from '@angular/core';
+import { computed } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import type { Observable } from 'rxjs';
 
-// Own the common lifecycle; each page still chooses its request and empty/404 UI.
-export function catalogRequest<T>(
-  load: (signal: AbortSignal) => Promise<T> | null,
+// Keep page presentation independent of Angular's resource status/value rules.
+export function catalogRequest<T, P>(
+  params: () => P | undefined,
+  load: (params: P) => Observable<T>,
 ) {
-  const result = signal<T | null>(null);
-  const loading = signal(false);
-  const error = signal('');
-  const failure = signal<unknown>(null);
-  const retries = signal(0);
-  effect((cleanup) => {
-    retries();
-    const controller = new AbortController();
-    cleanup(() => controller.abort());
-    result.set(null);
-    error.set('');
-    failure.set(null);
-    const request = load(controller.signal);
-    loading.set(request !== null);
-    if (!request) return;
-    request
-      .then((value) => {
-        if (!controller.signal.aborted) result.set(value);
-      })
-      .catch((reason) => {
-        if (controller.signal.aborted) return;
-        failure.set(reason);
-        error.set(
-          reason instanceof Error
-            ? reason.message
-            : 'Cannot load game information. Please try again.',
-        );
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) loading.set(false);
-      });
+  const request = rxResource({
+    params,
+    stream: ({ params }) => load(params),
   });
   return {
-    result,
-    loading,
-    error,
-    failure,
-    retry: () => retries.update((value) => value + 1),
+    // Hide the old result during reload, matching the existing clear-on-retry UI.
+    result: computed(() =>
+      !request.isLoading() && request.hasValue() ? request.value() : null,
+    ),
+    loading: request.isLoading,
+    failure: request.error,
+    error: computed(() => {
+      const failure = request.error();
+      return failure ? failure.message : '';
+    }),
+    retry: () => request.reload(),
   };
 }
