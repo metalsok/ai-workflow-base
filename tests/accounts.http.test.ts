@@ -311,6 +311,45 @@ test('HTTPS deployments issue Secure cookies only through an explicitly trusted 
   }
 });
 
+test('HTTPS proxy CIDRs trust only the configured proxy address', async () => {
+  for (const [trusted, cidr] of [
+    [true, '127.0.0.1/32'],
+    [false, '192.0.2.1/32'],
+  ] as const) {
+    const secureApp = await createApp({
+      databaseUrl: postgres.url,
+      origin: 'https://tracker.example',
+      sessionSecret: 'proxy-cidr-disposable-session-secret-at-least-32',
+      trustedProxyCidrs: [cidr],
+    });
+    try {
+      await secureApp.listen(0, '127.0.0.1');
+      const response = await fetch(
+        `${await secureApp.getUrl()}/api/accounts/register`,
+        {
+          method: 'POST',
+          headers: {
+            Origin: 'https://tracker.example',
+            'Content-Type': 'application/json',
+            'X-Forwarded-Proto': 'https',
+            'X-Forwarded-For': '127.0.0.1',
+          },
+          body: JSON.stringify({
+            email: `cidr-${trusted}@example.com`,
+            password: 'proxy-cidr-long-passphrase',
+          }),
+        },
+      );
+      assert.equal(response.status, 201);
+      assert.equal(response.headers.has('set-cookie'), trusted);
+      if (trusted)
+        assert.match(response.headers.get('set-cookie')!, /; Secure/i);
+    } finally {
+      await secureApp.close();
+    }
+  }
+});
+
 test('one address cannot bypass the authentication limit by varying emails or forwarding headers', async () => {
   let blocked = false;
   for (let count = 0; count < 61; count++) {

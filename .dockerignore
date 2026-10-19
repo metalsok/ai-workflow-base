@@ -1,0 +1,14 @@
+*
+!Dockerfile
+!package.json
+!package-lock.json
+!angular.json
+!tsconfig.json
+!.postcssrc.json
+!apps/
+!apps/**
+!tests/
+!tests/support/
+!tests/support/browser-igdb.ts
+!tests/support/igdb.ts
+!tests/support/packaged-igdb.mjs

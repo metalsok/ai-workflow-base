@@ -13,8 +13,8 @@
     "build:api": "tsc -p apps/api/tsconfig.json",
     "start": "node --env-file-if-exists=.env dist/api/main.js",
     "typecheck": "tsc -p apps/api/tsconfig.json --noEmit && ngc -p apps/web/tsconfig.json --noEmit && tsc -p tests/tsconfig.json",
-    "format": "prettier --write apps tests scripts/*.ts scripts/setup-dev.mjs *.json .postcssrc.json *.ts *.yaml AGENTS.md README.md docs/development.md docs/database-migrations.md",
-    "format:check": "prettier --check apps tests scripts/*.ts scripts/setup-dev.mjs *.json .postcssrc.json *.ts *.yaml AGENTS.md README.md docs/development.md docs/database-migrations.md",
+    "format": "prettier --write apps tests scripts/*.ts scripts/*.mjs *.json .postcssrc.json *.ts *.yaml AGENTS.md README.md docs/*.md",
+    "format:check": "prettier --check apps tests scripts/*.ts scripts/*.mjs *.json .postcssrc.json *.ts *.yaml AGENTS.md README.md docs/*.md",
     "db:up": "docker compose up -d --wait db",
     "db:migrate": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts",
     "test:api": "node --import tsx --test --test-concurrency=1 tests/*.http.test.ts",
@@ -25,7 +25,9 @@
     "db:generate": "node --env-file-if-exists=.env --import tsx node_modules/typeorm/cli.js migration:generate -d scripts/typeorm-data-source.ts",
     "db:migrate:built": "node --env-file-if-exists=.env dist/api/database/cli.js",
     "discovery:validate": "node --env-file-if-exists=.env --import tsx scripts/validate-discovery.ts",
-    "account:reset": "node --env-file-if-exists=.env --import tsx apps/api/src/accounts/reset.cli.ts"
+    "account:reset": "node --env-file-if-exists=.env --import tsx apps/api/src/accounts/reset.cli.ts",
+    "deploy:setup": "node scripts/setup-deployment.mjs",
+    "deploy:verify": "node scripts/verify-deployment.mjs"
   },
   "dependencies": {
     "@angular/common": "~22.2.3",

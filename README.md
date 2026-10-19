@@ -38,7 +38,9 @@ in this private test. Existing `IGDB_CLIENT_ID` and `IGDB_CLIENT_SECRET` values
 enable catalog search; enter them in `.env` if they are not already configured.
 
 See [development and testing](docs/development.md) for check commands, session
-policy, and running tests without Docker.
+policy, and running tests without Docker. The [private Docker deployment
+guide](docs/deployment.md) covers packaging, backups, and the later Tailscale
+host setup.
 
 ## Start a session
 

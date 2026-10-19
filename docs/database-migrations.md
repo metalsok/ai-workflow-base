@@ -60,8 +60,8 @@ inspect status, remove only that lock directory, and retry.
 The built CLI requires production dependencies and the compiled migrations under
 `dist/api/database/migrations`. Package fresh `dist/api`, `dist/web`, package.json,
 and locked production dependencies. Keep archived migration sources in Git.
-Application containers are covered by ticket 06 and must run migrations separately
-before starting API instances. Do not use unguarded migration:run/revert commands
+The [private Docker deployment guide](deployment.md) runs migrations through a
+one-shot Compose service before starting API instances. Do not use unguarded migration:run/revert commands
 in deployment or revert the baseline against user data: its down operations drop
 tables.
 

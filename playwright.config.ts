@@ -5,7 +5,7 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   use: {
-    baseURL: 'http://127.0.0.1:4300',
+    baseURL: process.env.PACKAGED_APP_ORIGIN ?? 'http://127.0.0.1:4300',
     trace: 'retain-on-failure',
     timezoneId: 'Europe/Vienna',
   },
@@ -20,10 +20,12 @@ export default defineConfig({
       },
     },
   ],
-  webServer: {
-    command: 'node --import tsx tests/support/browser-server.ts',
-    url: 'http://127.0.0.1:4300',
-    reuseExistingServer: false,
-    timeout: 30_000,
-  },
+  webServer: process.env.PACKAGED_APP_ORIGIN
+    ? undefined
+    : {
+        command: 'node --import tsx tests/support/browser-server.ts',
+        url: 'http://127.0.0.1:4300',
+        reuseExistingServer: false,
+        timeout: 30_000,
+      },
 });

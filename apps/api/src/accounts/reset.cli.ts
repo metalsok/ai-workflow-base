@@ -1,3 +1,4 @@
+import { loadRuntimeSecrets } from '../runtime-config.js';
 import { createDataSource } from '../database/data-source.js';
 import { assertMigrationsApplied } from '../database/migrate.js';
 import { resetPassword } from './reset-password.js';
@@ -29,7 +30,7 @@ async function hiddenLine(prompt: string): Promise<string> {
           return;
         }
         if (character === '\u007f' || character === '\b')
-          value = value.slice(0, -1);
+          value = Array.from(value).slice(0, -1).join('');
         else if (value.length < 129) value += character;
       }
     };
@@ -44,6 +45,7 @@ async function passwordInput() {
     return password;
   }
   let value = '';
+  process.stdin.setEncoding('utf8');
   for await (const chunk of process.stdin) {
     value += String(chunk);
     if (Buffer.byteLength(value) > 1024)
@@ -55,6 +57,7 @@ async function passwordInput() {
   return value;
 }
 async function main() {
+  loadRuntimeSecrets();
   if (process.argv.length !== 3)
     throw new Error(
       'Usage: account:reset -- email@example.com (password is read privately from stdin).',

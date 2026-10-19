@@ -164,16 +164,15 @@ normalized email. Limits count successful attempts too. A blocked request
 returns 429 with `Retry-After`. Restarting the API does not clear these counters.
 Forwarding headers are ignored by default.
 
-For an HTTPS proxy on the same host, set `APP_ORIGIN` to the exact public HTTPS
-origin and `TRUST_PROXY_LOOPBACK=true`, and configure the proxy to overwrite
-forwarding headers. Only loopback proxies are trusted. The API binds locally;
-private Tailscale access, HTTPS termination, and final deployment verification
-follow in issue 06. Secure cookies are not issued over plain HTTP.
+For a local HTTPS proxy, set `APP_ORIGIN` to the exact HTTPS origin and trust
+only the proxy source with `TRUST_PROXY_LOOPBACK` or `TRUST_PROXY_CIDRS`; configure
+it to overwrite forwarding headers. Secure cookies are not issued over plain
+HTTP. The [private deployment guide](deployment.md) covers Docker and Tailscale.
 
 Email ownership is **not verified** for this private test. Application accounts
-are independent of ChatGPT and Tailscale. Administrator password recovery and
-revocation of all account sessions are scheduled for issue 05; no self-service
-recovery or outbound email is available in this slice.
+are independent of ChatGPT and Tailscale. Administrator password recovery is
+documented below; no self-service recovery or outbound email is available in
+this slice.
 
 ## Verification limits for issue 01
 

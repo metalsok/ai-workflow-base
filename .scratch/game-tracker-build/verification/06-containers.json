@@ -1,0 +1,18 @@
+{
+  "verifiedAt": "2026-10-19T12:48:27.769Z",
+  "docker": "29.9.1",
+  "architecture": "x64",
+  "image": "game-tracker:local",
+  "fixtureImage": "game-tracker:verify",
+  "http": true,
+  "browserJourneys": 12,
+  "restartPersistence": true,
+  "recovery": true,
+  "backupRestore": true,
+  "originalSessionRestored": true,
+  "databaseNotPublished": true,
+  "runtimeSecretsAbsentFromImagesBundlesLogs": true,
+  "readinessDetectsDatabaseOutage": true,
+  "backupBytes": 15845,
+  "backupSha256": "8b0cc3667b30aec304fceffaa58529fa10e64d22128f91daf8355ab6dee68cde"
+}

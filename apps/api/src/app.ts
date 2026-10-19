@@ -14,6 +14,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { LibraryModule } from './library/library.module.js';
 import { CatalogModule } from './catalog/catalog.module.js';
 import type { IgdbOptions } from './catalog/igdb.js';
+import { HealthController } from './health.js';
 import { AccountsModule } from './accounts/accounts.module.js';
 
 export interface AppOptions {
@@ -24,6 +25,7 @@ export interface AppOptions {
   sessionSecret: string;
   sessionMaxAgeMs?: number;
   trustProxyLoopback?: boolean;
+  trustedProxyCidrs?: string[];
 }
 
 export async function createApp(options: AppOptions) {
@@ -61,6 +63,7 @@ export async function createApp(options: AppOptions) {
       catalog,
       LibraryModule.forModules(accounts, catalog),
     ],
+    controllers: [HealthController],
     providers: [
       {
         provide: 'database-lifecycle',
@@ -76,7 +79,11 @@ export async function createApp(options: AppOptions) {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: false,
   });
-  if (options.trustProxyLoopback) app.set('trust proxy', 'loopback');
+  const trustedProxies = [
+    ...(options.trustProxyLoopback ? ['loopback'] : []),
+    ...(options.trustedProxyCidrs ?? []),
+  ];
+  if (trustedProxies.length) app.set('trust proxy', trustedProxies);
   app.use(
     helmet({
       contentSecurityPolicy: {
