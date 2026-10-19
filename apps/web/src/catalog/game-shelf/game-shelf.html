@@ -1,0 +1,93 @@
+<section class="mt-10" [attr.aria-labelledby]="'shelf-' + kind()">
+  <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h2
+        class="text-[1.5rem] font-bold tracking-[-0.04em]"
+        [id]="'shelf-' + kind()"
+      >
+        {{ heading() }}
+      </h2>
+      <p class="mt-2 text-sm text-muted">
+        {{ kind() === 'popular' ? 'Ranked by IGDB page visits · Refreshed daily'
+        : 'First releases from the last 90 days · Newest first' }}
+      </p>
+    </div>
+    @if (feed(); as result) {
+    <p class="text-xs text-muted">
+      Updated {{ result.fetchedAt | date:'medium':'UTC' }} UTC
+    </p>
+    }
+  </div>
+  @if (loading()) {
+  <p
+    class="rounded-xl border border-outline bg-surface p-8 text-muted"
+    role="status"
+  >
+    Loading {{ heading().toLowerCase() }}…
+  </p>
+  } @else if (error()) {
+  <div class="rounded-xl border border-outline bg-surface p-6">
+    <p class="text-[#ffbbd0]" role="alert">{{ error() }}</p>
+    <button
+      class="mt-4 min-h-[44px] cursor-pointer rounded-lg bg-accent px-4 py-3 font-semibold text-button-ink"
+      (click)="retry.emit()"
+      [attr.aria-label]="'Retry ' + heading()"
+    >
+      Try again
+    </button>
+  </div>
+  } @else if (feed(); as result) { @if (result.stale) {
+  <div
+    class="mb-5 flex flex-wrap items-center gap-4 rounded-lg border border-[#bda6f84d] bg-[#bda6f811] p-4 text-[#d4c5fa]"
+  >
+    <p role="status">
+      Showing cached games. The catalog is temporarily unavailable; the update
+      time above is the age of this feed.
+    </p>
+    <button
+      class="min-h-[44px] shrink-0 cursor-pointer rounded-lg border border-outline px-4 py-2"
+      (click)="retry.emit()"
+      [attr.aria-label]="'Retry ' + heading()"
+    >
+      Try again
+    </button>
+  </div>
+  } @if (result.items.length) {
+  <div
+    class="grid grid-cols-6 gap-x-5 gap-y-8 tablet:grid-cols-4 compact:grid-cols-2 compact:gap-x-4 compact:gap-y-6"
+  >
+    @for (game of result.items; track game.id) {
+    <article class="min-w-0">
+      <a
+        class="block rounded-lg text-foreground no-underline"
+        [routerLink]="['/games', game.id]"
+        [attr.aria-label]="game.title"
+      >
+        <app-game-cover [url]="game.coverUrl" [title]="game.title" />
+        <h3 class="mt-3 text-sm font-bold [overflow-wrap:anywhere]">
+          {{ game.title }}
+        </h3>
+        <p class="mt-2 text-xs text-muted [overflow-wrap:anywhere]">
+          {{ game.platforms.join(' · ') || 'Platforms unavailable' }}
+        </p>
+        <p class="mt-2 text-xs text-muted">
+          {{ game.firstReleaseDate ? (game.firstReleaseDate | date:'mediumDate')
+          : 'Release date unknown' }}
+        </p>
+      </a>
+    </article>
+    }
+  </div>
+  } @else {
+  <div
+    class="rounded-xl border border-outline bg-surface px-6 py-10 text-center"
+  >
+    <h3 class="mb-3 text-lg font-bold">No games to show yet</h3>
+    <p class="text-muted">
+      {{ kind() === 'popular' ? 'There are no eligible games in this popularity
+      sample.' : 'No eligible first releases were found in this release window.'
+      }} Search for a game above to explore more.
+    </p>
+  </div>
+  } }
+</section>

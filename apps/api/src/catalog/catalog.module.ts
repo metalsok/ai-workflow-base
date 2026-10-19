@@ -14,6 +14,8 @@ import {
   Req,
   HttpException,
 } from '@nestjs/common';
+import { CachedFeed } from './catalog-feed.entity.js';
+import { DiscoveryService } from './discovery.service.js';
 import { CatalogService } from './catalog.service.js';
 import { AccountsGuard } from '../accounts/accounts.module.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -28,7 +30,16 @@ import { IgdbClient, type IgdbOptions } from './igdb.js';
 class CatalogController {
   constructor(
     @Inject(CatalogService) private readonly catalog: CatalogService,
+    @Inject(DiscoveryService) private readonly discovery: DiscoveryService,
   ) {}
+
+  @Get('discovery/:kind')
+  async feed(@Req() request: Request, @Param('kind') kind: string) {
+    await this.limitRequest(request);
+    if (kind !== 'popular' && kind !== 'recent')
+      throw new BadRequestException('Choose a valid discovery feed.');
+    return this.discovery.feed(kind);
+  }
 
   @Get('search')
   async search(
@@ -88,6 +99,7 @@ export class CatalogModule {
       imports: [
         accounts,
         TypeOrmModule.forFeature([
+          CachedFeed,
           CachedGame,
           CachedSearch,
           CatalogRequestLimit,
@@ -97,6 +109,7 @@ export class CatalogModule {
       controllers: [CatalogController],
       providers: [
         CatalogService,
+        DiscoveryService,
         { provide: IgdbClient, useValue: new IgdbClient(options) },
         { provide: 'catalog-clock', useValue: options.clock ?? Date.now },
       ],

@@ -1,0 +1,387 @@
+{
+  "observedAt": "2026-10-19T12:06:12.791Z",
+  "popularityType": {
+    "id": 1,
+    "name": "Visits",
+    "externalPopularitySource": 121
+  },
+  "popular": [
+    {
+      "id": 421011,
+      "title": "Fart Together",
+      "kind": "main",
+      "firstReleaseDate": null,
+      "genres": [
+        "Racing",
+        "Adventure",
+        "Indie",
+        "Arcade"
+      ],
+      "developers": [
+        "GamesMrkt"
+      ],
+      "publishers": [
+        "GamesMrkt"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 17269,
+      "title": "Roblox",
+      "kind": "main",
+      "firstReleaseDate": "2006-09-01",
+      "genres": [
+        "Platform",
+        "Simulator",
+        "Adventure"
+      ],
+      "developers": [
+        "Roblox Corporation"
+      ],
+      "publishers": [
+        "Roblox Corporation"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 117297,
+      "title": "Aion 2",
+      "kind": "main",
+      "firstReleaseDate": "2025-11-18",
+      "genres": [
+        "Role-playing (RPG)",
+        "Adventure"
+      ],
+      "developers": [
+        "NC"
+      ],
+      "publishers": [
+        "NC"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 307223,
+      "title": "The Choicer Voicer",
+      "kind": "main",
+      "firstReleaseDate": "2024-06-29",
+      "genres": [
+        "Indie"
+      ],
+      "developers": [
+        "YeahMaybe"
+      ],
+      "publishers": [
+        "YeahMaybe"
+      ],
+      "hasArtwork": false
+    },
+    {
+      "id": 340570,
+      "title": "Nomad Drive",
+      "kind": "main",
+      "firstReleaseDate": "2026-09-30",
+      "genres": [
+        "Simulator",
+        "Adventure",
+        "Indie"
+      ],
+      "developers": [],
+      "publishers": [],
+      "hasArtwork": true
+    },
+    {
+      "id": 1020,
+      "title": "Grand Theft Auto V",
+      "kind": "main",
+      "firstReleaseDate": "2013-09-17",
+      "genres": [
+        "Shooter",
+        "Racing",
+        "Adventure"
+      ],
+      "developers": [
+        "Rockstar North"
+      ],
+      "publishers": [
+        "Take-Two Interactive",
+        "Rockstar Games"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 341660,
+      "title": "Femboy Futa House",
+      "kind": "main",
+      "firstReleaseDate": "2025-09-12",
+      "genres": [
+        "Role-playing (RPG)",
+        "Simulator",
+        "Adventure",
+        "Visual Novel"
+      ],
+      "developers": [
+        "TopHouse Publishing"
+      ],
+      "publishers": [
+        "TopHouse Publishing"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 240482,
+      "title": "Fap Nights At Frenni's Night Club",
+      "kind": "main",
+      "firstReleaseDate": "2022-10-31",
+      "genres": [
+        "Indie",
+        "Visual Novel"
+      ],
+      "developers": [
+        "Fatal Fire Studios"
+      ],
+      "publishers": [
+        "Fatal Fire Studios"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 405935,
+      "title": "Five Nights with Maids",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-17",
+      "genres": [
+        "Point-and-click",
+        "Simulator"
+      ],
+      "developers": [],
+      "publishers": [
+        "Saikey Studios"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 121,
+      "title": "Minecraft: Java Edition",
+      "kind": "main",
+      "firstReleaseDate": "2011-11-18",
+      "genres": [
+        "Simulator",
+        "Adventure"
+      ],
+      "developers": [
+        "Mojang Studios"
+      ],
+      "publishers": [
+        "Mojang Studios"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 52189,
+      "title": "Grand Theft Auto VI",
+      "kind": "main",
+      "firstReleaseDate": "2026-11-19",
+      "genres": [
+        "Shooter",
+        "Racing",
+        "Adventure"
+      ],
+      "developers": [
+        "Rockstar Games"
+      ],
+      "publishers": [
+        "Rockstar Games",
+        "Take-Two Interactive"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 280970,
+      "title": "Bloxd.io",
+      "kind": "main",
+      "firstReleaseDate": "2021-01-01",
+      "genres": [
+        "Platform",
+        "Adventure",
+        "Indie"
+      ],
+      "developers": [
+        "Bloxd"
+      ],
+      "publishers": [
+        "Bloxd"
+      ],
+      "hasArtwork": false
+    }
+  ],
+  "recent": [
+    {
+      "id": 372803,
+      "title": "My Name Is...",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Adventure"
+      ],
+      "developers": [],
+      "publishers": [],
+      "hasArtwork": true
+    },
+    {
+      "id": 389480,
+      "title": "Coin Harvest",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [],
+      "developers": [
+        "Dumbbell Games"
+      ],
+      "publishers": [
+        "Dumbbell Games"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 399372,
+      "title": "Big Dig",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Strategy",
+        "Indie"
+      ],
+      "developers": [],
+      "publishers": [],
+      "hasArtwork": true
+    },
+    {
+      "id": 400994,
+      "title": "FirstPlate",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Simulator",
+        "Strategy",
+        "Indie"
+      ],
+      "developers": [],
+      "publishers": [],
+      "hasArtwork": true
+    },
+    {
+      "id": 407725,
+      "title": "Sender Unknown",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Simulator",
+        "Indie"
+      ],
+      "developers": [],
+      "publishers": [],
+      "hasArtwork": true
+    },
+    {
+      "id": 416763,
+      "title": "Gay It Loud",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Indie",
+        "Visual Novel"
+      ],
+      "developers": [
+        "Yuri Kissaten"
+      ],
+      "publishers": [
+        "Yuri Kissaten"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 420795,
+      "title": "Wild Draw",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Indie"
+      ],
+      "developers": [
+        "BehaUlas"
+      ],
+      "publishers": [
+        "BehaUlas"
+      ],
+      "hasArtwork": true
+    },
+    {
+      "id": 421963,
+      "title": "The Ramen Bar",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Simulator",
+        "Indie"
+      ],
+      "developers": [
+        "KM Studios"
+      ],
+      "publishers": [],
+      "hasArtwork": true
+    },
+    {
+      "id": 423071,
+      "title": "Universal Tidy Up",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Indie"
+      ],
+      "developers": [],
+      "publishers": [],
+      "hasArtwork": true
+    },
+    {
+      "id": 424006,
+      "title": "Howling Woods",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Simulator",
+        "Indie"
+      ],
+      "developers": [],
+      "publishers": [],
+      "hasArtwork": true
+    },
+    {
+      "id": 424151,
+      "title": "Hehehe Game",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Puzzle"
+      ],
+      "developers": [
+        "AksoGames"
+      ],
+      "publishers": [
+        "AksoGames"
+      ],
+      "hasArtwork": false
+    },
+    {
+      "id": 424328,
+      "title": "Just One More Fly",
+      "kind": "main",
+      "firstReleaseDate": "2026-10-19",
+      "genres": [
+        "Indie"
+      ],
+      "developers": [],
+      "publishers": [],
+      "hasArtwork": true
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import { LibraryEntry } from '../library/library-entry.entity.js';
 import { Account } from '../accounts/account.entity.js';
 import { StoredSession } from '../accounts/session.entity.js';
 import { AuthenticationAttempt } from '../accounts/authentication-attempt.entity.js';
+import { CachedFeed } from '../catalog/catalog-feed.entity.js';
 import { CachedGame } from '../catalog/catalog-game.entity.js';
 import { CachedSearch } from '../catalog/catalog-search.entity.js';
 import { CatalogRequestLimit } from '../catalog/catalog-request-limit.entity.js';
@@ -22,6 +23,7 @@ export function databaseOptions(url: string) {
       Account,
       StoredSession,
       AuthenticationAttempt,
+      CachedFeed,
       CachedGame,
       CachedSearch,
       CatalogRequestLimit,

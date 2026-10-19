@@ -29,7 +29,13 @@ export class IgdbClient {
   }
 
   async records(
-    endpoint: 'games' | 'game_types' | 'platform_types' | 'platforms',
+    endpoint:
+      | 'games'
+      | 'game_types'
+      | 'platform_types'
+      | 'platforms'
+      | 'popularity_types'
+      | 'popularity_primitives',
     query: string,
   ): Promise<unknown[]> {
     if (

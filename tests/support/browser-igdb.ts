@@ -21,6 +21,27 @@ export const browserIgdbFetch: typeof fetch = async (input, init) => {
   await new Promise((resolve) =>
     setTimeout(resolve, query.startsWith('Superseded') ? 1500 : 350),
   );
+  if (url.pathname.endsWith('/popularity_primitives'))
+    return Response.json([
+      { game_id: 119171, value: 1, popularity_type: 1 },
+      { game_id: 1010, value: 0.5, popularity_type: 1 },
+    ]);
+  if (body.includes('where id = ('))
+    return Response.json([
+      { ...baldursGate, artworks: [{ image_id: 'cinematic_art' }] },
+      unknown,
+    ]);
+  if (body.includes('sort first_release_date desc'))
+    return Response.json([
+      {
+        ...baldursGate,
+        first_release_date: Math.floor(Date.now() / 1000) - 86400,
+      },
+      {
+        ...unknown,
+        first_release_date: Math.floor(Date.now() / 1000) - 2 * 86400,
+      },
+    ]);
   if (body.includes('where id = 119171')) return Response.json([baldursGate]);
   if (body.includes('where id = 1010')) return Response.json([unknown]);
   if (body.includes('where id = ')) return Response.json([]);

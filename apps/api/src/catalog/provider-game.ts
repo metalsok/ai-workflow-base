@@ -5,6 +5,7 @@ export interface ProviderGame {
   version_parent?: number | null;
   cover?: { image_id?: string };
   first_release_date?: number;
+  artworks?: { image_id?: string }[];
   platforms?: { id: number; name: string; platform_type?: number }[];
   summary?: string;
   genres?: { name: string }[];
@@ -55,6 +56,9 @@ export function parseProviderGame(value: unknown): ProviderGame | null {
     cover: { image_id: text(record(game['cover'])?.['image_id']) },
     first_release_date: number(game['first_release_date']),
     summary: text(game['summary']),
+    artworks: records(game['artworks']).map((art) => ({
+      image_id: text(art['image_id']),
+    })),
     platforms: records(game['platforms']).flatMap((platform) => {
       const id = number(platform['id']);
       return id === undefined

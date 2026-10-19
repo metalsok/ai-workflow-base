@@ -1,0 +1,73 @@
+@if (featured(); as game) {
+<section
+  class="relative isolate flex min-h-[410px] items-center overflow-hidden rounded-2xl border border-outline bg-[radial-gradient(ellipse_at_85%_30%,#a080d946,transparent_45%),linear-gradient(120deg,#19182d,#302344_70%,#151b30)] compact:min-h-[350px]"
+  aria-labelledby="spotlight-title"
+>
+  @if (game.artworkUrl && !artworkFailed()) {
+  <img
+    class="absolute inset-0 -z-20 size-full object-cover"
+    [src]="game.artworkUrl"
+    alt=""
+    (error)="artworkFailed.set(true)"
+  />
+  }
+  <div
+    class="absolute inset-0 -z-10 bg-[linear-gradient(90deg,#11121ce8,#19182db3_55%,#151b3055)]"
+    aria-hidden="true"
+  ></div>
+  <div class="max-w-[700px] p-12 compact:p-7">
+    <p class="text-xs font-bold uppercase tracking-[0.19em] text-accent">
+      In the spotlight
+    </p>
+    <h2
+      class="mt-3 mb-5 text-[clamp(2.2rem,4vw,4rem)] leading-[1.1] font-bold tracking-[-0.05em] [overflow-wrap:anywhere]"
+      id="spotlight-title"
+    >
+      {{ game.title }}
+    </h2>
+    <p class="mb-4 text-sm text-accent">
+      {{ game.genres.slice(0,3).join(' · ') || 'A new world to explore' }}
+    </p>
+    <p
+      class="mb-7 line-clamp-3 max-w-[520px] text-copy [overflow-wrap:anywhere]"
+    >
+      {{ game.summary || 'Explore the game’s details and find your next
+      adventure.' }}
+    </p>
+    <a
+      class="inline-flex min-h-[46px] items-center gap-5 rounded-lg bg-accent px-5 py-3 font-semibold text-button-ink no-underline"
+      [routerLink]="['/games', game.id]"
+      >Explore game <span aria-hidden="true">↗</span></a
+    >
+  </div>
+</section>
+} @else {
+<section
+  class="rounded-2xl border border-outline bg-[linear-gradient(120deg,#19182d,#302344)] p-10 compact:p-7"
+  aria-labelledby="discovery-welcome"
+>
+  <h2
+    class="mb-4 text-[2rem] font-bold tracking-[-0.04em]"
+    id="discovery-welcome"
+  >
+    Find your next adventure.
+  </h2>
+  <p class="text-copy">
+    Explore the discovery shelves or search for a title above.
+  </p>
+</section>
+}
+<app-game-shelf
+  kind="popular"
+  [feed]="popular.result()"
+  [loading]="popular.loading()"
+  [error]="popular.error()"
+  (retry)="popular.retry()"
+/>
+<app-game-shelf
+  kind="recent"
+  [feed]="recent.result()"
+  [loading]="recent.loading()"
+  [error]="recent.error()"
+  (retry)="recent.retry()"
+/>

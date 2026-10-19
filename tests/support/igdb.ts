@@ -27,6 +27,7 @@ export const baldursGate = {
 export class IgdbFixture {
   requests: { endpoint: string; body: string; at: number }[] = [];
   games: unknown[] = [baldursGate];
+  popularity: unknown[] = [];
   status = 200;
   rejectedTokens = 0;
   responseBody: unknown = undefined;
@@ -54,6 +55,8 @@ export class IgdbFixture {
         { message: 'Private provider diagnostics: fixture-server-only-token' },
         { status: this.status, headers: { 'Retry-After': '1' } },
       );
+    if (url.pathname.endsWith('/popularity_primitives'))
+      return Response.json(this.responseBody ?? this.popularity);
     return Response.json(this.responseBody ?? this.games);
   };
 }

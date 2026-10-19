@@ -109,55 +109,7 @@
       <app-search-page /> } @else if (library) {
       <app-library-page />
       } @else {
-      <section
-        class="relative flex min-h-[380px] items-center overflow-hidden rounded-2xl border border-outline bg-[radial-gradient(ellipse_at_85%_30%,#a080d946,transparent_45%),linear-gradient(120deg,#19182d,#302344_70%,#151b30)] before:absolute before:-top-[130px] before:-right-[100px] before:size-[420px] before:rounded-full before:border before:border-[#bda6f822] before:shadow-[0_0_0_55px_#bda6f808,0_0_0_110px_#bda6f805] before:content-['']"
-        aria-labelledby="hero-title"
-      >
-        <div class="z-[1] p-12 compact:p-7">
-          <p
-            class="text-[0.68rem] font-bold uppercase tracking-[0.19em] text-accent"
-          >
-            One more world to explore
-          </p>
-          <h2
-            class="leading-[1.15] font-bold tracking-[-0.04em] my-4 text-[clamp(2.5rem,4vw,4rem)]"
-            id="hero-title"
-          >
-            The next adventure<br />is yours.
-          </h2>
-          <p class="mb-6 max-w-[340px] text-copy">
-            Search for a game above to explore its story, platforms, and
-            creators. Discovery feeds are coming in a future update.
-          </p>
-          <a
-            class="inline-flex min-h-[46px] items-center justify-center gap-8 rounded-lg border-0 bg-accent px-[1.1rem] py-[0.8rem] font-[750] text-button-ink no-underline"
-            routerLink="/library"
-            >Open My Library <span aria-hidden="true">↗</span></a
-          >
-        </div>
-        <span
-          class="absolute right-[7%] rotate-[15deg] text-[14rem] text-[#bda6f82b] compact:-top-8 compact:-right-4 compact:text-[10rem]"
-          aria-hidden="true"
-          >✦</span
-        >
-      </section>
-      <section
-        class="mt-8 flex items-center gap-[1.2rem] rounded-xl border border-outline p-6 compact:p-4"
-        aria-labelledby="welcome-title"
-      >
-        <span class="text-[2rem] text-accent" aria-hidden="true">◈</span>
-        <div>
-          <h2
-            class="leading-[1.15] font-bold tracking-[-0.04em] mb-2 text-[1.1rem]"
-            id="welcome-title"
-          >
-            Make space for what’s next.
-          </h2>
-          <p class="text-[0.9rem] text-muted">
-            Discover new worlds. Keep track of the ones that stay with you.
-          </p>
-        </div>
-      </section>
+      <app-discover-page />
       }
     </main>
   </div>

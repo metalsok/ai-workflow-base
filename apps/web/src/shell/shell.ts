@@ -15,6 +15,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { finalize, switchMap } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { DiscoverPage } from '../catalog/discover-page/discover-page';
 import { LibraryPage } from '../library/library-page/library-page';
 import { SearchPage } from '../catalog/search-page/search-page';
 import { GamePage } from '../catalog/game-page/game-page';
@@ -30,6 +31,7 @@ import { Auth } from '../auth';
     SearchPage,
     GamePage,
     LibraryPage,
+    DiscoverPage,
   ],
   templateUrl: './shell.html',
 })

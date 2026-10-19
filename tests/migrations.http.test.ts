@@ -65,7 +65,7 @@ test('clean migration is repeatable, has no invented legacy dates, and matches t
     await migrate(db);
     await migrate(db);
     assert.equal(await db.getRepository(LegacyMigration).count(), 0);
-    assert.equal((await migrationStatus(db)).executed.length, 2);
+    assert.equal((await migrationStatus(db)).executed.length, 3);
     assert.equal(
       (await db.driver.createSchemaBuilder().log()).upQueries.length,
       0,
@@ -370,7 +370,7 @@ async function recordBaseline(url: string) {
   }
 }
 
-test('Library migration can be reverted and reapplied while existing accounts and sessions remain usable', async () => {
+test('Library and feed migrations can be reverted and reapplied while existing accounts and sessions remain usable', async () => {
   const postgres = await startPostgres();
   const db = await createDataSource(postgres.url).initialize();
   let app: Awaited<ReturnType<typeof createApp>> | undefined;
@@ -411,9 +411,10 @@ test('Library migration can be reverted and reapplied while existing accounts an
     await app.close();
     app = undefined;
     await db.undoLastMigration({ transaction: 'all' });
+    await db.undoLastMigration({ transaction: 'all' });
     assert.deepEqual(
       (await migrationStatus(db)).pending.map((m) => m.name),
-      ['PersonalLibrary1792409963460'],
+      ['PersonalLibrary1792409963460', 'DiscoveryFeeds1792411383846'],
     );
     await migrate(db);
     app = await createApp(options(postgres.url));

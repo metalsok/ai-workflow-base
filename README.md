@@ -18,10 +18,10 @@ the cinematic dashboard (prototype D) with purple accents.
 
 ## Run the application locally
 
-Account access, catalog search, and private libraries are implemented: registration,
-sign-in/out, persisted sessions, paginated IGDB title search, game details, and
-saving/filtering games by Play status in the responsive purple Angular shell.
-Discovery feeds follow in a later ticket.
+Account access, discovery, catalog search, and private libraries are implemented.
+The purple dashboard shows a featured game, Popular now from IGDB Visits, and
+recent first releases, with daily caching and outage fallbacks. Search and details
+lead into saving/filtering games by Play status in your private library.
 
 ```bash
 npm ci

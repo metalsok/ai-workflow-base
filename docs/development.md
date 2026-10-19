@@ -29,7 +29,8 @@ Open **http://127.0.0.1:4200**. Use this exact origin: `localhost` is a differen
 origin. Angular proxies `/api` to NestJS on loopback port 3000. Registration
 immediately signs you in. Use **Search games** in the header to search IGDB and
 open details. Save games from search or details, then use My Library to change
-Play status, filter (including Played), or remove games. Discover feeds belong to a later ticket.
+Play status, filter (including Played), or remove games. Discover shows a
+spotlight, Popular now, and recent releases with visible feed freshness.
 Restart `npm run dev` after backend changes; run `npm run db:migrate` separately before starting the API. Startup refuses pending migrations.
 
 The setup script generates database and session secrets in the ignored `.env`
@@ -302,3 +303,46 @@ status, removing, and re-saving an existing entry need no provider request.
 Saved metadata remains in the shared Catalog table when an entry is removed;
 no other account's entry or metadata is deleted. Library state persists through
 sessions and application restarts in the same PostgreSQL database.
+
+## Discovery feeds
+
+Run `npm run db:migrate` before starting the updated API. The DiscoveryFeeds
+migration adds `catalog_feeds`, separate from cached searches and private
+Library entries. It preserves existing tables and history. The cache has two
+application-owned keys, `popular` and `recent`.
+
+Authenticated `GET /api/catalog/discovery/popular` and `/recent` return
+`{ items, source, fetchedAt, stale }`. These requests consume the existing
+per-account catalog request budget, including cached responses. Invalid feed
+names return 400. The JSON payload contains normalized public Game metadata
+plus `artworkUrl`; credentials and raw popularity diagnostics stay server-side.
+
+Popular now ranks eligible games from a bounded sample of the 100 highest
+IGDB Visits primitives (verified type 1). Metadata is fetched in one batch and
+returned in Visits order, up to 12 titles. Visits measure page interest, not
+sales, player counts, or a weekly chart. Recent releases returns up to 12 eligible
+games by first release date within the last 90 days, excluding future dates.
+Both apply the same PC/console/type/edition rules as search and details. No
+studio-size classifier or editor-maintained rankings are introduced.
+
+Successful feeds are cached in PostgreSQL for 24 hours; requests arriving during
+a refresh share that work in the same API process. A provider outage returns
+stored results marked stale with their original timestamp, or a safe 503 with
+Retry-After when nothing is cached. Each Angular shelf loads and retries
+independently, and spotlight selection falls back to the available shelf.
+Missing/failed artwork uses the purple hero background; covers retain their
+existing placeholder. No provider request is made for each rendered card.
+
+Automated checks replace only external IGDB/Twitch and image responses. To opt
+into real provider verification using the local server-side credentials:
+
+```bash
+npm run discovery:validate -- --live
+```
+
+This verifies Visits access, both implemented feed queries, the date window, and
+Indie metadata, then records public sample metadata in
+`.scratch/game-tracker-build/verification/04-live-feeds.json`. It does not label
+studio size or call live providers during the deterministic test suites.
+
+Primary source: [IGDB PopScore documentation](https://api-docs.igdb.com/#popscore).

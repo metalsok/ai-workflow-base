@@ -27,6 +27,14 @@ export interface SearchResult extends Freshness {
   page: number;
   nextPage: number | null;
 }
+export type FeedKind = 'popular' | 'recent';
+export interface DiscoveryGame extends Game {
+  artworkUrl: string | null;
+}
+export interface DiscoveryResult extends Freshness {
+  items: DiscoveryGame[];
+  source: 'igdb-visits' | 'first-release-date';
+}
 export interface GameResult extends Freshness {
   game: Game;
 }
@@ -44,6 +52,9 @@ export class CatalogError extends Error {
 export class CatalogApi {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  discovery(kind: FeedKind): Observable<DiscoveryResult> {
+    return this.get<DiscoveryResult>(`/api/catalog/discovery/${kind}`);
+  }
   search(query: string, page: number): Observable<SearchResult> {
     return this.get<SearchResult>(
       `/api/catalog/search?${new URLSearchParams({ q: query, page: String(page) })}`,
