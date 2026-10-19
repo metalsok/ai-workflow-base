@@ -2,6 +2,10 @@
 
 Date: 2026-10-19. Starting commit: 6910e3c on main.
 
+Followup: the actual local database has since completed handover and the temporary
+handover tooling is retired. See [the local rollout record](09-local-rollout.md).
+The implementation and handover evidence below is retained as historical context.
+
 ## Project profile and decisions
 
 Node 26.12.0, TypeScript 6.0.3, ESM/NodeNext, NestJS 12.1.3, Express,

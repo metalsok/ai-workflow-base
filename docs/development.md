@@ -49,8 +49,9 @@ starting API instances. Startup checks the ledger and fails on pending, missing,
 or unknown migration history; it never creates tables. Automatic synchronization
 and extension installation are disabled.
 
-For an existing database created before ticket 09, follow the
-[handover and recovery runbook](database-migrations.md) before using `db:migrate`.
+The local database has completed its TypeORM handover. Any additional legacy
+database must first use handover release `c2cac3b`; the
+[migration and recovery guide](database-migrations.md) documents this path.
 The historical SQL files are immutable under `db/legacy-migrations/`; their
 checksum ledger and original application dates are retained. Clean installations
 have an empty legacy ledger and a separate TypeORM migration ledger.
@@ -140,8 +141,8 @@ Emails are trimmed and normalized to lowercase. Duplicate registration returns
 409; invalid fields return 400. Wrong passwords and unknown emails share the
 same 401 response and both perform Argon2 verification. Passwords are stored as
 Argon2id hashes; password fields and hashes never appear in account responses.
-Passport Local handles verification, and Express Session with connect-pg-simple
-stores revocable sessions in PostgreSQL. The browser receives a signed opaque ID.
+Passport Local handles verification, and Express Session with the ORM-backed
+store persists revocable sessions in PostgreSQL. The browser receives a signed opaque ID.
 
 Sessions have a fixed seven-day lifetime, enforced on the server as well as by
 the cookie and database expiry. Sign-in rotates the session ID and destroys the

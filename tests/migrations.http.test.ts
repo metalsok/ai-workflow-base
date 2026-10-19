@@ -28,14 +28,11 @@ import {
   migrationStatus,
   withMigrationLock,
 } from '../apps/api/src/database/migrate.js';
-import { inspectSchema } from '../apps/api/src/database/schema.js';
-import { legacySchema } from '../apps/api/src/database/legacy-schema.js';
 import {
   LegacyMigration,
   AppliedMigration,
 } from '../apps/api/src/database/history.entity.js';
 import { installLegacy } from './support/legacy-database.js';
-import { Client } from 'pg';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -60,7 +57,7 @@ const options = (databaseUrl: string) => ({
   sessionSecret: secret,
 });
 
-test('clean migration is repeatable, has no invented legacy dates, and matches the historical schema', async () => {
+test('clean migration is repeatable, has no invented legacy dates, and matches the entities', async () => {
   const postgres = await startPostgres();
   const db = await createDataSource(postgres.url).initialize();
   const runner = db.createQueryRunner();
@@ -69,10 +66,6 @@ test('clean migration is repeatable, has no invented legacy dates, and matches t
     await migrate(db);
     assert.equal(await db.getRepository(LegacyMigration).count(), 0);
     assert.equal((await migrationStatus(db)).executed.length, 1);
-    assert.deepEqual(
-      JSON.parse(JSON.stringify(await inspectSchema(runner))),
-      legacySchema,
-    );
     assert.equal(
       (await db.driver.createSchemaBuilder().log()).upQueries.length,
       0,
@@ -94,7 +87,7 @@ test('clean migration is repeatable, has no invented legacy dates, and matches t
   }
 });
 
-test('populated handover preserves every table, signed sessions, hashes and cache through restart; backup restores the legacy database', async () => {
+test('an already handed-over database retains its history, sessions and caches through migrations, restarts and backup recovery', async () => {
   const postgres = await startPostgres();
   const restore = await startPostgres();
   const directory = await mkdtemp(join(tmpdir(), 'game-tracker-recovery-'));
@@ -103,6 +96,8 @@ test('populated handover preserves every table, signed sessions, hashes and cach
   try {
     await installLegacy(postgres.url);
     await db.initialize();
+    // Fixture represents the completed handover release, retained at c2cac3b.
+    await db.runMigrations({ fake: true, transaction: 'all' });
     const account = await db.getRepository(Account).save({
       email: 'legacy@example.com',
       passwordHash: await hash('legacy-long-passphrase'),
@@ -175,9 +170,8 @@ test('populated handover preserves every table, signed sessions, hashes and cach
       postgres.url,
     ]);
     await promisify(execFile)('pg_restore', ['--list', backup]);
-    await assert.rejects(migrate(db), /handover/);
-    await migrate(db, true);
-    await migrate(db, true);
+    await migrate(db);
+    await migrate(db);
     await migrate(db);
     assert.deepEqual(await snapshot(), before);
     assert.equal(
@@ -260,7 +254,7 @@ test('populated handover preserves every table, signed sessions, hashes and cach
       );
       const runner = restored.createQueryRunner();
       try {
-        assert.equal(await runner.hasTable('typeorm_migrations'), false);
+        assert.equal(await runner.hasTable('typeorm_migrations'), true);
       } finally {
         await runner.release();
       }
@@ -275,53 +269,6 @@ test('populated handover preserves every table, signed sessions, hashes and cach
     await rm(directory, { recursive: true, force: true });
   }
 });
-
-for (const [label, sql] of [
-  [
-    'partial history',
-    "DELETE FROM schema_migrations WHERE name = '004-catalog-request-limits.sql'",
-  ],
-  [
-    'unknown history',
-    "UPDATE schema_migrations SET name = '999-unknown.sql' WHERE name = '004-catalog-request-limits.sql'",
-  ],
-  [
-    'checksum mismatch',
-    "UPDATE schema_migrations SET checksum = 'changed' WHERE name = '001-accounts.sql'",
-  ],
-  ['schema drift', 'ALTER TABLE sessions ALTER COLUMN expire TYPE timestamptz'],
-  ['extra table', 'CREATE TABLE unexpected (id integer)'],
-  [
-    'constraint drift',
-    'ALTER TABLE accounts RENAME CONSTRAINT accounts_email_key TO changed_email_key',
-  ],
-] as const) {
-  test(`handover rejects ${label} without creating the ORM ledger`, async () => {
-    const postgres = await startPostgres();
-    const db = createDataSource(postgres.url);
-    const client = new Client({ connectionString: postgres.url });
-    try {
-      await installLegacy(postgres.url);
-      await client.connect();
-      await client.query(sql);
-      await client.end();
-      await db.initialize();
-      const before = await db.getRepository(LegacyMigration).find();
-      await assert.rejects(migrate(db, true), /history|checksum|drift/i);
-      const runner = db.createQueryRunner();
-      try {
-        assert.equal(await runner.hasTable('typeorm_migrations'), false);
-      } finally {
-        await runner.release();
-      }
-      assert.deepEqual(await db.getRepository(LegacyMigration).find(), before);
-    } finally {
-      await client.end();
-      if (db.isInitialized) await db.destroy();
-      await postgres.stop();
-    }
-  });
-}
 
 test('concurrent migration invocation fails promptly while the designated deployment process holds the lock', async () => {
   const postgres = await startPostgres();
@@ -362,7 +309,7 @@ class Future1792368000001 implements MigrationInterface {
   }
 }
 
-test('handover marks only the baseline and leaves later migrations pending; startup rejects incomplete and unknown ledgers', async () => {
+test('later migrations remain pending until applied; startup rejects incomplete and unknown ledgers', async () => {
   const postgres = await startPostgres();
   const db = await new DataSource({
     ...databaseOptions(postgres.url),
@@ -370,8 +317,12 @@ test('handover marks only the baseline and leaves later migrations pending; star
   }).initialize();
   try {
     await installLegacy(postgres.url);
-    await migrate(db, true);
-    await migrate(db, true);
+    const baseline = await createDataSource(postgres.url).initialize();
+    try {
+      await baseline.runMigrations({ fake: true, transaction: 'all' });
+    } finally {
+      await baseline.destroy();
+    }
     assert.deepEqual(
       (await migrationStatus(db)).pending.map((m) => m.name),
       ['Future1792368000001'],
@@ -394,6 +345,19 @@ test('handover marks only the baseline and leaves later migrations pending; star
     await assert.rejects(assertMigrationsApplied(db), /history/);
   } finally {
     await db.destroy();
+    await postgres.stop();
+  }
+});
+
+test('a legacy database without a completed handover requires the retained handover release', async () => {
+  const postgres = await startPostgres();
+  const db = createDataSource(postgres.url);
+  try {
+    await installLegacy(postgres.url);
+    await db.initialize();
+    await assert.rejects(migrate(db), /c2cac3b/);
+  } finally {
+    if (db.isInitialized) await db.destroy();
     await postgres.stop();
   }
 });

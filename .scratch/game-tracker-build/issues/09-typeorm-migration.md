@@ -2,7 +2,7 @@
 
 Type: implementation
 Status: ready-for-agent
-Progress: Implemented and verified; awaiting owner review
+Progress: Implemented, migrated locally, and cleaned up; final owner acceptance pending
 Blocked by: None (08 accepted and complete)
 Priority: Before 03
 Parent: [First private release](../spec.md)
@@ -169,3 +169,17 @@ gap bug in the session timestamp mapping. Added a failing HTTP regression and
 fixed it with a lossless ORM timestamp transformer/driver parser. Both reviewers
 confirmed the fix and reported no remaining findings. The updated full suite
 contains 43 HTTP/PostgreSQL tests and the same four browser journeys.
+
+### Local rollout and cleanup — 2026-10-19
+
+The owner requested execution of the full rollout and removal of the temporary
+handover tooling, with local commits only. The real backup was restored and
+verified using the previous app before migration. The real local database now
+has its TypeORM baseline applied; every original row was unchanged immediately
+after handover, generation found no diff, and its original session and cached
+game survived two API starts. The development app was restarted successfully.
+
+The one-time handover command and schema inspection/snapshot are retired after
+that successful cutover. Entities and versioned migrations remain; immutable SQL
+history and checksums are retained. Additional legacy copies must use the full
+handover release c2cac3b first. See the [local rollout record](../verification/09-local-rollout.md).

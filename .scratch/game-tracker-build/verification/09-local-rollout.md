@@ -34,3 +34,24 @@ The repository's only known persistent database is the local Compose database.
 Clean installations continue to apply the TypeORM baseline. Any independently
 retained legacy database must use release c2cac3b for handover before upgrading
 to the cleanup release; that complete implementation remains available in Git.
+
+## Cleanup release
+
+Removed `schema.ts`, `legacy-schema.ts`, the one-time handover command and its
+metadata model, and temporary previous-server/rehearsal tools. Entities and the
+TypeORM baseline remain. Archived SQL migrations are unchanged; their SHA256
+checksums now live alongside them in SHA256SUMS. There is no additional schema
+configuration to update for future entity changes.
+
+Normal migration/startup history checks and deployment locking remain. A legacy
+database that missed handover receives a clear pointer to c2cac3b. The archived
+handover-specific tests remain at that release; current tests cover clean
+installs, existing handed-over data, backup recovery, future/pending/unknown
+migrations, and concurrency. A new regression failed before the cleanup and
+passed afterward for the retained-release pointer.
+
+After cleaning stale compiled output, typecheck, formatting and production build
+passed. All 38 current HTTP/PostgreSQL tests passed. The built CLI reports the
+real database up to date, and entity migration generation --check reports no
+changes. The desktop/mobile browser suite and independent cleanup reviews are
+being completed before the final restart and completion record.

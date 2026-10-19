@@ -21,11 +21,9 @@
     "test:browser": "npm run build && playwright test",
     "test": "npm run test:api && npm run test:browser",
     "catalog:validate": "node --env-file-if-exists=.env --import tsx scripts/validate-catalog.ts",
-    "db:handover": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts handover",
     "db:status": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts status",
     "db:generate": "node --env-file-if-exists=.env --import tsx node_modules/typeorm/cli.js migration:generate -d scripts/typeorm-data-source.ts",
-    "db:migrate:built": "node --env-file-if-exists=.env dist/api/database/cli.js",
-    "db:rehearse": "node --import tsx scripts/rehearse-handover.ts"
+    "db:migrate:built": "node --env-file-if-exists=.env dist/api/database/cli.js"
   },
   "dependencies": {
     "@angular/common": "~22.2.3",

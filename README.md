@@ -12,7 +12,7 @@ the cinematic dashboard (prototype D) with purple accents.
 
 - [Build specification](.scratch/game-tracker-build/spec.md)
 - [Planning map and decisions](.scratch/game-tracker/map.md)
-- [Accepted TypeORM decision](docs/adr/0001-typeorm-database-access.md): migration is specified in [ticket 09](.scratch/game-tracker-build/issues/09-typeorm-migration.md), before the personal library. Application database access now uses TypeORM; see the [handover runbook](docs/database-migrations.md) before upgrading an existing database.
+- [Accepted TypeORM decision](docs/adr/0001-typeorm-database-access.md): migration is specified in [ticket 09](.scratch/game-tracker-build/issues/09-typeorm-migration.md), before the personal library. Application database access now uses TypeORM; the local database has completed its handover. See the [migration guide](docs/database-migrations.md) for future changes and additional legacy databases.
 - The prototype source is preserved on local branch `prototype/game-discovery`.
   The ignored local preview remains at `.scratch/game-tracker/prototype/index.html`.
 
