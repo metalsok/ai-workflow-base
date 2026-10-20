@@ -1,16 +1,21 @@
-# Plan the first game-tracker release
+# Plan the game-tracker release
 
 Type: wayfinder:map
+Planning status: paused by owner on 2026-10-19
 
 ## Destination
 
-Reach a buildable specification for the responsive, private game-tracking
-experience agreed in discovery, suitable for the owner and a few friends to test.
-The map resolves planning questions; implementation follows through to-spec,
-to-tickets, and implement.
+Define the next milestone of feature and visual improvements before inviting
+testers: agree the user benefit, bounded scope, visual direction, and completion
+criteria, ready for a follow-up specification. The initial private build is
+accepted; this continuation plans improvements without implementing them.
 
 ## Notes
 
+- Resume from the [planning checkpoint](handoff.md). Continue
+  [Choose the most valuable improvements before inviting testers](issues/08-choose-pre-tester-improvement-priorities.md)
+  first; its claim was released for the pause. Do not restart initial discovery
+  or treat the unanswered ratings proposal as an accepted decision.
 - The agreed product scope and first test journey are in [discovery](discovery.md).
 - Use the local Markdown tracker configured in `docs/agents/issue-tracker.md`.
 - Explain each meaningful step in plain language; ask one focused question at a time.
@@ -22,6 +27,35 @@ to-tickets, and implement.
 - Work on the next open, unblocked decision ticket; record each resolution in its
   own ticket and link a short pointer here.
 - Initial ticket frontier lives in `issues/`, rather than being duplicated here.
+- Resumed on 2026-10-19 at the owner's request after acceptance of the initial
+  private build. Improving features and visual design now precedes tester
+  invitations. This supersedes the earlier timing of polish after the friends
+  test, while preserving the accepted build and previous product decisions.
+- The [accepted build specification](../game-tracker-build/spec.md),
+  [completed build tickets](../game-tracker-build/issues/), and
+  [acceptance handoff](../game-tracker-build/handoff.md) are the baseline, not
+  unfinished implementation work. All nine build tickets are done.
+- Use grilling and domain-modeling for the continuation. Resolve at most one
+  decision ticket per session; proposed priorities are not owner decisions.
+- Challenge additions against a concrete personal-tracking need and a bounded
+  milestone. No code, prototypes, dependency changes, deployment, or invitations
+  are authorized by this planning continuation.
+- Retain the purple cinematic dashboard, separate My Library, private accounts,
+  catalog scope, and four Play statuses unless explicitly reopened. Preserve
+  TypeORM and the other accepted implementation constraints in the build spec.
+- Owner steering in this continuation: prioritize catalog exploration through
+  better search, filters/sorting, and company descriptions with developed or
+  published games. The initial agent proposal to prioritize Library management
+  was not accepted. The live discussion and remaining scope choices are in
+  [Choose the most valuable improvements before inviting testers](issues/08-choose-pre-tester-improvement-priorities.md).
+- The same live priority discussion now includes the owner's agreement to browse
+  without a title and their goal of helping people find games worth their time.
+  The feature boundary and definition of useful discovery are still being worked
+  through in that ticket; it has not been resolved.
+- Ratings are part of the owner's desired discovery experience; they named
+  Metacritic and/or OpenCritic. Source feasibility is a separate research child
+  ticket. The desired source and fallback remain decisions, not implementation
+  assumptions.
 
 ## Decisions so far
 
@@ -48,22 +82,44 @@ to-tickets, and implement.
   One repository holds the frontend, backend, and Docker Compose configuration.
 - [First-use screens](issues/07-explore-first-use-screens.md): D's cinematic
   dashboard with C's purple palette, including both major-studio and indie games.
+- [Establish feasible critic-rating sources for catalog exploration](issues/11-research-rating-sources.md):
+  desk research complete; OpenCritic is the first candidate to validate, branded
+  game-score access remains unverified, and IGDB aggregates do not establish either brand.
 
 ## Not yet specified
 
-No further planning tickets remain open. The [build specification](../game-tracker-build/spec.md)
-records the approved behavior and explicit implementation defaults for catalog
-scope, missing metadata, first release dates, and discovery feeds. The owner
-accepted API/PostgreSQL behavior tests and a browser journey as testing seams.
+- Further related-game exploration beyond company links, if the agreed core
+  journey exposes a concrete need; the owner's interest in related content does
+  not yet define every relationship to include.
+- The specific screen changes and visual acceptance examples needed once the
+  owner identifies what feels unfinished in the accepted design.
+- Whether the selected features introduce new personal-tracking terms; retain
+  the glossary's current meanings until a real domain change is agreed.
 
-## Handoff
+## Initial build handoff — completed
 
-The planning destination is reached: continue from the build specification into
-the approved [implementation tickets](../game-tracker-build/issues/01-account-access.md).
+The original planning destination was reached: the build specification led into
+the approved [implementation tickets](../game-tracker-build/issues/01-account-access.md),
+all now accepted. This paragraph preserves the original handoff and its constraints.
 The owner approved the six-ticket breakdown with visual polish deferred and the
 design easy to revisit. Specific package choices, live catalog filter/feed
 validation, and backup/restore checks belong to implementation. Physical host
 selection and its Tailscale/NAS configuration remain intentionally deferred until deployment.
+
+## Continuation — 2026-10-19
+
+The owner accepted the initial private build and wants feature and visual
+improvements before inviting testers. The map was reopened for planning only
+and is now paused at the owner's request.
+The owner has identified catalog exploration as the feature direction; detailed
+scope and the next milestone are not yet agreed. The decision tickets hold the
+candidate priorities and discussion; resolved decisions will be indexed above.
+The original specification and completed tickets remain the accepted historical
+baseline. A follow-up specification comes after this planning destination is reached.
+
+Host selection, HTTPS/Tailscale setup, and a remote-phone check remain separate
+operator work before invitations. Build acceptance does not claim those checks
+have happened, and this continuation does not execute them.
 
 ## Out of scope
 
@@ -73,3 +129,7 @@ selection and its Tailscale/NAS configuration remain intentionally deferred unti
 - ChatGPT-coupled user authentication and Sites hosting are excluded.
 - Managed hosting and hosted account services are not the chosen deployment approach.
 - This map does not authorize adding monetization or paid subscriptions.
+- Implementation, production prototypes, deployment work, and sending tester
+  invitations are outside this planning continuation.
+- Rebuilding accepted account, catalog, persistence, or deployment foundations
+  without a concrete requirement is outside this continuation.

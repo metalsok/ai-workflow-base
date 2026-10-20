@@ -1,6 +1,6 @@
 # 05: Complete the discovery-to-library journey and account recovery
 
-Status: ready-for-agent
+Status: done
 Blocked by: 03 — Save games and manage a private library; 04 — Discover featured, popular, and recently released games
 Parent: [First private release](../spec.md)
 
@@ -38,3 +38,8 @@ browser cases before the extra outage/proxy coverage was added for ticket 06.
 
 Technical acceptance criteria are complete; owner review is pending. Keep
 `Status: ready-for-agent` until the owner accepts, per tracker completion policy.
+
+### Owner acceptance — 2026-10-19
+
+The owner reviewed the app, confirmed it looks good, and requested closing the
+remaining tickets. Ticket 05 is accepted and complete.

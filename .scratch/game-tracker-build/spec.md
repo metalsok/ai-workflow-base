@@ -1,6 +1,6 @@
 # First private game-tracker release
 
-Status: ready-for-agent
+Status: done
 
 ## Problem Statement
 
@@ -109,3 +109,10 @@ visual design intentionally revisitable after the first functional friends test.
 Popularity ranking and the recent-release window above are explicit initial
 implementation defaults, not claims that IGDB supplies a prebuilt weekly chart.
 Keep them easy to revise without changing the public account or Library contracts.
+
+## Build acceptance — 2026-10-19
+
+The owner accepted the completed build and requested closing the remaining
+tickets. All nine implementation/decision tickets are done. Host-specific
+deployment and remote access verification remain operator steps in
+[the deployment guide](../../docs/deployment.md).

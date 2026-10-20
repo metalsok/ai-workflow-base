@@ -18,6 +18,8 @@ test-results/
 .obsidian/
 # Empty local Obsidian scratch view.
 .scratch/Untitled.base
+# Local checkout-path breadcrumb.
+/cb
 
 # Local deployment secrets, migration locks and backups.
 .deploy/

@@ -1,6 +1,6 @@
 # 06: Package the complete private test in Docker
 
-Status: ready-for-agent
+Status: done
 Blocked by: 05 — Complete the discovery-to-library journey and account recovery
 Parent: [First private release](../spec.md)
 
@@ -44,3 +44,10 @@ Tailscale Serve configuration/ACLs, and remote phone access remain operator
 steps; none are claimed as tested. Technical acceptance criteria are complete;
 owner review is pending. Keep `Status: ready-for-agent` until accepted, per
 tracker completion policy.
+
+### Owner acceptance — 2026-10-19
+
+The owner reviewed the app, confirmed it looks good, and requested closing the
+remaining tickets. Ticket 06 is accepted and complete. Host selection, NAS compatibility,
+HTTPS/Tailscale configuration, and remote phone verification remain documented
+operator steps; acceptance does not claim those steps have been performed.

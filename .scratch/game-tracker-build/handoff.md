@@ -2,45 +2,37 @@
 
 ## Current progress
 
-- Ticket 02 (search/details) is `done`, accepted by the owner and committed in
-  `0e53656`. Its ticket retains the implementation/review history and corrections.
-- Ticket 07 (Tailwind migration) is `done`, accepted by the owner. Its
-  implementation is committed in `fb095ad`; see its ticket for verification.
-- Ticket 08 (database access decision) is next, `needs-info`, awaiting an owner
-  design discussion. No ORM has been chosen or installed.
-- Ticket 03 (personal library) is unstarted and blocked on 08 and any resulting
-  migration. Remaining order: 08 decision → migration if chosen → 03 → 04 → 05 → 06.
-- Ticket 01 retains its recorded owner verification of account access and restart
-  persistence. Read its comments before changing its status.
+All nine build tickets (01–09) are `done` and accepted by the owner. The owner
+reviewed the app and requested closing the final tickets, 05 and 06.
 
-## Resume
+Accounts, IGDB search/details, private libraries, discovery, saving across views,
+administrator password recovery, Tailwind styling, TypeORM database access, and
+Docker packaging are implemented. See the individual ticket comments for
+implementation history and verification evidence.
 
-Start with `issues/08-database-access-decision.md`: use a focused grilling
-discussion to agree database access preferences, record the choice, and create
-a migration implementation ticket if needed. Update 03's dependencies before
-closing 08. Do not replace data access during the decision task.
+## Remaining deployment steps
 
-Read `AGENTS.md`, `spec.md`, the relevant ticket comments, and
-`docs/agents/framework-skills.md` before implementation. Tailwind v4 utilities
-are now the styling convention. Keep Angular zoneless with explicit OnPush on
-all components. Services return cold HttpClient Observables, signals hold state,
-and rxResource manages catalog reads/cancellation. Do not reintroduce frontend
-async/await or HTTP Promise conversions. Backend async code is unaffected.
+Choose the workstation or NAS host, verify its architecture and Docker support,
+configure HTTPS/Tailscale access and proxy trust, restrict access to invited
+friends, and test from a remote phone. These operator steps are documented in
+[the deployment guide](../../docs/deployment.md); they have not been verified
+on a selected remote host.
 
-Use the Angular/NestJS skills for corresponding framework work; keep tests at the
-agreed HTTP/PostgreSQL and browser seams. Live IGDB validation remains opt-in.
-The Angular CLI MCP tools are available in this session and were used.
+## Verification evidence
 
-## Latest verification
+[Packaged verification](verification/06-containers.json) records successful HTTP
+checks, 12 desktop/mobile browser journeys, restart persistence, administrator
+recovery, backup/restore with session continuity, private database networking,
+secret scans, and database-outage readiness.
 
-Type checking, formatting (including PostCSS config), both builds, 27 HTTP tests,
-and four desktop/mobile browser journeys passed after the Tailwind migration.
-Twelve fixture-backed before/after views have matching captured geometry and
-typography measurements. Responsive boundary checks and keyboard focus/skip-link
-checks passed. See ticket 07 for evidence and scope. Temporary visual artifacts
-are under `/tmp/game-tracker-tailwind`; they are not durable repository files.
+During owner review, login on development port 4200 returned HTTP 500 because
+the development database was stopped. Restarting it restored the expected
+unauthorized response for a nonexistent account. The packaged app on port 4400
+returned the expected response throughout. No application code was changed.
 
 ## Run locally
+
+Development:
 
 ```bash
 npm run db:up
@@ -48,11 +40,15 @@ npm run db:migrate
 npm run dev
 ```
 
-Open `http://127.0.0.1:4200`; the configured origin policy rejects
-`http://localhost:4200`. Restart the Angular dev server after installing Tailwind
-and adding PostCSS configuration. Local secrets remain in ignored `.env` and
-development PostgreSQL data in the Docker volume. See `docs/development.md`.
+Open `http://127.0.0.1:4200`.
 
-The IDE and Obsidian files visible in git status are unrelated user files;
-preserve them. User-level skills and MCP configuration are local to this machine
-and are not included in repository commits.
+Packaged deployment:
+
+```bash
+npm run deploy:setup
+docker compose --env-file .env.production -f compose.production.yaml up -d --build --wait
+```
+
+Open `http://127.0.0.1:4400`. Development and packaged deployment use separate
+databases and accounts; both databases can run together. Preserve their volumes
+and ignored secrets. See `docs/development.md` and `docs/deployment.md`.
