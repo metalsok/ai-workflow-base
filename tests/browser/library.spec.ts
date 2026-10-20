@@ -43,6 +43,30 @@ test('a tester saves from search and details, changes status, uses Played, remov
   await expect(page.getByRole('status')).toContainText('Saved');
   await page.getByRole('link', { name: 'My Library', exact: true }).click();
   await expect(page.getByRole('article')).toHaveCount(1);
+  const statusField = page.getByLabel("Play status for Baldur's Gate III");
+  let releaseFailure!: () => void;
+  const failureGate = new Promise<void>((resolve) => {
+    releaseFailure = resolve;
+  });
+  await page.route('**/api/library/games/*', async (route) => {
+    if (route.request().method() === 'PATCH') {
+      await failureGate;
+      await route.fulfill({
+        status: 503,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'Cannot save right now.' }),
+      });
+    } else await route.continue();
+  });
+  await statusField.selectOption('playing');
+  try {
+    await expect(statusField).toBeDisabled();
+  } finally {
+    releaseFailure();
+  }
+  await expect(page.getByRole('alert')).toBeVisible();
+  await expect(statusField).toHaveValue('want-to-play');
+  await page.unroute('**/api/library/games/*');
   await page
     .getByLabel("Play status for Baldur's Gate III")
     .selectOption('playing');

@@ -11,7 +11,26 @@ test('a tester can register, see their identity, sign out, and sign in again', a
   await expect(
     page.getByRole('heading', { name: 'Create your account', exact: true }),
   ).toBeVisible();
+  const createAccount = page.getByRole('button', {
+    name: 'Create account',
+    exact: true,
+  });
+  await expect(createAccount).toBeDisabled();
+  await page.getByLabel('Email', { exact: true }).fill('invalid-email');
+  await page.getByLabel('Password', { exact: true }).fill(password);
+  await expect(createAccount).toBeDisabled();
   await page.getByLabel('Email', { exact: true }).fill(email);
+  await page.getByLabel('Password', { exact: true }).fill('too-short');
+  await expect(createAccount).toBeDisabled();
+  await expect(page.getByLabel('Password', { exact: true })).toHaveAttribute(
+    'maxlength',
+    '128',
+  );
+  await expect(page.getByLabel('Email', { exact: true })).toHaveAttribute(
+    'maxlength',
+    '254',
+  );
+
   await page.getByLabel('Password', { exact: true }).fill(password);
   await page
     .getByRole('button', { name: 'Create account', exact: true })

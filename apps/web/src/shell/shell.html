@@ -44,7 +44,8 @@
       <form
         class="mr-auto flex min-w-0 w-[min(440px,50%)] flex-row gap-2 compact:w-full compact:basis-full"
         role="search"
-        (ngSubmit)="search()"
+        (submit)="$event.preventDefault(); search()"
+        novalidate
       >
         <label class="sr-only font-semibold" for="game-search"
           >Search games</label
@@ -52,14 +53,11 @@
         <input
           class="w-full min-w-0 rounded-[0.45rem] border border-input-border bg-field px-[0.8rem] py-[0.55rem] text-foreground"
           id="game-search"
-          name="query"
           type="search"
           placeholder="Search games…"
           autocomplete="off"
-          required
-          minlength="2"
-          maxlength="100"
-          [(ngModel)]="query"
+          [formField]="searchForm.query"
+          [attr.aria-invalid]="searchForm.query().dirty() && searchForm.query().invalid()"
         />
         <button
           class="cursor-pointer disabled:cursor-wait disabled:opacity-65 min-h-[44px] rounded-lg border border-outline bg-transparent px-4 py-[0.6rem] text-foreground shrink-0"

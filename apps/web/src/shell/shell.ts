@@ -12,7 +12,14 @@ import {
   RouterLink,
   RouterLinkActive,
 } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import {
+  form,
+  FormField,
+  required,
+  minLength,
+  maxLength,
+  validate,
+} from '@angular/forms/signals';
 import { finalize, switchMap } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { DiscoverPage } from '../catalog/discover-page/discover-page';
@@ -28,7 +35,7 @@ import { Auth } from '../auth';
   imports: [
     RouterLink,
     RouterLinkActive,
-    FormsModule,
+    FormField,
     SearchPage,
     GamePage,
     LibraryPage,
@@ -51,12 +58,24 @@ export class Shell {
   readonly library = this.route.snapshot.data['library'] === true;
   readonly searchPage = this.route.snapshot.data['search'] === true;
   readonly gamePage = this.route.snapshot.data['game'] === true;
-  readonly query = linkedSignal(() => this.params().get('q') ?? '');
+  private readonly searchModel = linkedSignal(() => ({
+    query: this.params().get('q') ?? '',
+  }));
+  readonly searchForm = form(this.searchModel, (fields) => {
+    required(fields.query);
+    minLength(fields.query, 2);
+    maxLength(fields.query, 100);
+    validate(fields.query, ({ value }) =>
+      value().trim().length < 2
+        ? { kind: 'queryLength', message: 'Enter at least two characters.' }
+        : undefined,
+    );
+  });
   search() {
-    if (this.query().trim().length < 2) return;
+    if (!this.searchForm().valid()) return;
     this.router
       .navigate(['/search'], {
-        queryParams: { q: this.query().trim() },
+        queryParams: { q: this.searchModel().query.trim() },
       })
       .catch(() =>
         this.error.set('Cannot open search right now. Please try again.'),

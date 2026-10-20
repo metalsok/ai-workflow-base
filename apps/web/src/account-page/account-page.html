@@ -56,20 +56,18 @@
       </p>
       <form
         class="mt-[1.6rem] flex flex-col"
-        (ngSubmit)="submit()"
-        #form="ngForm"
+        (submit)="$event.preventDefault(); submit()"
+        novalidate
         [attr.aria-busy]="pending()"
       >
         <label class="mt-4 mb-[0.4rem] font-semibold" for="email">Email</label>
         <input
           class="w-full min-w-0 rounded-[0.45rem] border border-input-border bg-field p-[0.8rem] text-foreground"
           id="email"
-          name="email"
           type="email"
           autocomplete="email"
-          required
-          maxlength="254"
-          [(ngModel)]="email"
+          [formField]="accountForm.email"
+          [attr.aria-invalid]="accountForm.email().touched() && accountForm.email().invalid()"
         />
         <label class="mt-4 mb-[0.4rem] font-semibold" for="password"
           >Password</label
@@ -77,14 +75,11 @@
         <input
           class="w-full min-w-0 rounded-[0.45rem] border border-input-border bg-field p-[0.8rem] text-foreground"
           id="password"
-          name="password"
           type="password"
           [attr.autocomplete]="registering ? 'new-password' : 'current-password'"
           aria-describedby="password-hint"
-          required
-          minlength="12"
-          maxlength="128"
-          [(ngModel)]="password"
+          [formField]="accountForm.password"
+          [attr.aria-invalid]="accountForm.password().touched() && accountForm.password().invalid()"
         />
         <p class="text-[0.8rem] text-muted mt-2 mb-[1.4rem]" id="password-hint">
           Use 12–128 characters.
@@ -100,7 +95,7 @@
         <button
           class="cursor-pointer disabled:cursor-wait disabled:opacity-65 inline-flex min-h-[46px] items-center justify-center gap-8 rounded-lg border-0 bg-accent px-[1.1rem] py-[0.8rem] font-[750] text-button-ink no-underline"
           type="submit"
-          [disabled]="pending() || form.invalid"
+          [disabled]="pending() || !accountForm().valid()"
         >
           {{ pending() ? 'Please wait…' : registering ? 'Create account' : 'Sign
           in' }}

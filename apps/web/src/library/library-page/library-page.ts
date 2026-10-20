@@ -13,11 +13,12 @@ import { finalize, type Observable } from 'rxjs';
 import { LibraryApi, playStatuses } from '../api';
 import { catalogRequest } from '../../catalog/request';
 import { GameCover } from '../../catalog/cover';
+import { PlayStatusEditor } from '../play-status-editor';
 
 @Component({
   selector: 'app-library-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, DatePipe, GameCover],
+  imports: [RouterLink, DatePipe, GameCover, PlayStatusEditor],
   templateUrl: './library-page.html',
 })
 export class LibraryPage {
@@ -28,7 +29,6 @@ export class LibraryPage {
     initialValue: this.route.snapshot.queryParamMap,
   });
   readonly status = computed(() => this.params().get('status') ?? '');
-  readonly statuses = playStatuses;
   readonly filters = [
     { value: '', label: 'All games' },
     ...playStatuses,

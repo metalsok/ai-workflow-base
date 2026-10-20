@@ -29,7 +29,8 @@ making framework decisions. Include this requirement in any delegated task.
 Keep Angular zoneless and set `changeDetection: ChangeDetectionStrategy.OnPush`
 explicitly on every application component. Use Tailwind utilities for presentation
 in templates and component hosts; keep global CSS limited to Tailwind setup,
-shared theme values, and document-wide defaults. See the project requirements in
+shared theme values, and document-wide defaults. Use Angular Signal Forms for
+all new forms and user-editable form controls. See the project requirements in
 `docs/agents/framework-skills.md` for version details and review checks.
 
 ### Issue tracker

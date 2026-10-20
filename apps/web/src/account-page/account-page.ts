@@ -7,14 +7,21 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  form,
+  FormField,
+  required,
+  email,
+  minLength,
+  maxLength,
+} from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-account-page',
-  imports: [FormsModule, RouterLink],
+  imports: [FormField, RouterLink],
   templateUrl: './account-page.html',
 })
 export class AccountPage {
@@ -29,21 +36,30 @@ export class AccountPage {
       ? 'Cannot load your account. Please try again.'
       : '',
   );
-  readonly email = signal('');
-  readonly password = signal('');
+  private readonly accountModel = signal({ email: '', password: '' });
+  readonly accountForm = form(this.accountModel, (fields) => {
+    required(fields.email);
+    email(fields.email);
+    maxLength(fields.email, 254);
+    required(fields.password);
+    minLength(fields.password, 12);
+    maxLength(fields.password, 128);
+  });
 
   submit() {
-    if (this.pending()) return;
+    if (this.pending() || !this.accountForm().valid()) return;
     this.pending.set(true);
     this.error.set('');
     this.auth
       .authenticate(
         this.registering ? 'register' : 'login',
-        this.email(),
-        this.password(),
+        this.accountModel().email,
+        this.accountModel().password,
       )
       .pipe(
-        tap(() => this.password.set('')),
+        tap(() =>
+          this.accountModel.update((value) => ({ ...value, password: '' })),
+        ),
         switchMap(() => this.router.navigateByUrl('/discover')),
         finalize(() => this.pending.set(false)),
         takeUntilDestroyed(this.destroyRef),

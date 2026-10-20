@@ -87,6 +87,26 @@ References: [Angular zoneless](https://angular.dev/guide/zoneless),
 and [resources](https://angular.dev/guide/signals/resource), and
 [Observable resources](https://angular.dev/guide/signals/rxjs-interop#using-rxresource-for-async-data).
 
+## Frontend forms
+
+Use Angular Signal Forms (`@angular/forms/signals`) for every new frontend form
+and user-editable form control. Keep a typed signal model, define validation in
+`form()` schemas, and bind controls with `[formField]`. Do not introduce
+`FormsModule`/`ngModel` or Reactive Forms (`FormControl`/`FormGroup`). Load the
+Angular skill's `references/signal-forms.md` when implementing or reviewing forms.
+
+Keep forms in their feature modules. Use `linkedSignal` when editable state must
+reset from route parameters or authoritative inputs. Use schema availability
+rules for field disabling. Keep labels, autocomplete, validation constraints,
+keyboard submission, and accessible feedback intact.
+
+Signal Forms owns field state and validation; explicit component actions retain
+the Observable HTTP lifecycle described above. Use native `(submit)` with
+`$event.preventDefault()` and `novalidate`, and guard actions with form validity
+and request-pending state. Do not bridge HTTP to Promises to use the async
+Signal Forms submission helper. Never run mutations from an effect or resource.
+Action-only buttons do not need a form.
+
 ## Angular file organization and services
 
 Keep each component in one of these two forms:

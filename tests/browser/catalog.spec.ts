@@ -36,6 +36,13 @@ test('a signed-in tester can search, page, open details, and recover from empty 
   await expect(
     page.getByRole('heading', { name: 'Discover', exact: true }),
   ).toBeVisible();
+  const searchbox = page.getByRole('searchbox', { name: 'Search games' });
+  const initialUrl = page.url();
+  await searchbox.fill('  a  ');
+  await searchbox.press('Enter');
+  await expect(searchbox).toHaveAttribute('aria-invalid', 'true');
+  await expect(page).toHaveURL(initialUrl);
+  await expect(searchbox).toHaveAttribute('maxlength', '100');
   const search = async (query: string) => {
     await page.getByRole('searchbox', { name: 'Search games' }).fill(query);
     await page.getByRole('button', { name: 'Search', exact: true }).click();
@@ -46,6 +53,7 @@ test('a signed-in tester can search, page, open details, and recover from empty 
   await page
     .getByRole('link', { name: "Baldur's Gate III", exact: true })
     .waitFor();
+  await expect(searchbox).toHaveValue(query);
   await page.getByRole('link', { name: 'Next page', exact: true }).click();
   await expect(
     page.getByRole('link', { name: 'Page two game', exact: true }),

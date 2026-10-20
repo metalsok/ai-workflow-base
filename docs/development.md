@@ -17,6 +17,14 @@ destruction cleanup, the router subscribes to account guards, and catalog reads
 use `rxResource` to manage signal state and cancel superseded subscriptions.
 Session cookies and the backend's Origin checks retain the same contract.
 
+Frontend forms use Angular Signal Forms: typed signal models, schema validation,
+and `[formField]` bindings. This applies to account access, catalog search, and
+Play status editing, and is required for future form features. Explicit user
+actions retain Observable HTTP handling; field edits never automatically run
+mutations through effects or resources. See the
+[forms convention](agents/framework-skills.md#frontend-forms) and
+[migration notes](frontend-forms.md).
+
 ```bash
 npm ci
 node scripts/setup-dev.mjs
