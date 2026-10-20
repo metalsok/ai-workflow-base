@@ -1,9 +1,8 @@
 # OpenCode and shared skills
 
-OpenCode 2.0.32 is installed on this machine. Start it in this checkout:
+Start OpenCode from the repository root:
 
 ```bash
-cd /home/metalsok/Work/ai-workflow-base
 opencode
 ```
 
@@ -16,6 +15,10 @@ OpenCode reads the root `AGENTS.md`, including the local issue tracker and
 framework guidance. When continuing work from another client, ask it to read the
 relevant ticket, verification notes, and `git status` first. Existing chat
 history stays in its original client; project files carry the handoff.
+
+The [Mac setup checkpoint](../mac-setup.md) records the current device's verified
+installation. The installation history below describes the original Linux host;
+its backup paths and optional integrations are specific to that host.
 
 ## Shared installation
 

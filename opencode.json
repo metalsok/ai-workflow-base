@@ -10,9 +10,7 @@
           "mcp",
           "--root",
           "."
-        ],
-        "cwd": ".",
-        "codemode": false
+        ]
       }
     }
   }

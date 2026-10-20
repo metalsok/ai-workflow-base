@@ -42,6 +42,9 @@ policy, and running tests without Docker. The [private Docker deployment
 guide](docs/deployment.md) covers packaging, backups, and the later Tailscale
 host setup.
 
+For this Mac's transfer verification and remaining local setup, see the
+[Mac setup checkpoint](docs/mac-setup.md).
+
 ## Start a session
 
 For OpenCode, run `opencode` from this repository and select skills with `@`.
@@ -49,7 +52,7 @@ See [shared skills and OpenCode setup](docs/agents/opencode.md) for the installe
 skills, Angular MCP, model connections, and continuing work across clients.
 
 ```bash
-codex -C /home/metalsok/Work/ai-workflow-base
+codex -C .
 ```
 
 The `mattpocock-skills@mattpocock` plugin is installed for your user account.

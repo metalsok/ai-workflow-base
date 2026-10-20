@@ -39,6 +39,13 @@
             "buildTarget": "web:build",
             "proxyConfig": "apps/web/proxy.conf.json"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["apps/web/**/*.ts", "apps/web/**/*.html"],
+            "eslintConfig": "apps/web/eslint.config.js"
+          }
         }
       },
       "schematics": {
@@ -50,5 +57,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "schematicCollections": ["angular-eslint"]
   }
 }

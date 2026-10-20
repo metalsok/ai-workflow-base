@@ -17,7 +17,7 @@ import { LibraryApi, playStatuses } from './api';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <button
-      class="mt-4 min-h-[44px] cursor-pointer rounded-lg bg-accent px-4 py-3 font-semibold text-button-ink disabled:cursor-wait disabled:opacity-65"
+      class="mt-4 min-h-[44px] cursor-pointer rounded-lg bg-accent px-4 py-3 font-semibold text-button-ink disabled:cursor-not-allowed disabled:opacity-65"
       (click)="save()"
       [disabled]="pending() || !api.ready() || status() !== undefined"
     >
