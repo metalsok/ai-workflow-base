@@ -93,12 +93,11 @@
         </p>
         }
         <button
-          class="cursor-pointer disabled:cursor-wait disabled:opacity-65 inline-flex min-h-[46px] items-center justify-center gap-8 rounded-lg border-0 bg-accent px-[1.1rem] py-[0.8rem] font-[750] text-button-ink no-underline"
+          class="cursor-pointer disabled:cursor-not-allowed disabled:opacity-65 inline-flex min-h-[46px] items-center justify-center gap-8 rounded-lg border-0 bg-accent px-[1.1rem] py-[0.8rem] font-[750] text-button-ink no-underline"
           type="submit"
           [disabled]="pending() || !accountForm().valid()"
         >
-          {{ pending() ? 'Please wait…' : registering ? 'Create account' : 'Sign
-          in' }}
+          {{ pending() ? 'Please wait…' : registering ? 'Create account' : 'Sign in' }}
         </button>
       </form>
       @if (registering) {
