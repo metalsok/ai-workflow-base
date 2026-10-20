@@ -1,37 +1,50 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
+  computed,
 } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CatalogApi } from '../api';
-import { catalogRequest } from '../request';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { httpResource } from '@angular/common/http';
+import { apiErrorMessage } from '../../http-error';
 import { SaveGame } from '../../library/save-game';
+import { LibraryState } from '../../library/library-state';
+import type { SearchResult } from '../models';
+import { DatePipe } from '@angular/common';
 import { GameCover } from '../cover';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-search-page',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, DatePipe, GameCover, SaveGame],
   templateUrl: './search-page.html',
 })
 export class SearchPage {
-  private readonly api = inject(CatalogApi);
+  readonly library = inject(LibraryState);
   private readonly route = inject(ActivatedRoute);
   private readonly params = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
   readonly query = computed(() => this.params().get('q') ?? '');
-  readonly request = catalogRequest(
-    () => {
-      const query = this.query();
-      return query.trim()
-        ? { query, page: Number(this.params().get('page') ?? 1) }
-        : undefined;
-    },
-    ({ query, page }) => this.api.search(query, page),
+  readonly request = httpResource<SearchResult>(() =>
+    this.query().trim()
+      ? {
+          url: '/api/catalog/search',
+          params: { q: this.query(), page: this.params().get('page') ?? '1' },
+        }
+      : undefined,
   );
+  readonly result = computed(() =>
+    !this.request.isLoading() && this.request.hasValue()
+      ? this.request.value()
+      : null,
+  );
+  readonly loading = this.request.isLoading;
+  readonly error = computed(() => {
+    const error = this.request.error();
+    return error
+      ? apiErrorMessage(error, 'Cannot load games right now. Please try again.')
+      : '';
+  });
 }

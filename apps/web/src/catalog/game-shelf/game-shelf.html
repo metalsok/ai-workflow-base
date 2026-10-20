@@ -75,7 +75,11 @@
           : 'Release date unknown' }}
         </p>
       </a>
-      <app-save-game [gameId]="game.id" />
+      <app-save-game
+        [library]="library()"
+        (save)="save.emit($event)"
+        [gameId]="game.id"
+      />
     </article>
     }
   </div>

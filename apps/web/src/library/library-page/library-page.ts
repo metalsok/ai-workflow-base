@@ -1,17 +1,19 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   computed,
   inject,
   signal,
+  DestroyRef,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { HttpClient } from '@angular/common/http';
 import { finalize, type Observable } from 'rxjs';
-import { LibraryApi, playStatuses } from '../api';
-import { catalogRequest } from '../../catalog/request';
+import { apiErrorMessage } from '../../http-error';
+import { LibraryState } from '../library-state';
+import { playStatuses, type PlayStatus } from '../models';
 import { GameCover } from '../../catalog/cover';
 import { PlayStatusEditor } from '../play-status-editor';
 
@@ -22,32 +24,43 @@ import { PlayStatusEditor } from '../play-status-editor';
   templateUrl: './library-page.html',
 })
 export class LibraryPage {
-  private readonly api = inject(LibraryApi);
-  private readonly route = inject(ActivatedRoute);
+  private readonly library = inject(LibraryState);
+  private readonly http = inject(HttpClient);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
   private readonly params = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
   readonly status = computed(() => this.params().get('status') ?? '');
-  readonly filters = [
-    { value: '', label: 'All games' },
-    ...playStatuses,
-    { value: 'played', label: 'Played' },
-  ];
-  readonly request = catalogRequest(
-    () => this.status(),
-    (status) => this.api.list(status),
-  );
+  readonly loading = this.library.loading;
+  readonly filteredItems = computed(() => {
+    const items = this.library.result()?.items;
+    if (!items) return null;
+    const status = this.status();
+    if (!status) return items;
+    return items.filter((entry) =>
+      status === 'played'
+        ? entry.status !== 'want-to-play'
+        : entry.status === status,
+    );
+  });
   readonly pending = signal(false);
   readonly error = signal('');
-  change(id: number, status: string) {
-    this.mutate(this.api.change(id, status));
+  constructor() {
+    this.library.refresh();
+  }
+  changeStatus(change: { id: number; status: PlayStatus }) {
+    this.mutate(
+      this.http.patch(`/api/library/games/${change.id}`, {
+        status: change.status,
+      }),
+    );
   }
   remove(id: number) {
-    this.mutate(this.api.remove(id));
+    this.mutate(this.http.delete(`/api/library/games/${id}`));
   }
   private mutate(request: Observable<unknown>) {
-    if (this.pending()) return;
+    if (this.pending() || !this.library.view().ready) return;
     this.pending.set(true);
     this.error.set('');
     request
@@ -56,11 +69,21 @@ export class LibraryPage {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: () => this.request.retry(),
-        error: (error: Error) => {
-          this.error.set(error.message);
-          this.request.retry();
+        next: () => this.library.refresh(),
+        error: (error: unknown) => {
+          this.error.set(
+            apiErrorMessage(
+              error,
+              'Cannot update your library. Please try again.',
+            ),
+          );
+          this.library.refresh();
         },
       });
   }
+  readonly filters = [
+    { value: '', label: 'All games' },
+    ...playStatuses,
+    { value: 'played', label: 'Played' },
+  ];
 }

@@ -84,6 +84,19 @@ test('a signed-in tester can search, page, open details, and recover from empty 
   await expect(page.getByText('Larian Studios', { exact: true })).toHaveCount(
     2,
   );
+  await page.goBack();
+  await expect(
+    page.getByRole('heading', { name: 'Search games', exact: true }),
+  ).toBeVisible();
+  await expect(searchbox).toHaveValue(query);
+  await page.goForward();
+  await expect(
+    page.getByRole('heading', {
+      name: "Baldur's Gate III",
+      level: 1,
+      exact: true,
+    }),
+  ).toBeVisible();
   await page.reload();
   await expect(
     page.getByRole('heading', {

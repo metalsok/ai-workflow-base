@@ -9,7 +9,8 @@ import { DatePipe } from '@angular/common';
 import { SaveGame } from '../../library/save-game';
 import { RouterLink } from '@angular/router';
 import { GameCover } from '../cover';
-import type { DiscoveryResult, FeedKind } from '../api';
+import type { LibraryView } from '../../library/models';
+import type { DiscoveryResult, FeedKind } from '../models';
 
 @Component({
   selector: 'app-game-shelf',
@@ -18,6 +19,8 @@ import type { DiscoveryResult, FeedKind } from '../api';
   templateUrl: './game-shelf.html',
 })
 export class GameShelf {
+  readonly library = input.required<LibraryView>();
+  readonly save = output<number>();
   readonly kind = input.required<FeedKind>();
   readonly feed = input<DiscoveryResult | null>(null);
   readonly loading = input(false);

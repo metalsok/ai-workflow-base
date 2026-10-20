@@ -6,7 +6,7 @@ import {
   output,
 } from '@angular/core';
 import { disabled, form, FormField } from '@angular/forms/signals';
-import { playStatuses, type PlayStatus } from './api';
+import { playStatuses, type PlayStatus } from './models';
 
 @Component({
   selector: 'app-play-status-editor',

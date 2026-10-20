@@ -1,4 +1,4 @@
-@if (request.loading()) {
+@if (loading()) {
 <p class="px-4 py-12 text-muted" role="status">Loading game…</p>
 } @else if (notFound()) {
 <section
@@ -18,7 +18,7 @@
     >Search games</a
   >
 </section>
-} @else if (request.error()) {
+} @else if (error()) {
 <section class="px-4 py-12 text-muted">
   <h1
     class="mt-2 mb-8 text-[clamp(2rem,4vw,2.8rem)] leading-[1.15] font-bold tracking-[-0.05em] [overflow-wrap:anywhere]"
@@ -29,16 +29,16 @@
     class="my-4 border-l-[3px] border-[#ff9aba] bg-[#ff9aba10] p-[0.8rem] text-[#ffbbd0] [overflow-wrap:anywhere]"
     role="alert"
   >
-    {{ request.error() }}
+    {{ error() }}
   </p>
   <button
     class="cursor-pointer disabled:cursor-wait disabled:opacity-65 inline-flex min-h-[46px] items-center justify-center gap-8 rounded-lg border-0 bg-accent px-[1.1rem] py-[0.8rem] font-[750] text-button-ink no-underline mt-4"
-    (click)="request.retry()"
+    (click)="request.reload()"
   >
     Try again
   </button>
 </section>
-} @else if (request.result(); as details) { @if (details.stale) {
+} @else if (result(); as details) { @if (details.stale) {
 <p
   class="mb-6 rounded-lg border border-[#bda6f84d] bg-[#bda6f811] p-4 text-[#d4c5fa]"
   role="status"
@@ -67,7 +67,11 @@
     <p class="whitespace-pre-line text-copy [overflow-wrap:anywhere]">
       {{ details.game.summary || 'Summary unavailable.' }}
     </p>
-    <app-save-game [gameId]="details.game.id" />
+    <app-save-game
+      [library]="library.view()"
+      (save)="library.saveGame($event)"
+      [gameId]="details.game.id"
+    />
     <dl class="mt-8 mb-4 grid gap-4">
       <div
         class="grid grid-cols-[140px_minmax(0,1fr)] gap-4 compact:grid-cols-1 compact:gap-[0.2rem]"

@@ -1,35 +1,58 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
+  computed,
   linkedSignal,
 } from '@angular/core';
-import { SaveGame } from '../../library/save-game';
 import { RouterLink } from '@angular/router';
-import { CatalogApi } from '../api';
-import { catalogRequest } from '../request';
+import { SaveGameWidget } from '../../library/save-game-widget';
+import { LibraryState } from '../../library/library-state';
+import { httpResource } from '@angular/common/http';
+import { apiErrorMessage } from '../../http-error';
+import type { DiscoveryResult } from '../models';
 import { GameShelf } from '../game-shelf/game-shelf';
 
 @Component({
   selector: 'app-discover-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, GameShelf, SaveGame],
+  imports: [RouterLink, GameShelf, SaveGameWidget],
   templateUrl: './discover-page.html',
 })
 export class DiscoverPage {
-  private readonly api = inject(CatalogApi);
-  readonly popular = catalogRequest(
-    () => 'popular' as const,
-    (kind) => this.api.discovery(kind),
+  readonly library = inject(LibraryState);
+  readonly popularResource = httpResource<DiscoveryResult>(
+    () => '/api/catalog/discovery/popular',
   );
-  readonly recent = catalogRequest(
-    () => 'recent' as const,
-    (kind) => this.api.discovery(kind),
+  readonly recentResource = httpResource<DiscoveryResult>(
+    () => '/api/catalog/discovery/recent',
   );
+  readonly popular = computed(() =>
+    !this.popularResource.isLoading() && this.popularResource.hasValue()
+      ? this.popularResource.value()
+      : null,
+  );
+  readonly recent = computed(() =>
+    !this.recentResource.isLoading() && this.recentResource.hasValue()
+      ? this.recentResource.value()
+      : null,
+  );
+  readonly popularLoading = this.popularResource.isLoading;
+  readonly recentLoading = this.recentResource.isLoading;
+  readonly popularError = computed(() => {
+    const error = this.popularResource.error();
+    return error
+      ? apiErrorMessage(error, 'Cannot load popular games. Please try again.')
+      : '';
+  });
+  readonly recentError = computed(() => {
+    const error = this.recentResource.error();
+    return error
+      ? apiErrorMessage(error, 'Cannot load recent releases. Please try again.')
+      : '';
+  });
   readonly featured = computed(
-    () =>
-      this.popular.result()?.items[0] ?? this.recent.result()?.items[0] ?? null,
+    () => this.popular()?.items[0] ?? this.recent()?.items[0] ?? null,
   );
   readonly artworkFailed = linkedSignal({
     source: () => this.featured()?.artworkUrl,

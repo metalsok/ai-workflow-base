@@ -10,12 +10,19 @@ The Angular app runs zoneless using Angular 22's bootstrap default, without
 Zone.js. Every application component explicitly declares OnPush; future
 components must retain that declaration. Project conventions are recorded in
 [framework guidance](agents/framework-skills.md#project-angular-requirements).
-Frontend API calls use Angular `HttpClient`, configured at bootstrap. Services
-return cold Observables; authentication updates its account signal
-on subscription responses. Components subscribe to explicit actions with
-destruction cleanup, the router subscribes to account guards, and catalog reads
-use `rxResource` to manage signal state and cancel superseded subscriptions.
+The persistent authenticated shell hosts lazy routed feature pages. Catalog
+pages own `httpResource` reads, and the library page owns edits and filtering.
+A shell-scoped `LibraryState` shares library data and save actions with pages
+and the connected spotlight widget. Presentation controls use inputs/outputs.
+Account services return cold Observables; the account page and router own their
+subscriptions. A scoped interceptor handles expired catalog/library sessions.
+See [request ownership](adr/0003-routed-feature-pages.md) for the decision.
 Session cookies and the backend's Origin checks retain the same contract.
+
+`npm run dev` serves Angular's development configuration with runtime debug APIs
+and source maps. `npm run build` defaults to the optimized production
+configuration with source maps disabled. Both are declared in `angular.json`;
+restart the frontend dev server after changing these configurations.
 
 Frontend forms use Angular Signal Forms: typed signal models, schema validation,
 and `[formField]` bindings. This applies to account access, catalog search, and
@@ -335,7 +342,7 @@ studio-size classifier or editor-maintained rankings are introduced.
 Successful feeds are cached in PostgreSQL for 24 hours; requests arriving during
 a refresh share that work in the same API process. A provider outage returns
 stored results marked stale with their original timestamp, or a safe 503 with
-Retry-After when nothing is cached. Each Angular shelf loads and retries
+Retry-After when nothing is cached. The discovery page loads and retries each Angular shelf
 independently, and spotlight selection falls back to the available shelf.
 Missing/failed artwork uses the purple hero background; covers retain their
 existing placeholder. No provider request is made for each rendered card.
@@ -381,8 +388,7 @@ is deliberately absent from the public HTTP API. Database diagnostics and
 passwords are suppressed from command output. Existing local credentials are
 not reset by development or test commands.
 
-Saved statuses now use one account-scoped Angular resource. Successful mutations
-update that state after their server response, and page navigation refreshes it.
-Discover spotlight/cards, search, and details therefore agree with My Library.
-Changing accounts clears the visible state; failed status reads expose a retry
-instead of presenting a guessed unsaved state.
+Saved statuses and the library page share one shell-scoped full-library resource.
+The library page derives filters locally and refetches after edits. Discover
+spotlight/cards, search, and details therefore agree with My Library. Shell
+teardown clears the state between accounts; failed reads expose a retry.

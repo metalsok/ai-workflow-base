@@ -15,7 +15,7 @@ the required approach for future features; see the
   the field. Queries require at least two non-padding characters and have a
   100-character maximum.
 - Library Play status uses a focused `PlayStatusEditor`. It owns field state and
-  disabling; the library page owns HTTP mutations, errors, and server refreshes.
+  disabling; the routed library page owns edits, errors, and server refreshes.
   Failed saves restore the server's authoritative status.
 - Project instructions require Signal Forms for future forms. No template-driven
   or Reactive Forms bindings remain in the application.

@@ -11,6 +11,7 @@ import {
   Router,
   RouterLink,
   RouterLinkActive,
+  RouterOutlet,
 } from '@angular/router';
 import {
   form,
@@ -22,42 +23,25 @@ import {
 } from '@angular/forms/signals';
 import { finalize, switchMap } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { DiscoverPage } from '../catalog/discover-page/discover-page';
-import { LibraryPage } from '../library/library-page/library-page';
-import { SearchPage } from '../catalog/search-page/search-page';
-import { GamePage } from '../catalog/game-page/game-page';
-import { LibraryApi } from '../library/api';
 import { Auth } from '../auth';
+import { LibraryState } from '../library/library-state';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-shell',
-  imports: [
-    RouterLink,
-    RouterLinkActive,
-    FormField,
-    SearchPage,
-    GamePage,
-    LibraryPage,
-    DiscoverPage,
-  ],
+  providers: [LibraryState],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, FormField],
   templateUrl: './shell.html',
 })
 export class Shell {
   private readonly destroyRef = inject(DestroyRef);
   readonly auth = inject(Auth);
-  readonly savedLibrary = inject(LibraryApi);
-  constructor() {
-    this.savedLibrary.refresh();
-  }
+  readonly library = inject(LibraryState);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly params = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
-  readonly library = this.route.snapshot.data['library'] === true;
-  readonly searchPage = this.route.snapshot.data['search'] === true;
-  readonly gamePage = this.route.snapshot.data['game'] === true;
   private readonly searchModel = linkedSignal(() => ({
     query: this.params().get('q') ?? '',
   }));

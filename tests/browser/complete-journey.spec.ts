@@ -5,6 +5,14 @@ test('the complete journey keeps saved status consistent across Discover, search
   page,
 }) => {
   await page.route('https://images.igdb.com/**', (route) => route.abort());
+  let libraryReads = 0;
+  page.on('request', (request) => {
+    if (
+      request.method() === 'GET' &&
+      new URL(request.url()).pathname === '/api/library'
+    )
+      libraryReads++;
+  });
   const email = `journey-${randomUUID()}@example.com`;
   const password = 'complete-journey-passphrase';
   await page.goto('/register');
@@ -43,6 +51,7 @@ test('the complete journey keeps saved status consistent across Discover, search
   await expect(
     card(popular, 'Little-known game').getByRole('status'),
   ).toHaveText('Saved · Want to play');
+  const readsBeforeNavigation = libraryReads;
   await page.getByRole('searchbox', { name: 'Search games' }).fill('Baldur');
   await page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(
@@ -63,8 +72,11 @@ test('the complete journey keeps saved status consistent across Discover, search
     }),
   ).toBeVisible();
   await expect(page.getByRole('status')).toHaveText('Saved · Want to play');
+  // Catalog routes reuse the shell's library state instead of recreating it.
+  expect(libraryReads).toBe(readsBeforeNavigation);
   await page.getByRole('link', { name: 'My Library', exact: true }).click();
   await expect(page.getByRole('article')).toHaveCount(2);
+  expect(libraryReads).toBe(readsBeforeNavigation + 1);
   const updated = page.waitForResponse(
     (response) =>
       response.request().method() === 'PATCH' &&
@@ -127,7 +139,7 @@ test('the complete journey keeps saved status consistent across Discover, search
   ).toBe(true);
 });
 
-test('a library mutation reconciles a delayed initial saved-status response', async ({
+test('one library read serves filters and mutations wait for its authoritative result', async ({
   page,
 }) => {
   await page.route('https://images.igdb.com/**', (route) => route.abort());
@@ -151,41 +163,44 @@ test('a library mutation reconciles a delayed initial saved-status response', as
   const held = new Promise<void>((resolve) => {
     release = resolve;
   });
-  let first = true;
-  let navigating = false;
-  let firstDone!: () => void;
-  const done = new Promise<void>((resolve) => {
-    firstDone = resolve;
-  });
+  let reads = 0;
   await page.route('**/api/library', async (route) => {
-    if (first) {
-      first = false;
-      const response = await route.fetch();
-      await held;
-      try {
-        await route.fulfill({ response });
-      } catch {
-        /* Cancellation is expected when the mutation replaces the read. */
-      }
-      firstDone();
-    } else if (navigating) {
-      await held;
-      // Keep the next navigation refresh pending so it cannot mask stale state.
-      await new Promise<void>((resolve) => page.once('close', () => resolve()));
-    } else await route.continue();
+    reads++;
+    const response = await route.fetch();
+    if (reads === 1) await held;
+    await route.fulfill({ response });
   });
   await page.goto('/library?status=want-to-play');
+  try {
+    await expect(
+      page.getByText('Loading your library…', { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByLabel("Play status for Baldur's Gate III"),
+    ).toHaveCount(0);
+    await page.getByRole('link', { name: 'Played', exact: true }).click();
+    await expect(page).toHaveURL(/status=played$/);
+    await expect(
+      page.getByText('Loading your library…', { exact: true }),
+    ).toBeVisible();
+  } finally {
+    release();
+  }
+  await expect(
+    page.getByRole('heading', { name: 'No games in this view', exact: true }),
+  ).toBeVisible();
+  await page.getByRole('link', { name: 'Want to play', exact: true }).click();
+  await expect(
+    page.getByLabel("Play status for Baldur's Gate III"),
+  ).toHaveValue('want-to-play');
+  expect(reads).toBe(1);
   await page
     .getByLabel("Play status for Baldur's Gate III")
     .selectOption('playing');
   await expect(
     page.getByRole('heading', { name: 'No games in this view', exact: true }),
   ).toBeVisible();
-  release();
-  await done;
-  // Settle the controlled reads before testing state during the next refresh.
-  await page.waitForLoadState('networkidle');
-  navigating = true;
+  expect(reads).toBe(2);
   await page.getByRole('link', { name: 'Discover', exact: true }).click();
   await expect(hero.getByRole('status')).toHaveText('Saved · Playing');
 });

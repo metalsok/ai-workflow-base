@@ -97,7 +97,8 @@
           type="submit"
           [disabled]="pending() || !accountForm().valid()"
         >
-          {{ pending() ? 'Please wait…' : registering ? 'Create account' : 'Sign in' }}
+          {{ pending() ? 'Please wait…' : registering ? 'Create account' : 'Sign
+          in' }}
         </button>
       </form>
       @if (registering) {

@@ -75,3 +75,55 @@ test('a tester can register, see their identity, sign out, and sign in again', a
     page.getByRole('heading', { name: 'Welcome back', exact: true }),
   ).toBeVisible();
 });
+
+for (const action of ['read', 'save'] as const) {
+  test(`an expired session during a ${action} returns to login`, async ({
+    page,
+    context,
+  }) => {
+    await page.route('https://images.igdb.com/**', (route) => route.abort());
+    await page.goto('/register');
+    await page
+      .getByLabel('Email', { exact: true })
+      .fill(`expired-${randomUUID()}@example.com`);
+    await page
+      .getByLabel('Password', { exact: true })
+      .fill('expired-session-passphrase');
+    await page
+      .getByRole('button', { name: 'Create account', exact: true })
+      .click();
+    const hero = page.getByRole('region', {
+      name: "Baldur's Gate III",
+      exact: true,
+    });
+    await expect(
+      hero.getByRole('button', { name: 'Want to play', exact: true }),
+    ).toBeEnabled();
+    if (action === 'read') {
+      await page
+        .getByRole('searchbox', { name: 'Search games' })
+        .fill('Baldur');
+      await page.getByRole('button', { name: 'Search', exact: true }).click();
+      await expect(
+        page.getByRole('link', { name: "Baldur's Gate III", exact: true }),
+      ).toBeVisible();
+    }
+    await context.clearCookies();
+    if (action === 'read') {
+      // Query changes reuse the search page; its request discovers the expiry.
+      await page
+        .getByRole('searchbox', { name: 'Search games' })
+        .fill('Empty expired');
+      await page.getByRole('button', { name: 'Search', exact: true }).click();
+    } else {
+      await hero
+        .getByRole('button', { name: 'Want to play', exact: true })
+        .click();
+    }
+    await expect(page).toHaveURL(/\/login$/);
+    await expect(
+      page.getByRole('heading', { name: 'Welcome back', exact: true }),
+    ).toBeVisible();
+    await expect(page.getByLabel('Signed in as')).toHaveCount(0);
+  });
+}

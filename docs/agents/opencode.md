@@ -20,6 +20,15 @@ The [Mac setup checkpoint](../mac-setup.md) records the current device's verifie
 installation. The installation history below describes the original Linux host;
 its backup paths and optional integrations are specific to that host.
 
+## Project architecture skill
+
+This repository keeps `angular-architecture-review` in
+[`.agents/skills/`](../../.agents/skills/angular-architecture-review/SKILL.md), so
+its instructions travel with the project rather than relying on the machine's
+shared skill bundle. Framework guidance requires reading it for Angular feature
+design, structural refactors, and architectural reviews. Use it alongside the
+installed Angular and codebase-design skills.
+
 ## Shared installation
 
 The user-level discovery directory is `~/.agents/skills/`. It contains:

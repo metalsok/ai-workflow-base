@@ -15,6 +15,14 @@ testing. The NestJS skill prioritizes installed-version evidence, existing
 conventions, minimal implementation, and proportionate verification. Its sibling
 skills are optional; this project selects only the implementation skill.
 
+For Angular feature design, structural refactors, and architectural reviews,
+also load the repository-local
+[`angular-architecture-review`](../../.agents/skills/angular-architecture-review/SKILL.md)
+skill before editing implementation code. It checks component/request ownership,
+state lifetimes, abstractions, and alternatives alongside `angular-developer`.
+Use the installed `codebase-design` skill for interface/abstraction decisions.
+Routine styling and mechanical edits do not need an architecture review.
+
 ## Applying them in this workflow
 
 1. During Wayfinder, use the relevant skill when resolving framework decisions
@@ -53,30 +61,48 @@ omits the explicit declaration when OnPush is selected, so add the import and
 `changeDetection` field after generating a component.
 
 Use signals and framework notification mechanisms for asynchronous UI updates.
-Use `linkedSignal` for editable state that resets when its source changes and
-`rxResource` for the catalog's Observable-based read lifecycle. Keep reactive
-parameters separate from the stream factory. Resource-owned subscriptions handle
-HTTP cancellation. Guard resource value reads after failure; preserve loading,
-clear-on-retry, cancellation, and missing-data presentation.
+`Shell` provides shared navigation, search, account controls, and a `router-outlet`.
+Discover, Library, Search, and Game pages have dedicated lazy child routes,
+protected by `canActivateChild`. Routed pages are smart feature containers:
+catalog pages own their `httpResource` reads and route parameters; Library owns
+filtering, edit/remove subscriptions, pending state, and mutation errors.
+Resources own cancellation and subscription cleanup. Guard value reads with
+`hasValue()` and hide catalog results during reload. Derive display results,
+error messages, and missing-data flags with named `computed` signals and bind
+those signals directly in templates.
 
-Use Angular `HttpClient` for frontend API transport and return cold Observables
-from services. Update service-owned signals with `tap` when a response arrives;
-calling a service method alone must not dispatch a request or change account
-state. Do not convert HTTP Observables to Promises with `firstValueFrom` or
-`lastValueFrom`, or use `async`/`await` for frontend HTTP orchestration.
+Presentational components receive signal inputs and emit user intent through
+outputs. Keep local display and Signal Forms state in the rendering component.
+The discovery spotlight pilots a connected `SaveGameWidget`, which injects the
+shared `LibraryState` and wires the presentational save control. Other save
+controls retain inputs/outputs for comparison. See
+[ADR 0003](../adr/0003-routed-feature-pages.md) for ownership and tradeoffs.
 
-Return the account-check Observable directly from the route guard so Angular's
-router owns its subscription. Components own subscriptions for explicit actions
-such as login and logout: use `takeUntilDestroyed` with an injected `DestroyRef`,
-`finalize` for pending state, and an error handler for readable messages. Compose
-navigation after success with RxJS; do not subscribe inside services or nest
-subscriptions. Mutations must not run from automatically reloading resources.
+Provide `LibraryState` at the shell component with `@Service({autoProvided: false})`.
+Its single full-library resource supplies saved badges and the library page.
+The service owns shared save actions and per-game pending/error state, with
+subscriptions cleaned up by its scoped `DestroyRef`. Library page owns edit and
+remove actions, then refreshes the shared resource. It also refreshes on entry;
+query-only filter changes reuse the current data. Track the account ID rather
+than the account object so route guards do not refetch unchanged library data.
+Library read errors and retry appear in the shared shell. The persistent shell
+keeps this state across feature navigation and destroys it on leaving the
+signed-in area. Refetch after edits instead of patching a separate local cache.
 
-Use `rxResource` to connect catalog Observables to signal state without a Promise
-bridge or manual abort listeners. Keep same-origin session cookies and the
-backend's existing Origin-based mutation protection. Native server-side IGDB
-transport and HTTP test clients do not use Angular dependency injection and are
-outside this frontend convention.
+Use Angular `HttpClient` for explicit mutations and cold Observables for account
+services. The shell subscribes to logout; the account page owns login/registration.
+Use `takeUntilDestroyed` with an injected `DestroyRef`, `finalize` for pending
+state, and feature-specific error messages. Return the account-check Observable
+directly from the guard so the router owns subscription. Compose navigation with
+RxJS and keep HTTP Observables as Observables.
+
+The functional session interceptor handles 401 responses from protected catalog
+and library endpoints, clears the matching current account, redirects to login,
+and propagates the original error. Account endpoints retain their own behavior:
+401 from login is a validation error and 401 from `/me` means signed out.
+Keep same-origin session cookies and the existing Origin-based mutation defense.
+Native server-side IGDB transport and HTTP test clients remain outside this
+frontend convention. Mutations run from explicit actions using `HttpClient`.
 
 Run the API and desktop/mobile browser journeys after changes that affect these
 behaviors. The browser journey checks that Zone.js is absent and that asynchronous
@@ -85,7 +111,7 @@ results and retries render correctly.
 References: [Angular zoneless](https://angular.dev/guide/zoneless),
 [component change detection](https://angular.dev/guide/components/advanced-configuration),
 and [resources](https://angular.dev/guide/signals/resource), and
-[Observable resources](https://angular.dev/guide/signals/rxjs-interop#using-rxresource-for-async-data).
+[HTTP resources](https://angular.dev/guide/http/http-resource).
 
 ## Frontend forms
 
@@ -122,8 +148,8 @@ pages and larger templates; when extracting an inline template, move both files
 into a dedicated folder. The CLI component defaults select this folder form.
 Retain suffixless filenames and update imports when moving files.
 
-Use `@Service()` from `@angular/core` for Angular singleton services, including
-Auth, CatalogApi, and LibraryApi. It supplies automatic DI registration in the
+Use `@Service()` from `@angular/core` for Angular singleton services, such as
+Auth. It supplies automatic DI registration in the
 installed Angular version. For explicitly scoped instances, use
 `@Service({ autoProvided: false })` with an explicit provider. This convention
 applies to Angular; backend NestJS providers follow their framework's decorators.

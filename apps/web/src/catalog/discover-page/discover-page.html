@@ -1,3 +1,8 @@
+<h1
+  class="mt-2 mb-8 text-[clamp(2rem,4vw,2.8rem)] leading-[1.15] font-bold tracking-[-0.05em]"
+>
+  Discover
+</h1>
 @if (featured(); as game) {
 <section
   class="relative isolate flex min-h-[410px] items-center overflow-hidden rounded-2xl border border-outline bg-[radial-gradient(ellipse_at_85%_30%,#a080d946,transparent_45%),linear-gradient(120deg,#19182d,#302344_70%,#151b30)] compact:min-h-[350px]"
@@ -39,7 +44,9 @@
       [routerLink]="['/games', game.id]"
       >Explore game <span aria-hidden="true">↗</span></a
     >
-    <div><app-save-game [gameId]="game.id" /></div>
+    <div>
+      <app-save-game-widget [gameId]="game.id" />
+    </div>
   </div>
 </section>
 } @else {
@@ -60,15 +67,19 @@
 }
 <app-game-shelf
   kind="popular"
-  [feed]="popular.result()"
-  [loading]="popular.loading()"
-  [error]="popular.error()"
-  (retry)="popular.retry()"
+  [library]="library.view()"
+  (save)="library.saveGame($event)"
+  [feed]="popular()"
+  [loading]="popularLoading()"
+  [error]="popularError()"
+  (retry)="popularResource.reload()"
 />
 <app-game-shelf
   kind="recent"
-  [feed]="recent.result()"
-  [loading]="recent.loading()"
-  [error]="recent.error()"
-  (retry)="recent.retry()"
+  [library]="library.view()"
+  (save)="library.saveGame($event)"
+  [feed]="recent()"
+  [loading]="recentLoading()"
+  [error]="recentError()"
+  (retry)="recentResource.reload()"
 />

@@ -1,16 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
-  inject,
   input,
-  linkedSignal,
-  signal,
+  output,
   computed,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs';
-import { LibraryApi, playStatuses } from './api';
+import { playStatuses, type LibraryView } from './models';
 
 @Component({
   selector: 'app-save-game',
@@ -18,15 +13,15 @@ import { LibraryApi, playStatuses } from './api';
   template: `
     <button
       class="mt-4 min-h-[44px] cursor-pointer rounded-lg bg-accent px-4 py-3 font-semibold text-button-ink disabled:cursor-not-allowed disabled:opacity-65"
-      (click)="save()"
-      [disabled]="pending() || !api.ready() || status() !== undefined"
+      (click)="save.emit(gameId())"
+      [disabled]="pending() || !library().ready || status() !== undefined"
     >
       {{
         pending()
           ? 'Saving…'
           : status()
             ? 'In library'
-            : api.ready()
+            : library().ready
               ? 'Want to play'
               : 'Checking library…'
       }}
@@ -41,29 +36,17 @@ import { LibraryApi, playStatuses } from './api';
 })
 export class SaveGame {
   readonly gameId = input.required<number>();
-  readonly api = inject(LibraryApi);
-  private readonly destroyRef = inject(DestroyRef);
-  readonly pending = signal(false);
-  readonly status = computed(() => this.api.statuses().get(this.gameId()));
+  readonly library = input.required<LibraryView>();
+  readonly save = output<number>();
+  readonly pending = computed(() => this.library().saving.has(this.gameId()));
+  readonly status = computed(() => this.library().statuses.get(this.gameId()));
+  readonly error = computed(
+    () => this.library().errors.get(this.gameId()) ?? '',
+  );
   readonly message = computed(() => {
     const status = this.status();
     return status
       ? `Saved · ${playStatuses.find((option) => option.value === status)!.label}`
       : '';
   });
-  readonly error = linkedSignal({ source: this.gameId, computation: () => '' });
-  save() {
-    if (this.pending() || !this.api.ready() || this.status()) return;
-    this.pending.set(true);
-    this.error.set('');
-    this.api
-      .add(this.gameId())
-      .pipe(
-        finalize(() => this.pending.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        error: (error: Error) => this.error.set(error.message),
-      });
-  }
 }
