@@ -1,6 +1,6 @@
 # 01 — Skeleton, health and accounts
 
-Status: ready-for-agent
+Status: ready-for-human
 Type: task
 
 ## What
@@ -9,6 +9,14 @@ Create `apps/api-java` (Maven Wrapper, Spring Boot 4, Java 25), Flyway
 migrations for accounts and Spring Session tables, the Spring Security
 configuration, `GET /api/health`, and register, login, logout and `me`.
 Add `run.sh` and the README reading guide.
+
+## Remaining (human)
+
+Code, tests and docs are done and pushed (commit 7c2fb90). Left: check the
+Angular app against the Java API. Stop the Node API (it also uses port 3000),
+run `apps/api-java/run.sh`, then `npm run dev:web`, and try register, reload
+(still signed in), logout and login again. Accounts are separate from the Node
+API's, so register first. Then set `Status: done`.
 
 ## Acceptance criteria
 

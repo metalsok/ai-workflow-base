@@ -64,6 +64,6 @@ works unchanged.
 
 Built in three vertical slices, each stopping for the owner's review:
 
-1. `issues/01-skeleton-and-accounts.md`
-2. `issues/02-library.md`
-3. `issues/03-catalog.md`
+1. `issues/01-skeleton-and-accounts.md`: done, Angular check pending
+2. `issues/02-catalog.md`
+3. `issues/03-library.md` (needs the catalog: saved games are stored through it)
