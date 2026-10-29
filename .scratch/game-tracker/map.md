@@ -1,7 +1,7 @@
 # Plan the game-tracker release
 
 Type: wayfinder:map
-Planning status: paused by owner on 2026-10-19
+Planning status: paused by owner on 2026-10-29
 
 ## Destination
 
@@ -12,10 +12,8 @@ accepted; this continuation plans improvements without implementing them.
 
 ## Notes
 
-- Resume from the [planning checkpoint](handoff.md). Continue
-  [Choose the most valuable improvements before inviting testers](issues/08-choose-pre-tester-improvement-priorities.md)
-  first; its claim was released for the pause. Do not restart initial discovery
-  or treat the unanswered ratings proposal as an accepted decision.
+- Start from the [latest planning checkpoint](handoff.md); the frontier is in
+  `issues/`. Do not restart initial discovery.
 - The agreed product scope and first test journey are in [discovery](discovery.md).
 - Use the local Markdown tracker configured in `docs/agents/issue-tracker.md`.
 - Explain each meaningful step in plain language; ask one focused question at a time.
@@ -43,19 +41,12 @@ accepted; this continuation plans improvements without implementing them.
 - Retain the purple cinematic dashboard, separate My Library, private accounts,
   catalog scope, and four Play statuses unless explicitly reopened. Preserve
   TypeORM and the other accepted implementation constraints in the build spec.
-- Owner steering in this continuation: prioritize catalog exploration through
-  better search, filters/sorting, and company descriptions with developed or
-  published games. The initial agent proposal to prioritize Library management
-  was not accepted. The live discussion and remaining scope choices are in
-  [Choose the most valuable improvements before inviting testers](issues/08-choose-pre-tester-improvement-priorities.md).
-- The same live priority discussion now includes the owner's agreement to browse
-  without a title and their goal of helping people find games worth their time.
-  The feature boundary and definition of useful discovery are still being worked
-  through in that ticket; it has not been resolved.
-- Ratings are part of the owner's desired discovery experience; they named
-  Metacritic and/or OpenCritic. Source feasibility is a separate research child
-  ticket. The desired source and fallback remain decisions, not implementation
-  assumptions.
+- Feature priorities are settled; see Decisions so far. Ratings depend on
+  [Validate OpenCritic game-score access](issues/12-validate-opencritic-access.md).
+- Agreed 2026-10-29: finish without the one-ticket-per-session rule. The owner
+  does the OpenCritic sign-up from a checklist whenever convenient. One grilling
+  session then settles visual direction and the milestone together, and the
+  follow-up specification is written next. Record each answer in its own ticket.
 
 ## Decisions so far
 
@@ -85,16 +76,15 @@ accepted; this continuation plans improvements without implementing them.
 - [Establish feasible critic-rating sources for catalog exploration](issues/11-research-rating-sources.md):
   desk research complete; OpenCritic is the first candidate to validate, branded
   game-score access remains unverified, and IGDB aggregates do not establish either brand.
+- [Choose the most valuable improvements before inviting testers](issues/08-choose-pre-tester-improvement-priorities.md):
+  a "dive into the world of games" journey. Ranked: catalog browsing with
+  filters and sorts, then company pages linking games, studios, parent companies,
+  and publishers' collaborators, then critic ratings if OpenCritic access works.
 
 ## Not yet specified
 
-- Further related-game exploration beyond company links, if the agreed core
-  journey exposes a concrete need; the owner's interest in related content does
-  not yet define every relationship to include.
 - The specific screen changes and visual acceptance examples needed once the
   owner identifies what feels unfinished in the accepted design.
-- Whether the selected features introduce new personal-tracking terms; retain
-  the glossary's current meanings until a real domain change is agreed.
 
 ## Initial build handoff — completed
 
@@ -110,9 +100,8 @@ selection and its Tailscale/NAS configuration remain intentionally deferred unti
 
 The owner accepted the initial private build and wants feature and visual
 improvements before inviting testers. The map was reopened for planning only
-and is now paused at the owner's request.
-The owner has identified catalog exploration as the feature direction; detailed
-scope and the next milestone are not yet agreed. The decision tickets hold the
+was paused on 2026-10-19, resumed and paused again on 2026-10-29.
+Feature priorities are agreed; the visual direction and the milestone are not. The decision tickets hold the
 candidate priorities and discussion; resolved decisions will be indexed above.
 The original specification and completed tickets remain the accepted historical
 baseline. A follow-up specification comes after this planning destination is reached.
@@ -125,6 +114,10 @@ have happened, and this continuation does not execute them.
 
 - Public profiles, community reviews, following users, and other social features
   are deferred beyond the first release.
+- Franchise, series, and similar-game relationships, personalised recommendations,
+  completion-time data, personal ratings/notes, and My Library search/sort are
+  deferred beyond this milestone; see
+  [Choose the most valuable improvements before inviting testers](issues/08-choose-pre-tester-improvement-priorities.md).
 - Native mobile applications and mobile game catalog coverage are deferred.
 - ChatGPT-coupled user authentication and Sites hosting are excluded.
 - Managed hosting and hosted account services are not the chosen deployment approach.

@@ -2,7 +2,7 @@
 
 Type: grilling
 Status: open
-Blocked by: 08, 09, 11
+Blocked by: 08, 09, 11, 12
 Parent: [Game-tracker planning map](../map.md)
 
 ## Question

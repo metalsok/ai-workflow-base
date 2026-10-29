@@ -29,3 +29,23 @@ A game the user started but stopped playing without completing it.
 **Played**:
 A combined view of games with the status Playing, Completed, or Stopped playing.
 _Avoid_: Completed, when referring to all games a user has started
+
+**Company**:
+An organisation credited on games.
+
+**Developer**:
+The role of a company that made a specific game.
+
+**Publisher**:
+The role of a company that released a specific game. Publishing a game does not mean making it.
+_Avoid_: Developer, when the company only published the game
+
+**Parent company**:
+The company that currently owns another company.
+
+**Studio**:
+A company owned by a parent company.
+_Avoid_: Studio, for a developer the publisher only worked with
+
+**Worked with**:
+A publisher's connection to the developers of games it published, without ownership.

@@ -1,7 +1,7 @@
 # Choose the most valuable improvements before inviting testers
 
 Type: grilling
-Status: open
+Status: resolved
 Blocked by: none
 Parent: [Game-tracker planning map](../map.md)
 
@@ -176,3 +176,77 @@ After that choice, narrow the filter/sort set and company-page scope, settle
 rating-access prerequisites/fallback, and agree feature deferrals. Then resolve
 this ticket before the visual-direction and milestone decisions. The original
 build remains accepted, and plan-only scope remains in force.
+
+### Resumed and claimed — 2026-10-29
+
+The owner resumed the map and this ticket was reclaimed. The owner accepted the
+following in one round:
+
+- **Ratings:** a critic score appears on game cards and details, with an optional
+  Highest rated sort. Unrated games stay in normal browsing, labelled "No critic
+  score" (never treated as zero). Minimum-score filters are deferred.
+- **Rating fallback:** if usable OpenCritic access cannot be established, scores
+  leave this milestone. Game details still link to OpenCritic/Metacritic without
+  showing a score. IGDB scores are not used as a substitute.
+- **Filters and sorts:** filter by Platform, Genre, and Release year range. Sort by
+  Most popular (the default), Newest release, and Highest rated (if scores ship).
+  Other facets are deferred until real use shows they are needed.
+- **Company page:** name, logo, and description where available. Separate Developed
+  and Published sections, newest first. A game appears in each role it holds. No
+  catalog filters or sorts on the company page in this milestone.
+- **Deferrals:** franchise/series/similar-game relationships, personalised
+  recommendations, completion-time data, personal ratings/notes, My Library
+  search/sort, and minimum-score filters.
+
+Owner addition: the experience should feel like **diving into the world of
+games**: start at a game, jump to its publisher, move on to that publisher's
+studios, discover their games, and keep going. Company-to-company links are
+therefore wanted, which revises the earlier proposal to defer all company
+relationships. How publisher → studio is defined is still under discussion.
+
+### Company links and dive journey agreed — 2026-10-29
+
+- **Company-to-company links:** a publisher page lists owned **Studios**; a studio
+  page shows **Part of** its parent company. A separate **Worked with** section
+  lists developers of games the publisher published, which is not ownership. Only
+  the current owner is shown; ownership history and former names are deferred.
+  Data depth needs implementation-time confirmation.
+- **Save mid-dive:** every game card, including those on company pages, offers the
+  same Want to play save action.
+- **Path:** each page has its own URL and browser Back works throughout. A visible
+  exploration trail is deferred.
+- **Vocabulary:** Company, Developer, Publisher, Parent company, Studio, and Worked
+  with were added to `GLOSSARY.md`.
+
+## Answer — 2026-10-29
+
+**Main need:** help people find games worth their time by *diving into the world
+of games*. The concrete journey: browse the catalog without typing a title, open
+a game, jump to its publisher, move to that publisher's studios or the developers
+it worked with, discover their games, and save one to Want to play without
+leaving the dive.
+
+**Ranked shortlist** (cut from the bottom if time runs short):
+
+1. **Catalog browsing:** browse without a title. Filter by Platform, Genre, and
+   Release year range. Sort by Most popular (the default) or Newest release.
+2. **Company pages and links:** name, logo, and description. Separate Developed and
+   Published sections, newest first. A publisher shows its **Studios**; a studio
+   shows **Part of** its parent company (current owner only). A publisher also
+   shows **Worked with** for developers it published but does not own. Every game
+   card can save to Want to play. Pages have their own URLs and browser Back works.
+3. **Critic ratings:** a score on cards and details, with an optional Highest rated
+   sort. Unrated games stay visible and are labelled "No critic score". This
+   depends on [Validate OpenCritic game-score access](12-validate-opencritic-access.md).
+   If access fails, scores leave the milestone; details still link to OpenCritic
+   and Metacritic. IGDB scores are not used as a substitute.
+
+**Deferred:** minimum-score filters (they hide lesser-known games); extra filter
+facets; filters and sorts on company pages; ownership history and former names;
+a visible exploration trail; franchise, series, and similar-game relationships;
+personalised recommendations; completion-time data; personal ratings or notes;
+and My Library search or sort. These were not requested, or they work against
+curiosity-led discovery.
+
+Visual treatment is left to [Choose the visual improvements for the next milestone](09-choose-pre-tester-visual-direction.md).
+New terms are in `GLOSSARY.md`.
