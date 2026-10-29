@@ -12,7 +12,7 @@
     "build": "npm run build:api && ng build web",
     "build:api": "tsc -p apps/api/tsconfig.json",
     "start": "node --env-file-if-exists=.env dist/api/main.js",
-    "typecheck": "tsc -p apps/api/tsconfig.json --noEmit && ngc -p apps/web/tsconfig.json --noEmit && tsc -p tests/tsconfig.json",
+    "typecheck": "tsc -p apps/api/tsconfig.json --noEmit && tsc -p apps/api/tsconfig.json --noEmit && ngc -p apps/web/tsconfig.json --noEmit && tsc -p tests/tsconfig.json",
     "format": "prettier --write apps tests scripts/*.ts scripts/*.mjs *.json .postcssrc.json *.ts *.yaml AGENTS.md README.md docs/*.md",
     "format:check": "prettier --check apps tests scripts/*.ts scripts/*.mjs *.json .postcssrc.json *.ts *.yaml AGENTS.md README.md docs/*.md",
     "db:up": "docker compose up -d --wait db",

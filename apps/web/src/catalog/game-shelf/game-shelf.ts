@@ -27,6 +27,10 @@ export class GameShelf {
   readonly error = input('');
   readonly retry = output<void>();
   readonly heading = computed(() =>
-    this.kind() === 'popular' ? 'Popular now' : 'Recent releases',
+    this.kind() === 'popular'
+      ? this.feed()?.source === 'igdb-rating-count'
+        ? 'Most rated'
+        : 'Popular now'
+      : 'Recent releases',
   );
 }

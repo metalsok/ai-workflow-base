@@ -27,7 +27,7 @@ export interface DiscoveryGame extends Game {
 }
 export interface DiscoveryResult extends Freshness {
   items: DiscoveryGame[];
-  source: 'igdb-visits' | 'first-release-date';
+  source: 'igdb-visits' | 'igdb-rating-count' | 'first-release-date';
 }
 export interface GameResult extends Freshness {
   game: Game;

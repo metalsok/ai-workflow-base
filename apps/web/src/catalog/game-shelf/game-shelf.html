@@ -8,8 +8,10 @@
         {{ heading() }}
       </h2>
       <p class="mt-2 text-sm text-muted">
-        {{ kind() === 'popular' ? 'Ranked by IGDB page visits · Refreshed daily'
-        : 'First releases from the last 90 days · Newest first' }}
+        {{ kind() === 'popular' ? (feed()?.source === 'igdb-rating-count' ?
+        'Ranked by number of IGDB user ratings · Refreshed daily' : 'Ranked by
+        IGDB page visits · Refreshed daily') : 'First releases from the last 90
+        days · Newest first' }}
       </p>
     </div>
     @if (feed(); as result) {
